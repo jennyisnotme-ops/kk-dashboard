@@ -51,7 +51,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-purple{background:var(--purple-bg);color:var(--purple-text)}
 .badge-green{background:var(--green-bg);color:var(--green-text)}
 .badge-coral{background:var(--coral-bg);color:var(--coral-text)}
-.type-badge{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;font-weight:500}
 .progress-bar{background:var(--bg2);border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
 .progress-fill{height:100%;border-radius:4px;transition:width 0.3s}
 .member-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
@@ -100,7 +99,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .toast.show{opacity:1}
 .toast.error{background:#A32D2D}
 .divider{border:none;border-top:0.5px solid var(--border);margin:1rem 0}
-/* Gantt */
 .gantt-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .gantt-controls select{width:auto}
 .gantt-wrap{overflow-x:auto;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
@@ -118,21 +116,17 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .g-gridline{position:absolute;top:0;bottom:0;width:0.5px;background:var(--border);pointer-events:none}
 .g-empty{font-size:12px;color:var(--text3);padding:0 8px;font-style:italic}
 .group-sep{display:flex;align-items:center;background:var(--bg2);padding:4px 8px;border-bottom:0.5px solid var(--border)}
-/* Editor management */
 .editor-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
 .editor-row:last-child{border-bottom:none}
 .editor-name{flex:1;font-size:14px}
-/* note for other type */
 .other-note{display:none}
 .other-note.visible{display:block}
-/* filter bar */
 .filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .filter-bar select{width:auto;font-size:13px;padding:6px 10px}
 </style>
 </head>
 <body>
 <div class="app">
-
 <div class="top-bar">
   <h1>繪師人力 &amp; 專案儀表板</h1>
   <div class="actions" id="editor-actions" style="display:none">
@@ -141,21 +135,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <button class="btn btn-sm" onclick="openModal('editors')" style="color:var(--text2)">管理編輯者</button>
   </div>
 </div>
-
 <div class="auth-bar" id="auth-bar">
   <span style="color:var(--text2)">目前為唯讀模式。</span>
   <input type="password" id="secret-input" placeholder="輸入編輯密碼" style="width:180px" onkeydown="if(event.key==='Enter')tryAuth()" />
   <button class="btn btn-sm" onclick="tryAuth()">解鎖編輯</button>
   <span id="auth-status" style="font-size:12px;color:#A32D2D"></span>
 </div>
-
 <div class="tabs">
   <button class="tab active" onclick="switchTab('overview',this)">總覽</button>
   <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
   <button class="tab" onclick="switchTab('members',this)">人力配置</button>
 </div>
-
 <div id="sec-overview" class="section active">
   <div class="stat-row" id="stat-row"></div>
   <div class="two-col">
@@ -163,7 +154,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <div><div class="section-title">人力警示</div><div id="alert-list"></div></div>
   </div>
 </div>
-
 <div id="sec-projects" class="section">
   <div class="filter-bar">
     <select id="filter-type" onchange="renderProjects()">
@@ -180,7 +170,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div class="project-grid" id="project-grid"></div>
 </div>
-
 <div id="sec-gantt" class="section">
   <div class="gantt-controls">
     <div style="display:flex;align-items:center;gap:6px">
@@ -207,15 +196,12 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div class="gantt-wrap"><div class="gantt-inner" id="gantt-container"></div></div>
 </div>
-
 <div id="sec-members" class="section">
   <div id="group-a-wrap"></div>
   <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
-
 </div>
 
-<!-- Member modal -->
 <div id="modal-member" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
@@ -234,7 +220,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
-<!-- Project modal -->
 <div id="modal-project" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
@@ -251,14 +236,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
         <option>官網用</option><option>其他</option>
       </select>
     </div>
-    <div class="form-row">
-      <label>專案負責人</label>
-      <input id="p-owner" placeholder="例：Jenny" />
-    </div>
+    <div class="form-row"><label>專案負責人</label><input id="p-owner" placeholder="例：Jenny" /></div>
   </div>
   <div class="form-row other-note" id="other-note-row">
-    <label>類型備註</label>
-    <input id="p-type-note" placeholder="請說明專案類型" />
+    <label>類型備註</label><input id="p-type-note" placeholder="請說明專案類型" />
   </div>
   <div class="form-grid">
     <div class="form-row"><label>開始日</label><input type="date" id="p-start" /></div>
@@ -266,7 +247,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div class="form-grid">
     <div class="form-row"><label>進度 %</label><input type="number" id="p-progress" min="0" max="100" value="0" /></div>
-    <div class="form-row"><label>狀態標籤</label>
+    <div class="form-row"><label>狀態</label>
       <select id="p-status">
         <option>進行中</option><option>待開始</option><option>審核中</option>
         <option>完成</option><option>暫停</option>
@@ -287,14 +268,13 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
-<!-- Editors modal -->
 <div id="modal-editors" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
     <span class="modal-title">管理編輯者</span>
     <button class="close-btn" onclick="closeModal('editors')">×</button>
   </div>
-  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">每位編輯者有各自的密碼，輸入密碼後可解鎖儀表板的新增/編輯功能。</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">每位編輯者有各自的密碼，輸入密碼後可解鎖編輯功能。</div>
   <div id="editor-list-wrap"><div class="empty">載入中…</div></div>
   <hr class="divider" />
   <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增編輯者</div>
@@ -312,20 +292,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── 設定區 ── 換成你的 Apps Script 網址 ──────────────────────
+// ── 換成你的 Apps Script 網址 ─────────────────────────────
 const API_URL = 'https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuCOmMHzf_zBeF2VRVmRaz0T9eChgbD605JWucl7bkIvr/exec';
-// ────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────
 
 let members=[], projects=[], selectedAssignees=[], editorSecret='', isEditor=false;
-
-const PROJECT_TYPES = ['訓練營','團練','月月繪','DLC','正課','社群用','官網用','其他'];
+let cbCounter = 0;
 
 const TYPE_BADGE = {
   '訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple',
   'DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green',
   '官網用':'badge-gray','其他':'badge-gray'
 };
-
 const BAR_COLORS=[
   {bg:'#B5D4F4',text:'#0C447C'},{bg:'#9FE1CB',text:'#085041'},
   {bg:'#CECBF6',text:'#3C3489'},{bg:'#FAC775',text:'#633806'},
@@ -341,30 +319,52 @@ function showToast(msg, isError=false){
   toastTimer=setTimeout(()=>t.classList.remove('show'), isError?5000:2500);
 }
 
+// JSONP 呼叫（GET）
+function jsonpGet(url){
+  return new Promise((resolve, reject)=>{
+    const cb = '__cb'+cbCounter++;
+    window[cb] = (data)=>{ delete window[cb]; document.getElementById('jsonp-'+cb)?.remove(); resolve(data); };
+    const s = document.createElement('script');
+    s.id = 'jsonp-'+cb;
+    s.src = url + (url.includes('?')?'&':'?') + 'callback='+cb;
+    s.onerror = ()=>{ delete window[cb]; reject(new Error('JSONP 請求失敗')); };
+    document.head.appendChild(s);
+  });
+}
+
+// JSONP 呼叫（POST 改用 GET 帶參數）
+function jsonpPost(payload){
+  return new Promise((resolve, reject)=>{
+    const cb = '__cb'+cbCounter++;
+    window[cb] = (data)=>{ delete window[cb]; document.getElementById('jsonp-'+cb)?.remove(); resolve(data); };
+    const encoded = encodeURIComponent(JSON.stringify({...payload, secret: editorSecret}));
+    const s = document.createElement('script');
+    s.id = 'jsonp-'+cb;
+    s.src = API_URL + '?callback='+cb+'&body='+encoded;
+    s.onerror = ()=>{ delete window[cb]; reject(new Error('JSONP 請求失敗')); };
+    document.head.appendChild(s);
+  });
+}
+
 async function loadData(){
+  showToast('載入中…');
   try{
-    const res=await fetch(API_URL);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text=await res.text();
-    let data;
-    try{data=JSON.parse(text);}catch(e){throw new Error(`回應非 JSON：${text.slice(0,150)}`);}
+    const data = await jsonpGet(API_URL);
     if(data.error) throw new Error(data.error);
-    members=data.members||[];
-    projects=data.projects||[];
+    members  = data.members  || [];
+    projects = data.projects || [];
     render();
     showToast('資料已載入');
-  }catch(e){showToast('載入失敗：'+e.message, true);}
+  }catch(e){ showToast('載入失敗：'+e.message, true); }
 }
 
 async function apiPost(payload){
-  let res,text;
-  try{
-    res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,secret:editorSecret})});
-  }catch(e){throw new Error('網路錯誤：'+e.message);}
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  text=await res.text();
-  let data;
-  try{data=JSON.parse(text);}catch(e){throw new Error(`回應非 JSON：${text.slice(0,150)}`);}
+  const url = API_URL
+    + '?action=' + encodeURIComponent(payload.action)
+    + '&type='   + encodeURIComponent(payload.type)
+    + '&secret=' + encodeURIComponent(editorSecret)
+    + '&payload='+ encodeURIComponent(JSON.stringify(payload.payload || {}));
+  const data = await jsonpGet(url);
   if(data.error) throw new Error(data.error);
   return data;
 }
@@ -372,7 +372,7 @@ async function apiPost(payload){
 function tryAuth(){
   const val=document.getElementById('secret-input').value.trim();
   if(!val){document.getElementById('auth-status').textContent='請輸入密碼';return;}
-  editorSecret=val;isEditor=true;
+  editorSecret=val; isEditor=true;
   document.getElementById('auth-bar').style.display='none';
   document.getElementById('editor-actions').style.display='flex';
   showToast('已解鎖編輯模式');
@@ -388,10 +388,8 @@ function initials(name){return name?name.slice(0,2):'??'}
 function badgeClass(s){const m={'進行中':'badge-blue','審核中':'badge-amber','完成':'badge-teal','暫停':'badge-gray','待開始':'badge-purple'};return m[s]||'badge-gray'}
 function pColor(n){if(n>=80)return '#1D9E75';if(n>=40)return '#BA7517';return '#888780'}
 function loadCls(n){if(n<=2)return 'load-ok';if(n<=4)return 'load-warn';return 'load-over'}
-
 function toggleOtherNote(){
-  const v=document.getElementById('p-type').value;
-  document.getElementById('other-note-row').classList.toggle('visible', v==='其他');
+  document.getElementById('other-note-row').classList.toggle('visible', document.getElementById('p-type').value==='其他');
 }
 
 function switchTab(id,el){
@@ -420,9 +418,7 @@ function openModal(type){
     document.getElementById('other-note-row').classList.remove('visible');
     selectedAssignees=[];renderAssigneeTags();
   }
-  if(type==='editors'){
-    loadEditors();
-  }
+  if(type==='editors') loadEditors();
   document.getElementById('modal-'+type).style.display='flex';
 }
 function closeModal(type){document.getElementById('modal-'+type).style.display='none';}
@@ -450,7 +446,7 @@ function editMember(id){
   document.getElementById('modal-member').style.display='flex';
 }
 async function deleteMember(id){
-  if(!confirm('確定移除此組員？'))return;
+  if(!confirm('確定移除？'))return;
   try{
     await apiPost({action:'delete',type:'members',payload:{id}});
     members=members.filter(m=>m.id!==id);
@@ -494,38 +490,30 @@ function editProject(id){
   document.getElementById('p-note').value=p.note||'';
   document.getElementById('p-edit-id').value=p.id;
   document.getElementById('proj-modal-title').textContent='編輯專案';
-  // 處理類型欄位
   const rawType=String(p.type||'訓練營');
   const isOther=rawType.startsWith('其他');
   document.getElementById('p-type').value=isOther?'其他':rawType;
   document.getElementById('p-type-note').value=isOther?rawType.replace(/^其他[：:]\s*/,''):'';
   document.getElementById('other-note-row').classList.toggle('visible',isOther);
-  // 狀態
-  const statusEl=document.getElementById('p-status');
-  statusEl.value=[...statusEl.options].find(o=>o.value===p.status)?p.status:'進行中';
+  document.getElementById('p-status').value=p.status||'進行中';
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
   document.getElementById('modal-project').style.display='flex';
 }
 async function deleteProject(id){
-  if(!confirm('確定刪除此專案？'))return;
+  if(!confirm('確定刪除？'))return;
   try{
     await apiPost({action:'delete',type:'projects',payload:{id}});
     projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 
-// ── 編輯者管理 ──────────────────────────────────────────────
 async function loadEditors(){
   const wrap=document.getElementById('editor-list-wrap');
   wrap.innerHTML='<div class="empty">載入中…</div>';
   try{
     const data=await apiPost({action:'list',type:'editors',payload:{}});
     if(!data.editors||!data.editors.length){wrap.innerHTML='<div class="empty">無資料</div>';return;}
-    wrap.innerHTML=data.editors.map(e=>`
-      <div class="editor-row">
-        <div class="editor-name">${e.name}</div>
-        ${data.editors.length>1?`<button class="btn btn-sm btn-danger" onclick="removeEditor(${e.idx})">移除</button>`:''}
-      </div>`).join('');
+    wrap.innerHTML=data.editors.map(e=>`<div class="editor-row"><div class="editor-name">${e.name}</div>${data.editors.length>1?`<button class="btn btn-sm btn-danger" onclick="removeEditor(${e.idx})">移除</button>`:''}</div>`).join('');
   }catch(err){wrap.innerHTML=`<div class="empty" style="color:#A32D2D">載入失敗：${err.message}</div>`;}
 }
 async function addEditor(){
@@ -536,19 +524,17 @@ async function addEditor(){
     await apiPost({action:'add',type:'editors',payload:{name,secret}});
     document.getElementById('new-editor-name').value='';
     document.getElementById('new-editor-secret').value='';
-    showToast(`已新增編輯者：${name}`);
-    loadEditors();
+    showToast(`已新增：${name}`);loadEditors();
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 async function removeEditor(idx){
-  if(!confirm('確定移除此編輯者？'))return;
+  if(!confirm('確定移除？'))return;
   try{
     await apiPost({action:'remove',type:'editors',payload:{idx}});
     showToast('已移除');loadEditors();
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 
-// ── Assignees ───────────────────────────────────────────────
 function filterAssignees(q){
   const dd=document.getElementById('assignee-dropdown');
   const f=members.filter(m=>m.name.includes(q)&&!selectedAssignees.includes(m.id));
@@ -579,7 +565,6 @@ function renderAssigneeTags(){
   box.appendChild(inp);
 }
 
-// ── Render ───────────────────────────────────────────────────
 function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
 
 function renderStats(){
@@ -632,8 +617,8 @@ function renderProjects(){
   if(!list.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';return;}
   el.innerHTML=list.map(p=>{
     const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
-    const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
     const typeKey=p.type?(p.type.split('：')[0]):'';
+    const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
     return `<div class="card">
       <div class="card-header">
         <div style="flex:1;min-width:0">
