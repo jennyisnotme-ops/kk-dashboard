@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KK魔法學院 · 繪師人力儀表板</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#eeede8;
+  --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e99;
+  --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+  --radius:8px;--radius-lg:12px;
+  --blue-bg:#E6F1FB;--blue-text:#0C447C;
+  --teal-bg:#E1F5EE;--teal-text:#085041;
+  --amber-bg:#FAEEDA;--amber-text:#633806;
+  --red-bg:#FCEBEB;--red-text:#791F1F;
+  --gray-bg:#F1EFE8;--gray-text:#444441;
+  --purple-bg:#EEEDFE;--purple-text:#3C3489;
+  --green-bg:#EAF3DE;--green-text:#27500A;
+  --coral-bg:#FAECE7;--coral-text:#712B13;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1e1e1c;--bg2:#252523;--bg3:#2d2d2a;
+  --text:#e8e8e4;--text2:#9e9e99;--text3:#6b6b67;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh}
+.app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
+.top-bar h1{font-size:18px;font-weight:500}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.section{display:none}.section.active{display:block}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--bg2);border-radius:var(--radius);padding:12px 16px}
+.stat-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.stat-num{font-size:22px;font-weight:500}
+.stat-num.warn{color:#BA7517}.stat-num.ok{color:#3B6D11}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
+.card-title{font-size:15px;font-weight:500}
+.badge{display:inline-block;padding:3px 10px;border-radius:var(--radius);font-size:12px;font-weight:500}
+.badge-blue{background:var(--blue-bg);color:var(--blue-text)}
+.badge-teal{background:var(--teal-bg);color:var(--teal-text)}
+.badge-amber{background:var(--amber-bg);color:var(--amber-text)}
+.badge-red{background:var(--red-bg);color:var(--red-text)}
+.badge-gray{background:var(--gray-bg);color:var(--gray-text)}
+.badge-purple{background:var(--purple-bg);color:var(--purple-text)}
+.badge-green{background:var(--green-bg);color:var(--green-text)}
+.badge-coral{background:var(--coral-bg);color:var(--coral-text)}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;font-weight:500}
+.progress-bar{background:var(--bg2);border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.3s}
+.member-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.member-row:last-child{border-bottom:none}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.av-0{background:#B5D4F4;color:#0C447C}.av-1{background:#9FE1CB;color:#085041}
+.av-2{background:#CECBF6;color:#3C3489}.av-3{background:#F5C4B3;color:#712B13}
+.av-4{background:#FAC775;color:#633806}.av-5{background:#C0DD97;color:#27500A}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:14px;font-weight:500}
+.member-tasks{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.load-bar{width:60px;height:6px;background:var(--bg2);border-radius:4px;overflow:hidden;flex-shrink:0;margin-top:4px}
+.load-ok{background:#639922}.load-warn{background:#EF9F27}.load-over{background:#E24B4A}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px #B5D4F4}
+label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
+.form-row{margin-bottom:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr}}
+.btn{padding:7px 14px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;transition:background 0.15s}
+.btn:hover{background:var(--bg2)}
+.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-primary:hover{opacity:0.85}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-danger{color:#A32D2D;border-color:transparent}
+.btn-danger:hover{background:var(--red-bg)}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.tag{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:var(--radius);padding:2px 8px;font-size:12px}
+.tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg)}
+.section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
+.chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dl-near{color:#BA7517}.dl-over{color:#A32D2D}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-title{font-size:16px;font-weight:500}
+.close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1;padding:0}
+.auth-bar{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:var(--radius-lg);font-size:13px;z-index:400;opacity:0;transition:opacity 0.25s;pointer-events:none;max-width:320px}
+.toast.show{opacity:1}
+.toast.error{background:#A32D2D}
+.divider{border:none;border-top:0.5px solid var(--border);margin:1rem 0}
+/* Gantt */
+.gantt-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.gantt-controls select{width:auto}
+.gantt-wrap{overflow-x:auto;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
+.gantt-inner{min-width:680px}
+.gantt-head{display:flex;border-bottom:0.5px solid var(--border);padding-bottom:4px;margin-bottom:4px}
+.gantt-name-col{width:130px;flex-shrink:0;font-size:12px;color:var(--text2);padding:0 8px}
+.gantt-tl{flex:1;display:flex;position:relative}
+.gantt-month-label{font-size:11px;color:var(--text2);border-left:0.5px solid var(--border);text-align:center;padding:0 2px}
+.gantt-row{display:flex;align-items:center;min-height:36px;border-bottom:0.5px solid var(--border)}
+.gantt-row:last-child{border-bottom:none}
+.gantt-member{width:130px;flex-shrink:0;padding:0 8px;display:flex;align-items:center;gap:6px;font-size:13px}
+.gantt-bars{flex:1;position:relative;min-height:36px}
+.g-bar{position:absolute;height:20px;top:8px;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
+.g-today{position:absolute;top:0;bottom:0;width:1.5px;background:#E24B4A;z-index:2;pointer-events:none}
+.g-gridline{position:absolute;top:0;bottom:0;width:0.5px;background:var(--border);pointer-events:none}
+.g-empty{font-size:12px;color:var(--text3);padding:0 8px;font-style:italic}
+.group-sep{display:flex;align-items:center;background:var(--bg2);padding:4px 8px;border-bottom:0.5px solid var(--border)}
+/* Editor management */
+.editor-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.editor-row:last-child{border-bottom:none}
+.editor-name{flex:1;font-size:14px}
+/* note for other type */
+.other-note{display:none}
+.other-note.visible{display:block}
+/* filter bar */
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.filter-bar select{width:auto;font-size:13px;padding:6px 10px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="top-bar">
+  <h1>繪師人力 &amp; 專案儀表板</h1>
+  <div class="actions" id="editor-actions" style="display:none">
+    <button class="btn btn-sm" onclick="openModal('member')">+ 新增組員</button>
+    <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
+    <button class="btn btn-sm" onclick="openModal('editors')" style="color:var(--text2)">管理編輯者</button>
+  </div>
+</div>
+
+<div class="auth-bar" id="auth-bar">
+  <span style="color:var(--text2)">目前為唯讀模式。</span>
+  <input type="password" id="secret-input" placeholder="輸入編輯密碼" style="width:180px" onkeydown="if(event.key==='Enter')tryAuth()" />
+  <button class="btn btn-sm" onclick="tryAuth()">解鎖編輯</button>
+  <span id="auth-status" style="font-size:12px;color:#A32D2D"></span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('overview',this)">總覽</button>
+  <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
+  <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
+  <button class="tab" onclick="switchTab('members',this)">人力配置</button>
+</div>
+
+<div id="sec-overview" class="section active">
+  <div class="stat-row" id="stat-row"></div>
+  <div class="two-col">
+    <div><div class="section-title">即將截止（14天內）</div><div id="upcoming-list"></div></div>
+    <div><div class="section-title">人力警示</div><div id="alert-list"></div></div>
+  </div>
+</div>
+
+<div id="sec-projects" class="section">
+  <div class="filter-bar">
+    <select id="filter-type" onchange="renderProjects()">
+      <option value="">所有類型</option>
+      <option>訓練營</option><option>團練</option><option>月月繪</option>
+      <option>DLC</option><option>正課</option><option>社群用</option>
+      <option>官網用</option><option>其他</option>
+    </select>
+    <select id="filter-status" onchange="renderProjects()">
+      <option value="">所有狀態</option>
+      <option>進行中</option><option>待開始</option><option>審核中</option>
+      <option>完成</option><option>暫停</option>
+    </select>
+  </div>
+  <div class="project-grid" id="project-grid"></div>
+</div>
+
+<div id="sec-gantt" class="section">
+  <div class="gantt-controls">
+    <div style="display:flex;align-items:center;gap:6px">
+      <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">顯示範圍</label>
+      <select id="gantt-range" onchange="renderGantt()" style="width:120px">
+        <option value="2">近 2 個月</option>
+        <option value="3" selected>近 3 個月</option>
+        <option value="6">近 6 個月</option>
+        <option value="12">近 12 個月</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
+      <select id="gantt-group" onchange="renderGantt()" style="width:100px">
+        <option value="all">全部</option>
+        <option value="A">A 組</option>
+        <option value="B">B 組</option>
+      </select>
+    </div>
+    <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
+      <span style="display:inline-block;width:10px;height:10px;background:#E24B4A;border-radius:2px"></span>今天
+    </div>
+    <button class="btn btn-sm" onclick="loadData()" style="margin-left:auto">重新整理</button>
+  </div>
+  <div class="gantt-wrap"><div class="gantt-inner" id="gantt-container"></div></div>
+</div>
+
+<div id="sec-members" class="section">
+  <div id="group-a-wrap"></div>
+  <div id="group-b-wrap" style="margin-top:1.5rem"></div>
+</div>
+
+</div>
+
+<!-- Member modal -->
+<div id="modal-member" style="display:none" class="overlay">
+<div class="modal">
+  <div class="modal-header">
+    <span class="modal-title" id="member-modal-title">新增組員</span>
+    <button class="close-btn" onclick="closeModal('member')">×</button>
+  </div>
+  <div class="form-row"><label>姓名</label><input id="m-name" placeholder="例：小花" /></div>
+  <div class="form-row"><label>所屬組別</label>
+    <select id="m-group"><option value="A">A 組</option><option value="B">B 組</option></select></div>
+  <div class="form-row"><label>角色 / 職稱（選填）</label><input id="m-role" placeholder="例：資深繪師" /></div>
+  <input type="hidden" id="m-edit-id" />
+  <div class="form-actions">
+    <button class="btn" onclick="closeModal('member')">取消</button>
+    <button class="btn btn-primary" onclick="saveMember()">儲存</button>
+  </div>
+</div>
+</div>
+
+<!-- Project modal -->
+<div id="modal-project" style="display:none" class="overlay">
+<div class="modal">
+  <div class="modal-header">
+    <span class="modal-title" id="proj-modal-title">新增專案</span>
+    <button class="close-btn" onclick="closeModal('project')">×</button>
+  </div>
+  <div class="form-row"><label>專案名稱</label><input id="p-name" placeholder="例：光影與色彩第18期" /></div>
+  <div class="form-grid">
+    <div class="form-row">
+      <label>專案類型</label>
+      <select id="p-type" onchange="toggleOtherNote()">
+        <option>訓練營</option><option>團練</option><option>月月繪</option>
+        <option>DLC</option><option>正課</option><option>社群用</option>
+        <option>官網用</option><option>其他</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>專案負責人</label>
+      <input id="p-owner" placeholder="例：Jenny" />
+    </div>
+  </div>
+  <div class="form-row other-note" id="other-note-row">
+    <label>類型備註</label>
+    <input id="p-type-note" placeholder="請說明專案類型" />
+  </div>
+  <div class="form-grid">
+    <div class="form-row"><label>開始日</label><input type="date" id="p-start" /></div>
+    <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" /></div>
+  </div>
+  <div class="form-grid">
+    <div class="form-row"><label>進度 %</label><input type="number" id="p-progress" min="0" max="100" value="0" /></div>
+    <div class="form-row"><label>狀態標籤</label>
+      <select id="p-status">
+        <option>進行中</option><option>待開始</option><option>審核中</option>
+        <option>完成</option><option>暫停</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <label>指派繪師（可多選）</label>
+    <div class="tag-input-wrap" id="assignee-box" onclick="document.getElementById('assignee-search').focus()"></div>
+    <div id="assignee-dropdown" style="display:none;position:relative;z-index:10;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:4px;max-height:160px;overflow-y:auto"></div>
+  </div>
+  <div class="form-row"><label>備註（選填）</label><textarea id="p-note" rows="2" placeholder="補充說明…"></textarea></div>
+  <input type="hidden" id="p-edit-id" />
+  <div class="form-actions">
+    <button class="btn" onclick="closeModal('project')">取消</button>
+    <button class="btn btn-primary" onclick="saveProject()">儲存</button>
+  </div>
+</div>
+</div>
+
+<!-- Editors modal -->
+<div id="modal-editors" style="display:none" class="overlay">
+<div class="modal">
+  <div class="modal-header">
+    <span class="modal-title">管理編輯者</span>
+    <button class="close-btn" onclick="closeModal('editors')">×</button>
+  </div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">每位編輯者有各自的密碼，輸入密碼後可解鎖儀表板的新增/編輯功能。</div>
+  <div id="editor-list-wrap"><div class="empty">載入中…</div></div>
+  <hr class="divider" />
+  <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增編輯者</div>
+  <div class="form-grid">
+    <div class="form-row"><label>名稱</label><input id="new-editor-name" placeholder="例：A組組長" /></div>
+    <div class="form-row"><label>密碼</label><input type="password" id="new-editor-secret" placeholder="設定密碼" /></div>
+  </div>
+  <div class="form-actions">
+    <button class="btn" onclick="closeModal('editors')">關閉</button>
+    <button class="btn btn-primary" onclick="addEditor()">新增</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 設定區 ── 換成你的 Apps Script 網址 ──────────────────────
+const API_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+// ────────────────────────────────────────────────────────────
+
+let members=[], projects=[], selectedAssignees=[], editorSecret='', isEditor=false;
+
+const PROJECT_TYPES = ['訓練營','團練','月月繪','DLC','正課','社群用','官網用','其他'];
+
+const TYPE_BADGE = {
+  '訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple',
+  'DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green',
+  '官網用':'badge-gray','其他':'badge-gray'
+};
+
+const BAR_COLORS=[
+  {bg:'#B5D4F4',text:'#0C447C'},{bg:'#9FE1CB',text:'#085041'},
+  {bg:'#CECBF6',text:'#3C3489'},{bg:'#FAC775',text:'#633806'},
+  {bg:'#F5C4B3',text:'#712B13'},{bg:'#C0DD97',text:'#27500A'},
+];
+
+let toastTimer;
+function showToast(msg, isError=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast'+(isError?' error':'')+' show';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'), isError?5000:2500);
+}
+
+async function loadData(){
+  try{
+    const res=await fetch(API_URL);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text=await res.text();
+    let data;
+    try{data=JSON.parse(text);}catch(e){throw new Error(`回應非 JSON：${text.slice(0,150)}`);}
+    if(data.error) throw new Error(data.error);
+    members=data.members||[];
+    projects=data.projects||[];
+    render();
+    showToast('資料已載入');
+  }catch(e){showToast('載入失敗：'+e.message, true);}
+}
+
+async function apiPost(payload){
+  let res,text;
+  try{
+    res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,secret:editorSecret})});
+  }catch(e){throw new Error('網路錯誤：'+e.message);}
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  text=await res.text();
+  let data;
+  try{data=JSON.parse(text);}catch(e){throw new Error(`回應非 JSON：${text.slice(0,150)}`);}
+  if(data.error) throw new Error(data.error);
+  return data;
+}
+
+function tryAuth(){
+  const val=document.getElementById('secret-input').value.trim();
+  if(!val){document.getElementById('auth-status').textContent='請輸入密碼';return;}
+  editorSecret=val;isEditor=true;
+  document.getElementById('auth-bar').style.display='none';
+  document.getElementById('editor-actions').style.display='flex';
+  showToast('已解鎖編輯模式');
+  render();
+}
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function daysLeft(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/864e5)}
+function dlClass(d){const n=daysLeft(d);if(n===null)return '';if(n<0)return 'dl-over';if(n<=14)return 'dl-near';return ''}
+function dlLabel(d){if(!d)return '';const n=daysLeft(d);if(n===null)return '';if(n<0)return `逾期${Math.abs(n)}天`;if(n===0)return '今天截止';return `還有${n}天`}
+function avClass(name){const c=['av-0','av-1','av-2','av-3','av-4','av-5'];let h=0;for(let ch of name)h=(h*31+ch.charCodeAt(0))%c.length;return c[Math.abs(h)]}
+function initials(name){return name?name.slice(0,2):'??'}
+function badgeClass(s){const m={'進行中':'badge-blue','審核中':'badge-amber','完成':'badge-teal','暫停':'badge-gray','待開始':'badge-purple'};return m[s]||'badge-gray'}
+function pColor(n){if(n>=80)return '#1D9E75';if(n>=40)return '#BA7517';return '#888780'}
+function loadCls(n){if(n<=2)return 'load-ok';if(n<=4)return 'load-warn';return 'load-over'}
+
+function toggleOtherNote(){
+  const v=document.getElementById('p-type').value;
+  document.getElementById('other-note-row').classList.toggle('visible', v==='其他');
+}
+
+function switchTab(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='gantt')renderGantt();
+}
+
+function openModal(type){
+  if(type!=='editors'&&!isEditor){showToast('請先輸入編輯密碼',true);return;}
+  if(type==='member'){
+    ['m-name','m-role'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('m-group').value='A';
+    document.getElementById('m-edit-id').value='';
+    document.getElementById('member-modal-title').textContent='新增組員';
+  }
+  if(type==='project'){
+    ['p-name','p-owner','p-start','p-deadline','p-note','p-type-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('p-progress').value='0';
+    document.getElementById('p-type').value='訓練營';
+    document.getElementById('p-status').value='進行中';
+    document.getElementById('p-edit-id').value='';
+    document.getElementById('proj-modal-title').textContent='新增專案';
+    document.getElementById('other-note-row').classList.remove('visible');
+    selectedAssignees=[];renderAssigneeTags();
+  }
+  if(type==='editors'){
+    loadEditors();
+  }
+  document.getElementById('modal-'+type).style.display='flex';
+}
+function closeModal(type){document.getElementById('modal-'+type).style.display='none';}
+
+async function saveMember(){
+  const name=document.getElementById('m-name').value.trim();
+  if(!name){showToast('請填寫姓名',true);return;}
+  const eid=document.getElementById('m-edit-id').value;
+  const obj={id:eid||uid(),name,group:document.getElementById('m-group').value,role:document.getElementById('m-role').value.trim()};
+  showToast('儲存中…');
+  try{
+    await apiPost({action:'upsert',type:'members',payload:obj});
+    if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}
+    else members.push(obj);
+    closeModal('member');render();showToast('組員已儲存');
+  }catch(e){showToast('儲存失敗：'+e.message,true);}
+}
+function editMember(id){
+  const m=members.find(x=>x.id===id);if(!m)return;
+  document.getElementById('m-name').value=m.name;
+  document.getElementById('m-role').value=m.role||'';
+  document.getElementById('m-group').value=m.group;
+  document.getElementById('m-edit-id').value=m.id;
+  document.getElementById('member-modal-title').textContent='編輯組員';
+  document.getElementById('modal-member').style.display='flex';
+}
+async function deleteMember(id){
+  if(!confirm('確定移除此組員？'))return;
+  try{
+    await apiPost({action:'delete',type:'members',payload:{id}});
+    members=members.filter(m=>m.id!==id);
+    projects=projects.map(p=>({...p,assignees:(p.assignees||[]).filter(a=>a!==id)}));
+    render();showToast('已移除');
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+
+async function saveProject(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){showToast('請填寫專案名稱',true);return;}
+  const eid=document.getElementById('p-edit-id').value;
+  let type=document.getElementById('p-type').value;
+  const typeNote=document.getElementById('p-type-note').value.trim();
+  if(type==='其他'&&typeNote) type=`其他：${typeNote}`;
+  const obj={
+    id:eid||uid(),name,type,
+    owner:document.getElementById('p-owner').value.trim(),
+    start:document.getElementById('p-start').value,
+    deadline:document.getElementById('p-deadline').value,
+    progress:Math.min(100,Math.max(0,parseInt(document.getElementById('p-progress').value)||0)),
+    status:document.getElementById('p-status').value,
+    assignees:[...selectedAssignees],
+    note:document.getElementById('p-note').value.trim()
+  };
+  showToast('儲存中…');
+  try{
+    await apiPost({action:'upsert',type:'projects',payload:obj});
+    if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}
+    else projects.push(obj);
+    closeModal('project');render();showToast('專案已儲存');
+  }catch(e){showToast('儲存失敗：'+e.message,true);}
+}
+function editProject(id){
+  const p=projects.find(x=>x.id===id);if(!p)return;
+  document.getElementById('p-name').value=p.name;
+  document.getElementById('p-owner').value=p.owner||'';
+  document.getElementById('p-start').value=p.start||'';
+  document.getElementById('p-deadline').value=p.deadline||'';
+  document.getElementById('p-progress').value=p.progress||0;
+  document.getElementById('p-note').value=p.note||'';
+  document.getElementById('p-edit-id').value=p.id;
+  document.getElementById('proj-modal-title').textContent='編輯專案';
+  // 處理類型欄位
+  const rawType=String(p.type||'訓練營');
+  const isOther=rawType.startsWith('其他');
+  document.getElementById('p-type').value=isOther?'其他':rawType;
+  document.getElementById('p-type-note').value=isOther?rawType.replace(/^其他[：:]\s*/,''):'';
+  document.getElementById('other-note-row').classList.toggle('visible',isOther);
+  // 狀態
+  const statusEl=document.getElementById('p-status');
+  statusEl.value=[...statusEl.options].find(o=>o.value===p.status)?p.status:'進行中';
+  selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
+  document.getElementById('modal-project').style.display='flex';
+}
+async function deleteProject(id){
+  if(!confirm('確定刪除此專案？'))return;
+  try{
+    await apiPost({action:'delete',type:'projects',payload:{id}});
+    projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+
+// ── 編輯者管理 ──────────────────────────────────────────────
+async function loadEditors(){
+  const wrap=document.getElementById('editor-list-wrap');
+  wrap.innerHTML='<div class="empty">載入中…</div>';
+  try{
+    const data=await apiPost({action:'list',type:'editors',payload:{}});
+    if(!data.editors||!data.editors.length){wrap.innerHTML='<div class="empty">無資料</div>';return;}
+    wrap.innerHTML=data.editors.map(e=>`
+      <div class="editor-row">
+        <div class="editor-name">${e.name}</div>
+        ${data.editors.length>1?`<button class="btn btn-sm btn-danger" onclick="removeEditor(${e.idx})">移除</button>`:''}
+      </div>`).join('');
+  }catch(err){wrap.innerHTML=`<div class="empty" style="color:#A32D2D">載入失敗：${err.message}</div>`;}
+}
+async function addEditor(){
+  const name=document.getElementById('new-editor-name').value.trim();
+  const secret=document.getElementById('new-editor-secret').value.trim();
+  if(!name||!secret){showToast('名稱與密碼不能為空',true);return;}
+  try{
+    await apiPost({action:'add',type:'editors',payload:{name,secret}});
+    document.getElementById('new-editor-name').value='';
+    document.getElementById('new-editor-secret').value='';
+    showToast(`已新增編輯者：${name}`);
+    loadEditors();
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+async function removeEditor(idx){
+  if(!confirm('確定移除此編輯者？'))return;
+  try{
+    await apiPost({action:'remove',type:'editors',payload:{idx}});
+    showToast('已移除');loadEditors();
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+
+// ── Assignees ───────────────────────────────────────────────
+function filterAssignees(q){
+  const dd=document.getElementById('assignee-dropdown');
+  const f=members.filter(m=>m.name.includes(q)&&!selectedAssignees.includes(m.id));
+  if(!f.length){dd.style.display='none';return;}
+  dd.innerHTML=f.map(m=>`<div onclick="addAssignee('${m.id}')" style="padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text);display:flex;gap:8px;align-items:center" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">${m.name}<span style="font-size:12px;color:var(--text2)">${m.group}組${m.role?' '+m.role:''}</span></div>`).join('');
+  dd.style.display='block';
+}
+function addAssignee(id){
+  if(!selectedAssignees.includes(id))selectedAssignees.push(id);
+  document.getElementById('assignee-search').value='';
+  document.getElementById('assignee-dropdown').style.display='none';
+  renderAssigneeTags();
+}
+function removeAssignee(id){selectedAssignees=selectedAssignees.filter(a=>a!==id);renderAssigneeTags();}
+function renderAssigneeTags(){
+  const box=document.getElementById('assignee-box');
+  box.innerHTML='';
+  selectedAssignees.forEach(id=>{
+    const m=members.find(x=>x.id===id);if(!m)return;
+    const tag=document.createElement('div');tag.className='tag';
+    tag.innerHTML=`${m.name}<span class="rm" onclick="removeAssignee('${id}')">×</span>`;
+    box.appendChild(tag);
+  });
+  const inp=document.createElement('input');
+  inp.id='assignee-search';inp.placeholder='輸入姓名搜尋…';
+  inp.style.cssText='border:none;padding:0;min-width:80px;flex:1;background:transparent;box-shadow:none;color:var(--text)';
+  inp.oninput=()=>filterAssignees(inp.value);
+  box.appendChild(inp);
+}
+
+// ── Render ───────────────────────────────────────────────────
+function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
+
+function renderStats(){
+  const el=document.getElementById('stat-row');
+  const active=projects.filter(p=>p.status!=='完成').length;
+  const done=projects.filter(p=>p.status==='完成').length;
+  const over=projects.filter(p=>p.deadline&&daysLeft(p.deadline)<0&&p.status!=='完成').length;
+  el.innerHTML=`
+    <div class="stat"><div class="stat-label">總組員數</div><div class="stat-num">${members.length}</div></div>
+    <div class="stat"><div class="stat-label">進行中</div><div class="stat-num">${active}</div></div>
+    <div class="stat"><div class="stat-label">已完成</div><div class="stat-num ok">${done}</div></div>
+    <div class="stat"><div class="stat-label">逾期</div><div class="stat-num ${over>0?'warn':''}">${over}</div></div>`;
+}
+function renderUpcoming(){
+  const el=document.getElementById('upcoming-list');
+  const list=projects.filter(p=>p.deadline&&daysLeft(p.deadline)>=0&&daysLeft(p.deadline)<=14&&p.status!=='完成').sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+  if(!list.length){el.innerHTML='<div class="empty">近14天沒有即將截止的專案</div>';return;}
+  el.innerHTML=list.map(p=>`<div class="card" style="padding:10px 1rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span style="font-size:14px;font-weight:500">${p.name}</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${p.type?`<span class="badge ${TYPE_BADGE[p.type.split('：')[0]]||'badge-gray'}" style="font-size:11px;padding:2px 7px">${p.type}</span>`:''}
+        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+      </div>
+    </div>
+    ${p.owner?`<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：${p.owner}</div>`:''}
+    <div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;background:${pColor(p.progress)}"></div></div>
+    <div style="font-size:11px;color:var(--text2)">${p.progress}% 完成</div>
+  </div>`).join('');
+}
+function renderAlerts(){
+  const el=document.getElementById('alert-list');
+  let html='';
+  members.forEach(m=>{
+    const count=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id)).length;
+    if(count>=4)html+=`<div class="card" style="padding:10px 1rem;border-left:3px solid #EF9F27;border-radius:0 var(--radius-lg) var(--radius-lg) 0"><div style="font-size:14px">${m.name} <span style="color:#BA7517;font-weight:500">同時跑${count}個專案</span></div></div>`;
+  });
+  const idle=members.filter(m=>projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id)).length===0);
+  if(idle.length)html+=`<div class="card" style="padding:10px 1rem"><div style="font-size:13px;color:var(--text2)">目前無任務：${idle.map(m=>m.name).join('、')}</div></div>`;
+  el.innerHTML=html||'<div class="empty">人力分配正常</div>';
+}
+function renderProjects(){
+  const el=document.getElementById('project-grid');
+  const ft=document.getElementById('filter-type').value;
+  const fs=document.getElementById('filter-status').value;
+  let list=projects;
+  if(ft) list=list.filter(p=>p.type&&(p.type===ft||p.type.startsWith(ft)));
+  if(fs) list=list.filter(p=>p.status===fs);
+  if(!list.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';return;}
+  el.innerHTML=list.map(p=>{
+    const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
+    const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+    const typeKey=p.type?(p.type.split('：')[0]):'';
+    return `<div class="card">
+      <div class="card-header">
+        <div style="flex:1;min-width:0">
+          <div class="card-title">${p.name}</div>
+          ${p.owner?`<div style="font-size:11px;color:var(--text2);margin-top:2px">負責人：${p.owner}</div>`:''}
+          ${p.start?`<div style="font-size:11px;color:var(--text2)">${p.start}${p.deadline?' → '+p.deadline:''}</div>`:(p.deadline?`<div style="font-size:11px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div>`:'')}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
+          ${p.type?`<span class="badge ${TYPE_BADGE[typeKey]||'badge-gray'}" style="font-size:11px;padding:2px 7px">${p.type}</span>`:''}
+          <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;background:${pColor(p.progress)}"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${p.progress}% 完成</div>
+      ${names.length?`<div class="chip-row">${names.map(n=>`<span class="chip">${n}</span>`).join('')}</div>`:''}
+      ${p.note?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">${p.note}</div>`:''}
+      ${editBtns}
+    </div>`;
+  }).join('');
+}
+function renderMembers(){
+  renderGroup('A','group-a-wrap','A 組');
+  renderGroup('B','group-b-wrap','B 組');
+}
+function renderGroup(group,elId,label){
+  const el=document.getElementById(elId);
+  const list=members.filter(m=>m.group===group);
+  const addBtn=isEditor?`<button class="btn btn-sm" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
+  if(!list.length){el.innerHTML=`<div class="section-title">${label}（0人）${addBtn}</div><div class="empty">還沒有組員</div>`;return;}
+  const rows=list.map(m=>{
+    const projs=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id));
+    const pct=Math.min(100,projs.length*20);
+    const editBtns=isEditor?`<div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="editMember('${m.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteMember('${m.id}')">移除</button></div>`:'';
+    return `<div class="member-row">
+      <div class="avatar ${avClass(m.name)}">${initials(m.name)}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div>
+        <div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>
+      </div>
+      <div style="text-align:right;margin-right:8px;flex-shrink:0">
+        <div style="font-size:12px;color:var(--text2)">${projs.length}個專案</div>
+        <div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div>
+      </div>
+      ${editBtns}
+    </div>`;
+  }).join('');
+  el.innerHTML=`<div class="section-title">${label}（${list.length}人）${addBtn}</div><div class="card">${rows}</div>`;
+}
+
+function renderGantt(){
+  const container=document.getElementById('gantt-container');
+  const rangeMonths=parseInt(document.getElementById('gantt-range').value)||3;
+  const filterGroup=document.getElementById('gantt-group').value;
+  const today=new Date();today.setHours(0,0,0,0);
+  const rangeStart=new Date(today.getFullYear(),today.getMonth()-1,1);
+  const rangeEnd=new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
+  const totalDays=(rangeEnd-rangeStart)/864e5+1;
+  function pct(d){return Math.max(0,Math.min(100,(d-rangeStart)/864e5/totalDays*100))}
+  const fm=filterGroup==='all'?members:members.filter(m=>m.group===filterGroup);
+  if(!fm.length){container.innerHTML='<div class="empty">沒有組員</div>';return;}
+  const months=[];
+  let cur=new Date(rangeStart.getFullYear(),rangeStart.getMonth(),1);
+  while(cur<=rangeEnd){months.push(new Date(cur));cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);}
+  const mH=months.map(m=>{
+    const s=new Date(m.getFullYear(),m.getMonth(),1),e=new Date(m.getFullYear(),m.getMonth()+1,0);
+    return `<div class="gantt-month-label" style="width:${pct(e)-pct(s)}%;min-width:0">${m.getMonth()+1}月</div>`;
+  }).join('');
+  const tp=pct(today);
+  let rowsHtml='';
+  ['A','B'].forEach(g=>{
+    const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:130px;flex-shrink:0;font-size:12px;font-weight:500;color:var(--text2)">${g} 組</span><div style="flex:1"></div></div>`;
+    gm.forEach(m=>{
+      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
+      const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
+      const bars=mP.map(p=>{
+        const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
+        const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
+        s.setHours(0,0,0,0);e.setHours(0,0,0,0);
+        if(e<rangeStart||s>rangeEnd)return '';
+        const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
+        const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
+        return `<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #E24B4A':''}" title="${p.name}${p.type?' ['+p.type+']':''}${p.owner?' 負責人：'+p.owner:''}${p.start?' 開始：'+p.start:''}${p.deadline?' 截止：'+p.deadline:''} ${p.progress}%">${p.name}</div>`;
+      }).join('');
+      rowsHtml+=`<div class="gantt-row">
+        <div class="gantt-member"><div class="avatar ${avClass(m.name)}" style="width:24px;height:24px;font-size:10px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div>
+        <div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${bars||'<div class="g-empty">無任務</div>'}</div>
+      </div>`;
+    });
+  });
+  container.innerHTML=`<div class="gantt-head"><div class="gantt-name-col"></div><div class="gantt-tl">${mH}</div></div>${rowsHtml}`;
+}
+
+document.addEventListener('click',e=>{
+  const dd=document.getElementById('assignee-dropdown');
+  if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search')dd.style.display='none';
+});
+
+loadData();
+</script>
+</body>
+</html>
