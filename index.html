@@ -19,6 +19,7 @@
   --purple-bg:#EEEDFE;--purple-text:#3C3489;
   --green-bg:#EAF3DE;--green-text:#27500A;
   --coral-bg:#FAECE7;--coral-text:#712B13;
+  --pink-bg:#FBEAF0;--pink-text:#72243E;
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#1e1e1c;--bg2:#252523;--bg3:#2d2d2a;
@@ -80,9 +81,12 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .btn-danger{color:#A32D2D;border-color:transparent}
 .btn-danger:hover{background:var(--red-bg)}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.tag{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:var(--radius);padding:2px 8px;font-size:12px}
-.tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
-.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg)}
+.tag-chip{display:inline-flex;align-items:center;gap:3px;background:var(--pink-bg);color:var(--pink-text);border-radius:var(--radius);padding:2px 8px;font-size:11px;font-weight:500}
+.tag-chip .rm{cursor:pointer;font-size:13px;line-height:1;opacity:0.7}
+.tag-chip .rm:hover{opacity:1}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg);position:relative}
+.assignee-tag{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:var(--radius);padding:2px 8px;font-size:12px}
+.assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
@@ -90,26 +94,27 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .dl-near{color:#BA7517}.dl-over{color:#A32D2D}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-.modal{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:1.5rem;width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
 .modal-title{font-size:16px;font-weight:500}
 .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1;padding:0}
 .auth-bar{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:var(--radius-lg);font-size:13px;z-index:400;opacity:0;transition:opacity 0.25s;pointer-events:none;max-width:320px}
-.toast.show{opacity:1}
-.toast.error{background:#A32D2D}
+.toast.show{opacity:1}.toast.error{background:#A32D2D}
 .divider{border:none;border-top:0.5px solid var(--border);margin:1rem 0}
 .gantt-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .gantt-controls select{width:auto}
 .gantt-wrap{overflow-x:auto;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
 .gantt-inner{min-width:680px}
 .gantt-head{display:flex;border-bottom:0.5px solid var(--border);padding-bottom:4px;margin-bottom:4px}
-.gantt-name-col{width:130px;flex-shrink:0;font-size:12px;color:var(--text2);padding:0 8px}
+.gantt-name-col{width:140px;flex-shrink:0;font-size:12px;color:var(--text2);padding:0 8px}
 .gantt-tl{flex:1;display:flex;position:relative}
 .gantt-month-label{font-size:11px;color:var(--text2);border-left:0.5px solid var(--border);text-align:center;padding:0 2px}
 .gantt-row{display:flex;align-items:center;min-height:36px;border-bottom:0.5px solid var(--border)}
 .gantt-row:last-child{border-bottom:none}
-.gantt-member{width:130px;flex-shrink:0;padding:0 8px;display:flex;align-items:center;gap:6px;font-size:13px}
+.gantt-row.sub{background:var(--bg2)}
+.gantt-member{width:140px;flex-shrink:0;padding:0 8px;display:flex;align-items:center;gap:4px;font-size:13px}
+.gantt-expand{cursor:pointer;font-size:11px;font-weight:500;color:var(--blue-text);background:var(--blue-bg);border:none;padding:1px 5px;border-radius:4px;flex-shrink:0}
 .gantt-bars{flex:1;position:relative;min-height:36px}
 .g-bar{position:absolute;height:20px;top:8px;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
 .g-today{position:absolute;top:0;bottom:0;width:1.5px;background:#E24B4A;z-index:2;pointer-events:none}
@@ -119,10 +124,12 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .editor-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
 .editor-row:last-child{border-bottom:none}
 .editor-name{flex:1;font-size:14px}
-.other-note{display:none}
-.other-note.visible{display:block}
-.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.filter-bar select{width:auto;font-size:13px;padding:6px 10px}
+.other-note{display:none}.other-note.visible{display:block}
+.dropdown-list{position:absolute;left:0;top:100%;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:2px;max-height:150px;overflow-y:auto;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.dropdown-item{padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text)}
+.dropdown-item:hover{background:var(--bg2)}
+.auto-label{font-size:11px;color:var(--text2);margin-top:4px}
+.archived-toggle{font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:12px;user-select:none}
 </style>
 </head>
 <body>
@@ -133,6 +140,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <button class="btn btn-sm" onclick="openModal('member')">+ 新增組員</button>
     <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
     <button class="btn btn-sm" onclick="openModal('editors')" style="color:var(--text2)">管理編輯者</button>
+    <button class="btn btn-sm" onclick="exportCSV()" style="color:var(--text2)">匯出 CSV</button>
   </div>
 </div>
 <div class="auth-bar" id="auth-bar">
@@ -147,6 +155,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
   <button class="tab" onclick="switchTab('members',this)">人力配置</button>
 </div>
+
 <div id="sec-overview" class="section active">
   <div class="stat-row" id="stat-row"></div>
   <div class="two-col">
@@ -154,39 +163,49 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <div><div class="section-title">人力警示</div><div id="alert-list"></div></div>
   </div>
 </div>
+
 <div id="sec-projects" class="section">
-  <div class="filter-bar">
-    <select id="filter-type" onchange="renderProjects()">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center">
+    <input id="search-kw" placeholder="搜尋專案名稱或標籤…" style="width:220px;font-size:13px;padding:6px 10px" oninput="renderProjects()" />
+    <select id="filter-type" onchange="renderProjects()" style="width:auto;font-size:13px;padding:6px 10px">
       <option value="">所有類型</option>
       <option>訓練營</option><option>團練</option><option>月月繪</option>
-      <option>DLC</option><option>正課</option><option>社群用</option>
-      <option>官網用</option><option>其他</option>
+      <option>DLC</option><option>正課</option><option>社群用</option><option>官網用</option><option>其他</option>
     </select>
-    <select id="filter-status" onchange="renderProjects()">
+    <select id="filter-status" onchange="renderProjects()" style="width:auto;font-size:13px;padding:6px 10px">
       <option value="">所有狀態</option>
-      <option>進行中</option><option>待開始</option><option>審核中</option>
-      <option>完成</option><option>暫停</option>
+      <option>進行中</option><option>待開始</option><option>審核中</option><option>完成</option><option>暫停</option>
+    </select>
+    <select id="sort-by" onchange="renderProjects()" style="width:auto;font-size:13px;padding:6px 10px">
+      <option value="">預設排序</option>
+      <option value="deadline">截止日↑</option>
+      <option value="progress">進度↑</option>
+      <option value="type">類型</option>
     </select>
   </div>
+  <label class="archived-toggle" onclick="toggleArchived()">
+    <span id="archived-icon">▶</span>
+    顯示已完成專案（<span id="archived-count">0</span>）
+  </label>
   <div class="project-grid" id="project-grid"></div>
+  <div id="archived-section" style="display:none;margin-top:1rem">
+    <div class="project-grid" id="archived-project-grid"></div>
+  </div>
 </div>
+
 <div id="sec-gantt" class="section">
   <div class="gantt-controls">
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">顯示範圍</label>
       <select id="gantt-range" onchange="renderGantt()" style="width:120px">
-        <option value="2">近 2 個月</option>
-        <option value="3" selected>近 3 個月</option>
-        <option value="6">近 6 個月</option>
-        <option value="12">近 12 個月</option>
+        <option value="2">近 2 個月</option><option value="3" selected>近 3 個月</option>
+        <option value="6">近 6 個月</option><option value="12">近 12 個月</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
       <select id="gantt-group" onchange="renderGantt()" style="width:100px">
-        <option value="all">全部</option>
-        <option value="A">A 組</option>
-        <option value="B">B 組</option>
+        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -196,22 +215,32 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div class="gantt-wrap"><div class="gantt-inner" id="gantt-container"></div></div>
 </div>
+
 <div id="sec-members" class="section">
   <div id="group-a-wrap"></div>
   <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
 </div>
 
+<!-- Member modal -->
 <div id="modal-member" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
     <span class="modal-title" id="member-modal-title">新增組員</span>
     <button class="close-btn" onclick="closeModal('member')">×</button>
   </div>
-  <div class="form-row"><label>姓名</label><input id="m-name" placeholder="例：小花" /></div>
-  <div class="form-row"><label>所屬組別</label>
-    <select id="m-group"><option value="A">A 組</option><option value="B">B 組</option></select></div>
+  <div class="form-grid">
+    <div class="form-row"><label>姓名</label><input id="m-name" placeholder="例：小花" /></div>
+    <div class="form-row"><label>所屬組別</label>
+      <select id="m-group"><option value="A">A 組</option><option value="B">B 組</option></select></div>
+  </div>
   <div class="form-row"><label>角色 / 職稱（選填）</label><input id="m-role" placeholder="例：資深繪師" /></div>
+  <div class="form-row"><label>備註（選填）</label><textarea id="m-note" rows="2" placeholder="例：兼職、請假中…"></textarea></div>
+  <div class="form-row" style="position:relative">
+    <label>標籤（最多5個）</label>
+    <div class="tag-input-wrap" id="m-tag-box" onclick="document.getElementById('m-tag-input')&&document.getElementById('m-tag-input').focus()"></div>
+    <div id="m-tag-dropdown" class="dropdown-list" style="display:none"></div>
+  </div>
   <input type="hidden" id="m-edit-id" />
   <div class="form-actions">
     <button class="btn" onclick="closeModal('member')">取消</button>
@@ -220,6 +249,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
+<!-- Project modal -->
 <div id="modal-project" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
@@ -228,12 +258,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div class="form-row"><label>專案名稱</label><input id="p-name" placeholder="例：光影與色彩第18期" /></div>
   <div class="form-grid">
-    <div class="form-row">
-      <label>專案類型</label>
+    <div class="form-row"><label>專案類型</label>
       <select id="p-type" onchange="toggleOtherNote()">
         <option>訓練營</option><option>團練</option><option>月月繪</option>
-        <option>DLC</option><option>正課</option><option>社群用</option>
-        <option>官網用</option><option>其他</option>
+        <option>DLC</option><option>正課</option><option>社群用</option><option>官網用</option><option>其他</option>
       </select>
     </div>
     <div class="form-row"><label>專案負責人</label><input id="p-owner" placeholder="例：Jenny" /></div>
@@ -242,22 +270,33 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <label>類型備註</label><input id="p-type-note" placeholder="請說明專案類型" />
   </div>
   <div class="form-grid">
-    <div class="form-row"><label>開始日</label><input type="date" id="p-start" /></div>
-    <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" /></div>
+    <div class="form-row"><label>開始日</label><input type="date" id="p-start" oninput="updateAutoProgress()" /></div>
+    <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" oninput="updateAutoProgress()" /></div>
   </div>
-  <div class="form-grid">
-    <div class="form-row"><label>進度 %</label><input type="number" id="p-progress" min="0" max="100" value="0" /></div>
-    <div class="form-row"><label>狀態</label>
-      <select id="p-status">
-        <option>進行中</option><option>待開始</option><option>審核中</option>
-        <option>完成</option><option>暫停</option>
-      </select>
+  <div class="form-row">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <label style="margin:0">進度 %</label>
+      <label style="font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px;margin:0">
+        <input type="checkbox" id="p-progress-override" onchange="toggleProgressOverride()" style="width:auto;padding:0;border:none;box-shadow:none" /> 手動覆蓋
+      </label>
     </div>
+    <input type="number" id="p-progress" min="0" max="100" value="0" disabled style="background:var(--bg2)" />
+    <div class="auto-label" id="auto-progress-label">填入起迄日後自動計算</div>
+  </div>
+  <div class="form-row"><label>狀態</label>
+    <select id="p-status">
+      <option>進行中</option><option>待開始</option><option>審核中</option><option>完成</option><option>暫停</option>
+    </select>
   </div>
   <div class="form-row">
     <label>指派繪師（可多選）</label>
-    <div class="tag-input-wrap" id="assignee-box" onclick="document.getElementById('assignee-search').focus()"></div>
+    <div class="tag-input-wrap" id="assignee-box" onclick="document.getElementById('assignee-search')&&document.getElementById('assignee-search').focus()"></div>
     <div id="assignee-dropdown" style="display:none;position:relative;z-index:10;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:4px;max-height:160px;overflow-y:auto"></div>
+  </div>
+  <div class="form-row" style="position:relative">
+    <label>標籤（最多5個）</label>
+    <div class="tag-input-wrap" id="p-tag-box" onclick="document.getElementById('p-tag-input')&&document.getElementById('p-tag-input').focus()"></div>
+    <div id="p-tag-dropdown" class="dropdown-list" style="display:none"></div>
   </div>
   <div class="form-row"><label>備註（選填）</label><textarea id="p-note" rows="2" placeholder="補充說明…"></textarea></div>
   <input type="hidden" id="p-edit-id" />
@@ -268,6 +307,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
+<!-- Editors modal -->
 <div id="modal-editors" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
@@ -292,157 +332,189 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── 換成你的 Apps Script 網址 ─────────────────────────────
 const API_URL = 'https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuCOmMHzf_zBeF2VRVmRaz0T9eChgbD605JWucl7bkIvr/exec';
-// ─────────────────────────────────────────────────────────
 
 let members=[], projects=[], selectedAssignees=[], editorSecret='', isEditor=false;
-let cbCounter = 0;
+let cbCounter=0, showArchived=false, expandedMembers={};
+let mTags=[], pTags=[];
 
-const TYPE_BADGE = {
-  '訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple',
-  'DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green',
-  '官網用':'badge-gray','其他':'badge-gray'
-};
-const BAR_COLORS=[
-  {bg:'#B5D4F4',text:'#0C447C'},{bg:'#9FE1CB',text:'#085041'},
-  {bg:'#CECBF6',text:'#3C3489'},{bg:'#FAC775',text:'#633806'},
-  {bg:'#F5C4B3',text:'#712B13'},{bg:'#C0DD97',text:'#27500A'},
-];
+const TYPE_BADGE={'訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple','DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green','官網用':'badge-gray','其他':'badge-gray'};
+const BAR_COLORS=[{bg:'#B5D4F4',text:'#0C447C'},{bg:'#9FE1CB',text:'#085041'},{bg:'#CECBF6',text:'#3C3489'},{bg:'#FAC775',text:'#633806'},{bg:'#F5C4B3',text:'#712B13'},{bg:'#C0DD97',text:'#27500A'}];
 
 let toastTimer;
-function showToast(msg, isError=false){
+function showToast(msg,isError=false){
   const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(isError?' error':'')+' show';
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'), isError?5000:2500);
+  t.textContent=msg;t.className='toast'+(isError?' error':'')+' show';
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),isError?5000:2500);
 }
 
-// JSONP 呼叫（GET）
 function jsonpGet(url){
-  return new Promise((resolve, reject)=>{
-    const cb = '__cb'+cbCounter++;
-    window[cb] = (data)=>{ delete window[cb]; document.getElementById('jsonp-'+cb)?.remove(); resolve(data); };
-    const s = document.createElement('script');
-    s.id = 'jsonp-'+cb;
-    s.src = url + (url.includes('?')?'&':'?') + 'callback='+cb;
-    s.onerror = ()=>{ delete window[cb]; reject(new Error('JSONP 請求失敗')); };
+  return new Promise((resolve,reject)=>{
+    const cb='__cb'+cbCounter++;
+    window[cb]=(data)=>{delete window[cb];document.getElementById('jsonp-'+cb)?.remove();resolve(data);};
+    const s=document.createElement('script');s.id='jsonp-'+cb;
+    s.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
+    s.onerror=()=>{delete window[cb];reject(new Error('JSONP 請求失敗'));};
     document.head.appendChild(s);
   });
 }
 
-// JSONP 呼叫（POST 改用 GET 帶參數）
-function jsonpPost(payload){
-  return new Promise((resolve, reject)=>{
-    const cb = '__cb'+cbCounter++;
-    window[cb] = (data)=>{ delete window[cb]; document.getElementById('jsonp-'+cb)?.remove(); resolve(data); };
-    const encoded = encodeURIComponent(JSON.stringify({...payload, secret: editorSecret}));
-    const s = document.createElement('script');
-    s.id = 'jsonp-'+cb;
-    s.src = API_URL + '?callback='+cb+'&body='+encoded;
-    s.onerror = ()=>{ delete window[cb]; reject(new Error('JSONP 請求失敗')); };
-    document.head.appendChild(s);
-  });
+async function apiPost(payload){
+  const url=API_URL+'?action='+encodeURIComponent(payload.action)+'&type='+encodeURIComponent(payload.type)+'&secret='+encodeURIComponent(editorSecret)+'&payload='+encodeURIComponent(JSON.stringify(payload.payload||{}));
+  const data=await jsonpGet(url);
+  if(data.error) throw new Error(data.error);
+  return data;
 }
 
 async function loadData(){
   showToast('載入中…');
   try{
-    const data = await jsonpGet(API_URL);
+    const data=await jsonpGet(API_URL);
     if(data.error) throw new Error(data.error);
-    members  = data.members  || [];
-    projects = data.projects || [];
-    render();
-    showToast('資料已載入');
-  }catch(e){ showToast('載入失敗：'+e.message, true); }
-}
-
-async function apiPost(payload){
-  const url = API_URL
-    + '?action=' + encodeURIComponent(payload.action)
-    + '&type='   + encodeURIComponent(payload.type)
-    + '&secret=' + encodeURIComponent(editorSecret)
-    + '&payload='+ encodeURIComponent(JSON.stringify(payload.payload || {}));
-  const data = await jsonpGet(url);
-  if(data.error) throw new Error(data.error);
-  return data;
+    members=data.members||[];projects=data.projects||[];
+    render();showToast('資料已載入');
+  }catch(e){showToast('載入失敗：'+e.message,true);}
 }
 
 function tryAuth(){
   const val=document.getElementById('secret-input').value.trim();
   if(!val){document.getElementById('auth-status').textContent='請輸入密碼';return;}
-  editorSecret=val; isEditor=true;
+  editorSecret=val;isEditor=true;
   document.getElementById('auth-bar').style.display='none';
   document.getElementById('editor-actions').style.display='flex';
-  showToast('已解鎖編輯模式');
-  render();
+  showToast('已解鎖編輯模式');render();
 }
+
+function calcProgress(start,deadline){
+  if(!start||!deadline) return null;
+  const s=new Date(start),e=new Date(deadline),t=new Date();
+  s.setHours(0,0,0,0);e.setHours(0,0,0,0);t.setHours(0,0,0,0);
+  if(t<=s) return 0;if(t>=e) return 100;
+  return Math.round((t-s)/(e-s)*100);
+}
+function getProgress(p){
+  if(p.progressOverride) return Number(p.progress)||0;
+  const auto=calcProgress(p.start,p.deadline);
+  return auto!==null?auto:Number(p.progress)||0;
+}
+function updateAutoProgress(){
+  const s=document.getElementById('p-start').value,d=document.getElementById('p-deadline').value;
+  const override=document.getElementById('p-progress-override').checked;
+  if(!override){
+    const auto=calcProgress(s,d);
+    document.getElementById('p-progress').value=auto!==null?auto:0;
+    document.getElementById('auto-progress-label').textContent=auto!==null?'依日期自動計算：'+auto+'%':'填入起迄日後自動計算';
+  }
+}
+function toggleProgressOverride(){
+  const override=document.getElementById('p-progress-override').checked;
+  const inp=document.getElementById('p-progress');
+  inp.disabled=!override;inp.style.background=override?'var(--bg)':'var(--bg2)';
+  if(!override) updateAutoProgress();
+}
+
+function getAllTags(){
+  const s=new Set();
+  members.forEach(m=>(m.tags||[]).forEach(t=>s.add(t)));
+  projects.forEach(p=>(p.tags||[]).forEach(t=>s.add(t)));
+  return[...s];
+}
+function renderTagBox(boxId,dropId,tags,addFn,removeFn,inputId){
+  const box=document.getElementById(boxId);box.innerHTML='';
+  tags.forEach((t,i)=>{
+    const chip=document.createElement('span');chip.className='tag-chip';
+    chip.innerHTML=t+'<span class="rm" data-i="'+i+'">×</span>';
+    chip.querySelector('.rm').onclick=()=>{removeFn(i);};
+    box.appendChild(chip);
+  });
+  if(tags.length<5){
+    const inp=document.createElement('input');inp.id=inputId;
+    inp.placeholder=tags.length===0?'輸入標籤…':'';
+    inp.style.cssText='border:none;padding:0;min-width:80px;flex:1;background:transparent;box-shadow:none;font-size:13px;color:var(--text)';
+    inp.oninput=()=>{
+      const q=inp.value;const dd=document.getElementById(dropId);
+      if(!q){dd.style.display='none';return;}
+      const sugg=getAllTags().filter(t=>t.includes(q)&&!tags.includes(t));
+      if(!sugg.length){dd.style.display='none';return;}
+      dd.innerHTML=sugg.map(t=>`<div class="dropdown-item" data-t="${t.replace(/"/g,'&quot;')}">${t}</div>`).join('');
+      dd.querySelectorAll('.dropdown-item').forEach(el=>el.onclick=()=>{addFn(el.dataset.t);inp.value='';dd.style.display='none';});
+      dd.style.display='block';
+    };
+    inp.onkeydown=(e)=>{if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();addFn(inp.value.trim());inp.value='';document.getElementById(dropId).style.display='none';}};
+    box.appendChild(inp);
+  }
+}
+function initMTagBox(){renderTagBox('m-tag-box','m-tag-dropdown',mTags,t=>{if(mTags.length<5&&!mTags.includes(t)){mTags.push(t);initMTagBox();}},i=>{mTags.splice(i,1);initMTagBox();},'m-tag-input');}
+function initPTagBox(){renderTagBox('p-tag-box','p-tag-dropdown',pTags,t=>{if(pTags.length<5&&!pTags.includes(t)){pTags.push(t);initPTagBox();}},i=>{pTags.splice(i,1);initPTagBox();},'p-tag-input');}
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function daysLeft(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/864e5)}
 function dlClass(d){const n=daysLeft(d);if(n===null)return '';if(n<0)return 'dl-over';if(n<=14)return 'dl-near';return ''}
-function dlLabel(d){if(!d)return '';const n=daysLeft(d);if(n===null)return '';if(n<0)return `逾期${Math.abs(n)}天`;if(n===0)return '今天截止';return `還有${n}天`}
+function dlLabel(d){if(!d)return '';const n=daysLeft(d);if(n===null)return '';if(n<0)return'逾期'+Math.abs(n)+'天';if(n===0)return'今天截止';return'還有'+n+'天'}
 function avClass(name){const c=['av-0','av-1','av-2','av-3','av-4','av-5'];let h=0;for(let ch of name)h=(h*31+ch.charCodeAt(0))%c.length;return c[Math.abs(h)]}
 function initials(name){return name?name.slice(0,2):'??'}
 function badgeClass(s){const m={'進行中':'badge-blue','審核中':'badge-amber','完成':'badge-teal','暫停':'badge-gray','待開始':'badge-purple'};return m[s]||'badge-gray'}
-function pColor(n){if(n>=80)return '#1D9E75';if(n>=40)return '#BA7517';return '#888780'}
-function loadCls(n){if(n<=2)return 'load-ok';if(n<=4)return 'load-warn';return 'load-over'}
-function toggleOtherNote(){
-  document.getElementById('other-note-row').classList.toggle('visible', document.getElementById('p-type').value==='其他');
+function pColor(n){if(n>=80)return'#1D9E75';if(n>=40)return'#BA7517';return'#888780'}
+function loadCls(n){if(n<=2)return'load-ok';if(n<=4)return'load-warn';return'load-over'}
+function toggleOtherNote(){document.getElementById('other-note-row').classList.toggle('visible',document.getElementById('p-type').value==='其他');}
+function toggleArchived(){
+  showArchived=!showArchived;
+  document.getElementById('archived-section').style.display=showArchived?'block':'none';
+  document.getElementById('archived-icon').textContent=showArchived?'▼':'▶';
 }
-
 function switchTab(id,el){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  el.classList.add('active');
-  if(id==='gantt')renderGantt();
+  document.getElementById('sec-'+id).classList.add('active');el.classList.add('active');
+  if(id==='gantt') renderGantt();
 }
 
 function openModal(type){
   if(type!=='editors'&&!isEditor){showToast('請先輸入編輯密碼',true);return;}
   if(type==='member'){
-    ['m-name','m-role'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('m-group').value='A';
-    document.getElementById('m-edit-id').value='';
+    ['m-name','m-role','m-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('m-group').value='A';document.getElementById('m-edit-id').value='';
     document.getElementById('member-modal-title').textContent='新增組員';
+    mTags=[];initMTagBox();
   }
   if(type==='project'){
     ['p-name','p-owner','p-start','p-deadline','p-note','p-type-note'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('p-progress').value='0';
-    document.getElementById('p-type').value='訓練營';
-    document.getElementById('p-status').value='進行中';
-    document.getElementById('p-edit-id').value='';
+    document.getElementById('p-progress').value='0';document.getElementById('p-type').value='訓練營';
+    document.getElementById('p-status').value='進行中';document.getElementById('p-edit-id').value='';
     document.getElementById('proj-modal-title').textContent='新增專案';
     document.getElementById('other-note-row').classList.remove('visible');
-    selectedAssignees=[];renderAssigneeTags();
+    document.getElementById('p-progress-override').checked=false;
+    document.getElementById('p-progress').disabled=true;document.getElementById('p-progress').style.background='var(--bg2)';
+    document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
+    selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
   }
   if(type==='editors') loadEditors();
   document.getElementById('modal-'+type).style.display='flex';
 }
-function closeModal(type){document.getElementById('modal-'+type).style.display='none';}
+function closeModal(type){
+  document.getElementById('modal-'+type).style.display='none';
+  document.querySelectorAll('.dropdown-list').forEach(d=>d.style.display='none');
+}
 
 async function saveMember(){
   const name=document.getElementById('m-name').value.trim();
   if(!name){showToast('請填寫姓名',true);return;}
   const eid=document.getElementById('m-edit-id').value;
-  const obj={id:eid||uid(),name,group:document.getElementById('m-group').value,role:document.getElementById('m-role').value.trim()};
+  const obj={id:eid||uid(),name,group:document.getElementById('m-group').value,role:document.getElementById('m-role').value.trim(),note:document.getElementById('m-note').value.trim(),tags:[...mTags]};
   showToast('儲存中…');
   try{
     await apiPost({action:'upsert',type:'members',payload:obj});
-    if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}
-    else members.push(obj);
+    if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}else members.push(obj);
     closeModal('member');render();showToast('組員已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editMember(id){
   const m=members.find(x=>x.id===id);if(!m)return;
-  document.getElementById('m-name').value=m.name;
-  document.getElementById('m-role').value=m.role||'';
-  document.getElementById('m-group').value=m.group;
+  document.getElementById('m-name').value=m.name;document.getElementById('m-role').value=m.role||'';
+  document.getElementById('m-note').value=m.note||'';document.getElementById('m-group').value=m.group;
   document.getElementById('m-edit-id').value=m.id;
   document.getElementById('member-modal-title').textContent='編輯組員';
+  mTags=[...(m.tags||[])];initMTagBox();
   document.getElementById('modal-member').style.display='flex';
 }
 async function deleteMember(id){
@@ -460,43 +532,39 @@ async function saveProject(){
   if(!name){showToast('請填寫專案名稱',true);return;}
   const eid=document.getElementById('p-edit-id').value;
   let type=document.getElementById('p-type').value;
-  const typeNote=document.getElementById('p-type-note').value.trim();
-  if(type==='其他'&&typeNote) type=`其他：${typeNote}`;
-  const obj={
-    id:eid||uid(),name,type,
-    owner:document.getElementById('p-owner').value.trim(),
-    start:document.getElementById('p-start').value,
-    deadline:document.getElementById('p-deadline').value,
-    progress:Math.min(100,Math.max(0,parseInt(document.getElementById('p-progress').value)||0)),
-    status:document.getElementById('p-status').value,
-    assignees:[...selectedAssignees],
-    note:document.getElementById('p-note').value.trim()
-  };
+  const tn=document.getElementById('p-type-note').value.trim();
+  if(type==='其他'&&tn) type='其他：'+tn;
+  const override=document.getElementById('p-progress-override').checked;
+  const start=document.getElementById('p-start').value,deadline=document.getElementById('p-deadline').value;
+  let progress=parseInt(document.getElementById('p-progress').value)||0;
+  if(!override){const auto=calcProgress(start,deadline);if(auto!==null)progress=auto;}
+  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
   showToast('儲存中…');
   try{
     await apiPost({action:'upsert',type:'projects',payload:obj});
-    if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}
-    else projects.push(obj);
+    if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}else projects.push(obj);
     closeModal('project');render();showToast('專案已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editProject(id){
   const p=projects.find(x=>x.id===id);if(!p)return;
-  document.getElementById('p-name').value=p.name;
-  document.getElementById('p-owner').value=p.owner||'';
-  document.getElementById('p-start').value=p.start||'';
-  document.getElementById('p-deadline').value=p.deadline||'';
-  document.getElementById('p-progress').value=p.progress||0;
-  document.getElementById('p-note').value=p.note||'';
-  document.getElementById('p-edit-id').value=p.id;
+  document.getElementById('p-name').value=p.name;document.getElementById('p-owner').value=p.owner||'';
+  document.getElementById('p-start').value=p.start||'';document.getElementById('p-deadline').value=p.deadline||'';
+  document.getElementById('p-note').value=p.note||'';document.getElementById('p-edit-id').value=p.id;
   document.getElementById('proj-modal-title').textContent='編輯專案';
-  const rawType=String(p.type||'訓練營');
-  const isOther=rawType.startsWith('其他');
-  document.getElementById('p-type').value=isOther?'其他':rawType;
-  document.getElementById('p-type-note').value=isOther?rawType.replace(/^其他[：:]\s*/,''):'';
+  const raw=String(p.type||'訓練營'),isOther=raw.startsWith('其他');
+  document.getElementById('p-type').value=isOther?'其他':raw;
+  document.getElementById('p-type-note').value=isOther?raw.replace(/^其他[：:]\s*/,''):'';
   document.getElementById('other-note-row').classList.toggle('visible',isOther);
   document.getElementById('p-status').value=p.status||'進行中';
+  const override=!!p.progressOverride;
+  document.getElementById('p-progress-override').checked=override;
+  document.getElementById('p-progress').disabled=!override;
+  document.getElementById('p-progress').style.background=override?'var(--bg)':'var(--bg2)';
+  document.getElementById('p-progress').value=p.progress||0;
+  if(!override) updateAutoProgress();
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
+  pTags=[...(p.tags||[])];initPTagBox();
   document.getElementById('modal-project').style.display='flex';
 }
 async function deleteProject(id){
@@ -508,13 +576,12 @@ async function deleteProject(id){
 }
 
 async function loadEditors(){
-  const wrap=document.getElementById('editor-list-wrap');
-  wrap.innerHTML='<div class="empty">載入中…</div>';
+  const wrap=document.getElementById('editor-list-wrap');wrap.innerHTML='<div class="empty">載入中…</div>';
   try{
     const data=await apiPost({action:'list',type:'editors',payload:{}});
     if(!data.editors||!data.editors.length){wrap.innerHTML='<div class="empty">無資料</div>';return;}
-    wrap.innerHTML=data.editors.map(e=>`<div class="editor-row"><div class="editor-name">${e.name}</div>${data.editors.length>1?`<button class="btn btn-sm btn-danger" onclick="removeEditor(${e.idx})">移除</button>`:''}</div>`).join('');
-  }catch(err){wrap.innerHTML=`<div class="empty" style="color:#A32D2D">載入失敗：${err.message}</div>`;}
+    wrap.innerHTML=data.editors.map(e=>`<div class="editor-row"><div class="editor-name">${e.name}</div>${data.editors.length>1?'<button class="btn btn-sm btn-danger" onclick="removeEditor('+e.idx+')">移除</button>':''}</div>`).join('');
+  }catch(err){wrap.innerHTML='<div class="empty" style="color:#A32D2D">載入失敗：'+err.message+'</div>';}
 }
 async function addEditor(){
   const name=document.getElementById('new-editor-name').value.trim();
@@ -522,17 +589,14 @@ async function addEditor(){
   if(!name||!secret){showToast('名稱與密碼不能為空',true);return;}
   try{
     await apiPost({action:'add',type:'editors',payload:{name,secret}});
-    document.getElementById('new-editor-name').value='';
-    document.getElementById('new-editor-secret').value='';
-    showToast(`已新增：${name}`);loadEditors();
+    document.getElementById('new-editor-name').value='';document.getElementById('new-editor-secret').value='';
+    showToast('已新增：'+name);loadEditors();
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 async function removeEditor(idx){
   if(!confirm('確定移除？'))return;
-  try{
-    await apiPost({action:'remove',type:'editors',payload:{idx}});
-    showToast('已移除');loadEditors();
-  }catch(e){showToast('失敗：'+e.message,true);}
+  try{await apiPost({action:'remove',type:'editors',payload:{idx}});showToast('已移除');loadEditors();}
+  catch(e){showToast('失敗：'+e.message,true);}
 }
 
 function filterAssignees(q){
@@ -544,25 +608,33 @@ function filterAssignees(q){
 }
 function addAssignee(id){
   if(!selectedAssignees.includes(id))selectedAssignees.push(id);
-  document.getElementById('assignee-search').value='';
-  document.getElementById('assignee-dropdown').style.display='none';
-  renderAssigneeTags();
+  const si=document.getElementById('assignee-search');if(si)si.value='';
+  document.getElementById('assignee-dropdown').style.display='none';renderAssigneeTags();
 }
 function removeAssignee(id){selectedAssignees=selectedAssignees.filter(a=>a!==id);renderAssigneeTags();}
 function renderAssigneeTags(){
-  const box=document.getElementById('assignee-box');
-  box.innerHTML='';
+  const box=document.getElementById('assignee-box');box.innerHTML='';
   selectedAssignees.forEach(id=>{
     const m=members.find(x=>x.id===id);if(!m)return;
-    const tag=document.createElement('div');tag.className='tag';
-    tag.innerHTML=`${m.name}<span class="rm" onclick="removeAssignee('${id}')">×</span>`;
+    const tag=document.createElement('div');tag.className='assignee-tag';
+    tag.innerHTML=m.name+'<span class="rm" onclick="removeAssignee(\''+id+'\')">×</span>';
     box.appendChild(tag);
   });
-  const inp=document.createElement('input');
-  inp.id='assignee-search';inp.placeholder='輸入姓名搜尋…';
+  const inp=document.createElement('input');inp.id='assignee-search';inp.placeholder='輸入姓名搜尋…';
   inp.style.cssText='border:none;padding:0;min-width:80px;flex:1;background:transparent;box-shadow:none;color:var(--text)';
-  inp.oninput=()=>filterAssignees(inp.value);
-  box.appendChild(inp);
+  inp.oninput=()=>filterAssignees(inp.value);box.appendChild(inp);
+}
+
+function exportCSV(){
+  const header=['專案名稱','類型','負責人','開始日','截止日','進度%','狀態','指派繪師','標籤','備註'];
+  const rows=projects.map(p=>{
+    const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:'';}).filter(Boolean).join('|');
+    return[p.name,p.type||'',p.owner||'',p.start||'',p.deadline||'',getProgress(p),p.status||'',names,(p.tags||[]).join('|'),p.note||''];
+  });
+  const csv=[header,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='KK儀表板_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
 function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
@@ -572,33 +644,16 @@ function renderStats(){
   const active=projects.filter(p=>p.status!=='完成').length;
   const done=projects.filter(p=>p.status==='完成').length;
   const over=projects.filter(p=>p.deadline&&daysLeft(p.deadline)<0&&p.status!=='完成').length;
-  el.innerHTML=`
-    <div class="stat"><div class="stat-label">總組員數</div><div class="stat-num">${members.length}</div></div>
-    <div class="stat"><div class="stat-label">進行中</div><div class="stat-num">${active}</div></div>
-    <div class="stat"><div class="stat-label">已完成</div><div class="stat-num ok">${done}</div></div>
-    <div class="stat"><div class="stat-label">逾期</div><div class="stat-num ${over>0?'warn':''}">${over}</div></div>`;
+  el.innerHTML=`<div class="stat"><div class="stat-label">總組員數</div><div class="stat-num">${members.length}</div></div><div class="stat"><div class="stat-label">進行中</div><div class="stat-num">${active}</div></div><div class="stat"><div class="stat-label">已完成</div><div class="stat-num ok">${done}</div></div><div class="stat"><div class="stat-label">逾期</div><div class="stat-num ${over>0?'warn':''}">${over}</div></div>`;
 }
 function renderUpcoming(){
   const el=document.getElementById('upcoming-list');
   const list=projects.filter(p=>p.deadline&&daysLeft(p.deadline)>=0&&daysLeft(p.deadline)<=14&&p.status!=='完成').sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
   if(!list.length){el.innerHTML='<div class="empty">近14天沒有即將截止的專案</div>';return;}
-  el.innerHTML=list.map(p=>`<div class="card" style="padding:10px 1rem">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-      <span style="font-size:14px;font-weight:500">${p.name}</span>
-      <div style="display:flex;gap:6px;align-items:center">
-        ${p.type?`<span class="badge ${TYPE_BADGE[p.type.split('：')[0]]||'badge-gray'}" style="font-size:11px;padding:2px 7px">${p.type}</span>`:''}
-        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-      </div>
-    </div>
-    ${p.owner?`<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：${p.owner}</div>`:''}
-    <div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;background:${pColor(p.progress)}"></div></div>
-    <div style="font-size:11px;color:var(--text2)">${p.progress}% 完成</div>
-  </div>`).join('');
+  el.innerHTML=list.map(p=>{const prog=getProgress(p);return`<div class="card" style="padding:10px 1rem"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-size:14px;font-weight:500">${p.name}</span><span class="badge ${badgeClass(p.status)}">${p.status}</span></div>${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：'+p.owner+'</div>':''}<div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div><div style="font-size:11px;color:var(--text2)">${prog}% 完成</div></div>`;}).join('');
 }
 function renderAlerts(){
-  const el=document.getElementById('alert-list');
-  let html='';
+  const el=document.getElementById('alert-list');let html='';
   members.forEach(m=>{
     const count=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id)).length;
     if(count>=4)html+=`<div class="card" style="padding:10px 1rem;border-left:3px solid #EF9F27;border-radius:0 var(--radius-lg) var(--radius-lg) 0"><div style="font-size:14px">${m.name} <span style="color:#BA7517;font-weight:500">同時跑${count}個專案</span></div></div>`;
@@ -607,41 +662,39 @@ function renderAlerts(){
   if(idle.length)html+=`<div class="card" style="padding:10px 1rem"><div style="font-size:13px;color:var(--text2)">目前無任務：${idle.map(m=>m.name).join('、')}</div></div>`;
   el.innerHTML=html||'<div class="empty">人力分配正常</div>';
 }
+
+function projectCard(p){
+  const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
+  const typeKey=p.type?(p.type.split('：')[0]):'';
+  const prog=getProgress(p);
+  const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+  const tagsHtml=(p.tags||[]).length?`<div class="chip-row" style="margin-top:6px">${(p.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
+  return`<div class="card"><div class="card-header"><div style="flex:1;min-width:0"><div class="card-title">${p.name}</div>${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:2px">負責人：'+p.owner+'</div>':''}${p.start?'<div style="font-size:11px;color:var(--text2)">'+p.start+(p.deadline?' → '+p.deadline:'')+'</div>':(p.deadline?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+p.deadline+' · '+dlLabel(p.deadline)+'</div>':'')}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}<span class="badge ${badgeClass(p.status)}">${p.status}</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:8px">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>${names.length?'<div class="chip-row">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}${tagsHtml}${p.note?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">'+p.note+'</div>':''}${editBtns}</div>`;
+}
+
 function renderProjects(){
-  const el=document.getElementById('project-grid');
+  const kw=(document.getElementById('search-kw').value||'').trim().toLowerCase();
   const ft=document.getElementById('filter-type').value;
   const fs=document.getElementById('filter-status').value;
-  let list=projects;
-  if(ft) list=list.filter(p=>p.type&&(p.type===ft||p.type.startsWith(ft)));
-  if(fs) list=list.filter(p=>p.status===fs);
-  if(!list.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';return;}
-  el.innerHTML=list.map(p=>{
-    const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
-    const typeKey=p.type?(p.type.split('：')[0]):'';
-    const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
-    return `<div class="card">
-      <div class="card-header">
-        <div style="flex:1;min-width:0">
-          <div class="card-title">${p.name}</div>
-          ${p.owner?`<div style="font-size:11px;color:var(--text2);margin-top:2px">負責人：${p.owner}</div>`:''}
-          ${p.start?`<div style="font-size:11px;color:var(--text2)">${p.start}${p.deadline?' → '+p.deadline:''}</div>`:(p.deadline?`<div style="font-size:11px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div>`:'')}
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
-          ${p.type?`<span class="badge ${TYPE_BADGE[typeKey]||'badge-gray'}" style="font-size:11px;padding:2px 7px">${p.type}</span>`:''}
-          <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-        </div>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;background:${pColor(p.progress)}"></div></div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${p.progress}% 完成</div>
-      ${names.length?`<div class="chip-row">${names.map(n=>`<span class="chip">${n}</span>`).join('')}</div>`:''}
-      ${p.note?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">${p.note}</div>`:''}
-      ${editBtns}
-    </div>`;
-  }).join('');
+  const sortBy=document.getElementById('sort-by').value;
+  function applyFilters(list){
+    if(kw) list=list.filter(p=>p.name.toLowerCase().includes(kw)||(p.tags||[]).some(t=>t.toLowerCase().includes(kw)));
+    if(ft) list=list.filter(p=>p.type&&(p.type===ft||p.type.startsWith(ft)));
+    if(fs) list=list.filter(p=>p.status===fs);
+    if(sortBy==='deadline') list=[...list].sort((a,b)=>new Date(a.deadline||'9999')-new Date(b.deadline||'9999'));
+    if(sortBy==='progress') list=[...list].sort((a,b)=>getProgress(a)-getProgress(b));
+    if(sortBy==='type') list=[...list].sort((a,b)=>(a.type||'').localeCompare(b.type||''));
+    return list;
+  }
+  let active=applyFilters(projects.filter(p=>p.status!=='完成'));
+  let archived=applyFilters(projects.filter(p=>p.status==='完成'));
+  document.getElementById('archived-count').textContent=archived.length;
+  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
+  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
 }
+
 function renderMembers(){
-  renderGroup('A','group-a-wrap','A 組');
-  renderGroup('B','group-b-wrap','B 組');
+  renderGroup('A','group-a-wrap','A 組');renderGroup('B','group-b-wrap','B 組');
 }
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
@@ -652,18 +705,8 @@ function renderGroup(group,elId,label){
     const projs=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id));
     const pct=Math.min(100,projs.length*20);
     const editBtns=isEditor?`<div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="editMember('${m.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteMember('${m.id}')">移除</button></div>`:'';
-    return `<div class="member-row">
-      <div class="avatar ${avClass(m.name)}">${initials(m.name)}</div>
-      <div class="member-info">
-        <div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div>
-        <div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>
-      </div>
-      <div style="text-align:right;margin-right:8px;flex-shrink:0">
-        <div style="font-size:12px;color:var(--text2)">${projs.length}個專案</div>
-        <div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div>
-      </div>
-      ${editBtns}
-    </div>`;
+    const tagsHtml=(m.tags||[]).length?`<div class="chip-row" style="margin-top:4px">${(m.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
+    return`<div class="member-row"><div class="avatar ${avClass(m.name)}">${initials(m.name)}</div><div class="member-info"><div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div><div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>${tagsHtml}${m.note?'<div style="font-size:11px;color:var(--text2);margin-top:2px">'+m.note+'</div>':''}</div><div style="text-align:right;margin-right:8px;flex-shrink:0"><div style="font-size:12px;color:var(--text2)">${projs.length}個專案</div><div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div></div>${editBtns}</div>`;
   }).join('');
   el.innerHTML=`<div class="section-title">${label}（${list.length}人）${addBtn}</div><div class="card">${rows}</div>`;
 }
@@ -682,39 +725,46 @@ function renderGantt(){
   const months=[];
   let cur=new Date(rangeStart.getFullYear(),rangeStart.getMonth(),1);
   while(cur<=rangeEnd){months.push(new Date(cur));cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);}
-  const mH=months.map(m=>{
-    const s=new Date(m.getFullYear(),m.getMonth(),1),e=new Date(m.getFullYear(),m.getMonth()+1,0);
-    return `<div class="gantt-month-label" style="width:${pct(e)-pct(s)}%;min-width:0">${m.getMonth()+1}月</div>`;
-  }).join('');
+  const mH=months.map(m=>{const s=new Date(m.getFullYear(),m.getMonth(),1),e=new Date(m.getFullYear(),m.getMonth()+1,0);return`<div class="gantt-month-label" style="width:${pct(e)-pct(s)}%;min-width:0">${m.getMonth()+1}月</div>`;}).join('');
   const tp=pct(today);
+  const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
   let rowsHtml='';
   ['A','B'].forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:130px;flex-shrink:0;font-size:12px;font-weight:500;color:var(--text2)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:500;color:var(--text2)">${g} 組</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
-      const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
-      const bars=mP.map(p=>{
+      const isExpanded=!!expandedMembers[m.id];
+      const hasMulti=mP.length>1;
+      function makeBar(p){
         const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
         const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
         s.setHours(0,0,0,0);e.setHours(0,0,0,0);
-        if(e<rangeStart||s>rangeEnd)return '';
+        if(e<rangeStart||s>rangeEnd)return'';
         const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
         const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
-        return `<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #E24B4A':''}" title="${p.name}${p.type?' ['+p.type+']':''}${p.owner?' 負責人：'+p.owner:''}${p.start?' 開始：'+p.start:''}${p.deadline?' 截止：'+p.deadline:''} ${p.progress}%">${p.name}</div>`;
-      }).join('');
-      rowsHtml+=`<div class="gantt-row">
-        <div class="gantt-member"><div class="avatar ${avClass(m.name)}" style="width:24px;height:24px;font-size:10px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div>
-        <div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${bars||'<div class="g-empty">無任務</div>'}</div>
-      </div>`;
+        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #E24B4A':''}" title="${p.name}${p.deadline?' 截止：'+p.deadline:''}">${p.name}</div>`;
+      }
+      const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
+      const firstP=mP[0];
+      rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:24px;height:24px;font-size:10px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${firstP?makeBar(firstP):'<div class="g-empty">無任務</div>'}</div></div>`;
+      if(isExpanded&&mP.length>1){
+        mP.slice(1).forEach(p=>{
+          rowsHtml+=`<div class="gantt-row sub"><div class="gantt-member"><span style="min-width:22px;display:inline-block"></span><span style="min-width:24px;display:inline-block"></span><span style="font-size:11px;color:var(--text2);padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${makeBar(p)}</div></div>`;
+        });
+      }
     });
   });
   container.innerHTML=`<div class="gantt-head"><div class="gantt-name-col"></div><div class="gantt-tl">${mH}</div></div>${rowsHtml}`;
 }
+function toggleGanttMember(id){expandedMembers[id]=!expandedMembers[id];renderGantt();}
 
 document.addEventListener('click',e=>{
+  if(!e.target.closest('.tag-input-wrap')&&!e.target.closest('.dropdown-list')){
+    document.querySelectorAll('.dropdown-list').forEach(d=>d.style.display='none');
+  }
   const dd=document.getElementById('assignee-dropdown');
-  if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search')dd.style.display='none';
+  if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search') dd.style.display='none';
 });
 
 loadData();
