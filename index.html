@@ -431,12 +431,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   </div>
   <div id="myaccount-info" style="margin-bottom:16px;font-size:14px;color:var(--text2)"></div>
   <hr class="divider"/>
+  <div style="font-size:14px;font-weight:500;margin-bottom:12px">修改名稱</div>
+  <div class="form-row"><input id="new-name-input" placeholder="輸入新名稱"/></div>
+  <div class="form-actions" style="margin-bottom:1rem">
+    <button class="btn btn-primary" onclick="changeMyName()">儲存名稱</button>
+  </div>
+  <hr class="divider"/>
   <div style="font-size:14px;font-weight:500;margin-bottom:12px">修改密碼</div>
   <div class="form-row"><label>新密碼</label><input type="password" id="new-secret-input" placeholder="輸入新密碼"/></div>
   <div class="form-row"><label>確認新密碼</label><input type="password" id="confirm-secret-input" placeholder="再輸入一次"/></div>
   <div class="form-actions">
     <button class="btn" onclick="closeModal('myaccount')">取消</button>
-    <button class="btn btn-primary" onclick="changeMySecret()">儲存</button>
+    <button class="btn btn-primary" onclick="changeMySecret()">儲存密碼</button>
   </div>
 </div>
 </div>
@@ -446,7 +452,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuCOmMHzf_zBeF2VRVmRaz0T9eChgbD605JWucl7bkIvr/exec';
 
-let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,currentRole='';
+let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,currentRole='',currentUserName='';
 let sysGroups=['A組','B組'],sysCountries=['TW','CN'];
 let cbCounter=0,showArchived=false,expandedMembers={};
 let mTags=[],pTags=[];
@@ -540,6 +546,7 @@ function tryAuth(){
     currentRole=me?me.role:'editor';
     document.getElementById('auth-bar').style.display='none';
     document.getElementById('editor-actions').style.display='flex';
+    currentUserName=me?me.name:'';
     document.getElementById('btn-myaccount').textContent='👤 '+(me?me.name:'我的帳號');
     document.getElementById('btn-admin').style.display='';
     showToast('已解鎖：'+(currentRole==='super_admin'?'超級管理者':'管理者'));render();
@@ -592,8 +599,19 @@ async function changeUserRole(idx,role){
 function openMyAccount(){
   const info=document.getElementById('myaccount-info');
   info.innerHTML='你目前的角色：<span class="role-badge '+(currentRole==='super_admin'?'role-super':'role-editor')+'">'+(currentRole==='super_admin'?'超級管理者':'管理者')+'</span>';
+  document.getElementById('new-name-input').value=currentUserName||'';
   document.getElementById('new-secret-input').value='';
   document.getElementById('confirm-secret-input').value='';
+}
+async function changeMyName(){
+  const name=document.getElementById('new-name-input').value.trim();
+  if(!name){showToast('請輸入名稱',true);return;}
+  try{
+    await apiCall('changeName','users',{newName:name});
+    currentUserName=name;
+    document.getElementById('btn-myaccount').textContent='👤 '+name;
+    closeModal('myaccount');showToast('名稱已更新');
+  }catch(e){showToast('失敗：'+e.message,true);}
 }
 async function changeMySecret(){
   const n=document.getElementById('new-secret-input').value.trim();
