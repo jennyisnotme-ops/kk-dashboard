@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>KK魔法學院 · 繪師人力儀表板</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#eeede8;
+  --bg:#fff;--bg2:#f5f5f3;--bg3:#eeede8;
   --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e99;
   --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
   --radius:8px;--radius-lg:12px;
   --accent:#2563eb;--accent-light:#EFF6FF;--accent-text:#1d4ed8;
-  --accent-btn-bg:#2563eb;--accent-btn-text:#ffffff;
+  --accent-btn:#2563eb;--accent-btn-text:#fff;
   --blue-bg:#E6F1FB;--blue-text:#0C447C;
   --teal-bg:#E1F5EE;--teal-text:#085041;
   --amber-bg:#FAEEDA;--amber-text:#633806;
-  --red-bg:#FCEBEB;--red-text:#791F1F;
   --gray-bg:#F1EFE8;--gray-text:#444441;
   --purple-bg:#EEEDFE;--purple-text:#3C3489;
   --green-bg:#EAF3DE;--green-text:#27500A;
@@ -30,55 +30,39 @@
 }}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh}
 .app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
-
-/* Top bar */
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
-.top-bar h1{font-size:18px;font-weight:600;color:var(--text)}
+.top-bar h1{font-size:18px;font-weight:600}
 .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-
-/* Tabs */
 .tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap}
 .tab{padding:8px 18px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-0.5px;transition:color 0.15s}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .section{display:none}.section.active{display:block}
-
-/* Stat cards */
 .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem}
-.stat{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:flex-start;gap:12px;transition:box-shadow 0.15s}
+.stat{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:flex-start;gap:12px}
 .stat-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.stat-body{flex:1;min-width:0}
 .stat-label{font-size:12px;color:var(--text2);margin-bottom:2px}
 .stat-num{font-size:24px;font-weight:600}
 .stat-num.warn{color:#d97706}.stat-num.ok{color:#16a34a}.stat-num.accent{color:var(--accent)}
-
-/* Cards */
 .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px}
-.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
 .card-title{font-size:15px;font-weight:500}
-
-/* Badges */
 .badge{display:inline-block;padding:3px 10px;border-radius:var(--radius);font-size:12px;font-weight:500}
 .badge-blue{background:var(--blue-bg);color:var(--blue-text)}
 .badge-teal{background:var(--teal-bg);color:var(--teal-text)}
 .badge-amber{background:var(--amber-bg);color:var(--amber-text)}
-.badge-red{background:var(--red-bg);color:var(--red-text)}
 .badge-gray{background:var(--gray-bg);color:var(--gray-text)}
 .badge-purple{background:var(--purple-bg);color:var(--purple-text)}
 .badge-green{background:var(--green-bg);color:var(--green-text)}
 .badge-coral{background:var(--coral-bg);color:var(--coral-text)}
-
-/* Progress */
+.role-badge{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;font-weight:500}
+.role-super{background:#FEF3C7;color:#78350f}
+.role-editor{background:var(--blue-bg);color:var(--blue-text)}
 .progress-bar{background:var(--bg2);border-radius:4px;height:7px;overflow:hidden;margin:8px 0 4px}
-.progress-fill{height:100%;border-radius:4px;transition:width 0.4s ease}
-
-/* Project card */
-.project-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:0;margin-bottom:0;overflow:hidden;transition:box-shadow 0.15s}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.4s}
+.project-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow 0.15s}
 .project-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.08)}
 .project-card-accent{height:3px;background:var(--accent)}
-.project-card-body{padding:1rem 1.125rem 0.875rem}
-.project-card-footer{padding:0.5rem 1.125rem 0.75rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
-
-/* Member rows */
+.project-card-body{padding:1rem 1.125rem 0.75rem}
+.project-card-footer{padding:0.5rem 1.125rem 0.75rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
 .member-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
 .member-row:last-child{border-bottom:none}
 .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
@@ -88,44 +72,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .member-info{flex:1;min-width:0}
 .member-name{font-size:14px;font-weight:500}
 .member-tasks{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.load-pill{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .load-bar{width:52px;height:5px;background:var(--bg2);border-radius:4px;overflow:hidden}
 .load-ok{background:#22c55e}.load-warn{background:#f59e0b}.load-over{background:#ef4444}
-
-/* Two col */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:640px){.two-col{grid-template-columns:1fr}}
-
-/* Forms */
 input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 15%,transparent)}
 label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .form-row{margin-bottom:12px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:500px){.form-grid{grid-template-columns:1fr}}
-
-/* Buttons */
 .btn{padding:7px 14px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;transition:all 0.15s;white-space:nowrap}
 .btn:hover{background:var(--bg2)}
 .btn:active{transform:scale(0.98)}
-.btn-primary{background:var(--accent-btn-bg);color:var(--accent-btn-text);border-color:var(--accent-btn-bg);font-weight:500}
+.btn-primary{background:var(--accent-btn);color:var(--accent-btn-text);border-color:var(--accent-btn);font-weight:500}
 .btn-primary:hover{opacity:0.88}
-.btn-accent-outline{color:var(--accent);border-color:var(--accent)}
-.btn-accent-outline:hover{background:var(--accent-light)}
+.btn-outline{color:var(--accent);border-color:var(--accent)}
+.btn-outline:hover{background:var(--accent-light)}
 .btn-sm{padding:4px 10px;font-size:12px}
 .btn-danger{color:#dc2626;border-color:transparent}
 .btn-danger:hover{background:#FEF2F2}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-
-/* Tags */
 .tag-chip{display:inline-flex;align-items:center;gap:3px;background:var(--accent-light);color:var(--accent-text);border-radius:var(--radius);padding:2px 8px;font-size:11px;font-weight:500}
-.tag-chip .rm{cursor:pointer;font-size:13px;line-height:1;opacity:0.6}
+.tag-chip .rm{cursor:pointer;font-size:13px;opacity:0.6}
 .tag-chip .rm:hover{opacity:1}
 .tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg)}
 .assignee-tag{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:var(--radius);padding:2px 8px;font-size:12px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
-
-/* Misc */
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
@@ -141,15 +114,13 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:var(--radius-lg);font-size:13px;z-index:400;opacity:0;transition:opacity 0.25s;pointer-events:none;max-width:320px}
 .toast.show{opacity:1}.toast.error{background:#dc2626}
 .divider{border:none;border-top:0.5px solid var(--border);margin:1rem 0}
-
-/* Gantt */
 .gantt-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .gantt-controls select{width:auto}
 .gantt-wrap{overflow-x:auto;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
 .gantt-inner{min-width:680px}
 .gantt-head{display:flex;border-bottom:0.5px solid var(--border);padding-bottom:4px;margin-bottom:4px}
 .gantt-name-col{width:140px;flex-shrink:0;font-size:12px;color:var(--text2);padding:0 8px}
-.gantt-tl{flex:1;display:flex;position:relative}
+.gantt-tl{flex:1;display:flex}
 .gantt-month-label{font-size:11px;color:var(--text2);border-left:0.5px solid var(--border);text-align:center;padding:0 2px}
 .gantt-row{display:flex;align-items:center;min-height:36px;border-bottom:0.5px solid var(--border)}
 .gantt-row:last-child{border-bottom:none}
@@ -162,13 +133,15 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .g-gridline{position:absolute;top:0;bottom:0;width:0.5px;background:var(--border);pointer-events:none}
 .g-empty{font-size:12px;color:var(--text3);padding:0 8px;font-style:italic}
 .group-sep{display:flex;align-items:center;background:var(--accent-light);padding:5px 8px;border-bottom:0.5px solid var(--border)}
-
-/* Editor rows */
-.editor-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
-.editor-row:last-child{border-bottom:none}
-.editor-name{flex:1;font-size:14px}
-
-/* Other */
+.user-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.user-row:last-child{border-bottom:none}
+.user-name{flex:1;font-size:14px;font-weight:500}
+.log-row{display:flex;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;flex-wrap:wrap}
+.log-row:last-child{border-bottom:none}
+.log-time{color:var(--text3);font-size:11px;white-space:nowrap;min-width:130px}
+.log-op{font-weight:500;color:var(--text)}
+.log-action{color:var(--accent-text)}
+.log-target{color:var(--text2);flex:1}
 .other-note{display:none}.other-note.visible{display:block}
 .dropdown-list{position:absolute;left:0;top:100%;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:2px;max-height:150px;overflow-y:auto;min-width:160px;box-shadow:0 4px 16px rgba(0,0,0,0.12)}
 .dropdown-item{padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text)}
@@ -176,13 +149,11 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .auto-label{font-size:11px;color:var(--text2);margin-top:4px}
 .archived-toggle{font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:12px;user-select:none}
 .archived-toggle:hover{color:var(--text)}
-
-/* Theme panel */
-.theme-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s;flex-shrink:0}
+.option-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)}
+.option-row:last-child{border-bottom:none}
+.option-row input{flex:1;font-size:13px;padding:4px 8px}
+.theme-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s}
 .theme-btn.active{border-color:var(--text);transform:scale(1.15)}
-.theme-panel{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.custom-color-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
-input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:pointer;border:0.5px solid var(--border2)}
 </style>
 </head>
 <body>
@@ -192,15 +163,16 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
   <div class="actions" id="editor-actions" style="display:none">
     <button class="btn btn-sm" onclick="openModal('member')">+ 新增組員</button>
     <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
-    <button class="btn btn-sm" onclick="openModal('editors')" style="color:var(--text2)">管理編輯者</button>
+    <button class="btn btn-sm" id="btn-users" onclick="openModal('users')" style="display:none">管理帳號</button>
+    <button class="btn btn-sm" onclick="openModal('myaccount')" style="color:var(--text2)" id="btn-myaccount"></button>
     <button class="btn btn-sm" onclick="exportCSV()" style="color:var(--text2)">匯出 CSV</button>
     <button class="btn btn-sm" onclick="openModal('theme')" style="color:var(--text2)" title="主題色">🎨</button>
   </div>
 </div>
 <div class="auth-bar" id="auth-bar">
   <span style="color:var(--text2)">唯讀模式。</span>
-  <input type="password" id="secret-input" placeholder="輸入編輯密碼" style="width:180px" onkeydown="if(event.key==='Enter')tryAuth()" />
-  <button class="btn btn-sm btn-accent-outline" onclick="tryAuth()">解鎖編輯</button>
+  <input type="password" id="secret-input" placeholder="輸入密碼" style="width:180px" onkeydown="if(event.key==='Enter')tryAuth()"/>
+  <button class="btn btn-sm btn-outline" onclick="tryAuth()">解鎖編輯</button>
   <span id="auth-status" style="font-size:12px;color:#dc2626"></span>
 </div>
 <div class="tabs">
@@ -208,6 +180,8 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
   <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
   <button class="tab" onclick="switchTab('members',this)">人力配置</button>
+  <button class="tab" id="tab-log" onclick="switchTab('log',this)" style="display:none">操作記錄</button>
+  <button class="tab" id="tab-settings" onclick="switchTab('settings',this)" style="display:none">系統設定</button>
 </div>
 
 <div id="sec-overview" class="section active">
@@ -220,7 +194,7 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
 
 <div id="sec-projects" class="section">
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center">
-    <input id="search-kw" placeholder="搜尋專案名稱或標籤…" style="width:220px;font-size:13px;padding:6px 10px" oninput="renderProjects()" />
+    <input id="search-kw" placeholder="搜尋專案名稱或標籤…" style="width:220px;font-size:13px;padding:6px 10px" oninput="renderProjects()"/>
     <select id="filter-type" onchange="renderProjects()" style="width:auto;font-size:13px;padding:6px 10px">
       <option value="">所有類型</option>
       <option>訓練營</option><option>團練</option><option>月月繪</option>
@@ -274,6 +248,40 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
   <div id="group-a-wrap"></div>
   <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
+
+<div id="sec-log" class="section">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div class="section-title" style="margin:0">操作記錄</div>
+    <button class="btn btn-sm" onclick="loadLog()">重新整理</button>
+  </div>
+  <div class="card" id="log-list"><div class="empty">載入中…</div></div>
+</div>
+
+<div id="sec-settings" class="section">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+    <div style="font-size:16px;font-weight:500">系統設定</div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div style="font-size:15px;font-weight:500;margin-bottom:4px">組別選項</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的組別下拉選單</div>
+      <div id="groups-editor"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="new-group-input" placeholder="輸入新組別名稱" style="flex:1"/>
+        <button class="btn btn-sm btn-primary" onclick="addOption('groups')">新增</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:15px;font-weight:500;margin-bottom:4px">國家選項</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的國家下拉選單</div>
+      <div id="countries-editor"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="new-country-input" placeholder="輸入新國家/地區" style="flex:1"/>
+        <button class="btn btn-sm btn-primary" onclick="addOption('countries')">新增</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Member modal -->
@@ -284,18 +292,22 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
     <button class="close-btn" onclick="closeModal('member')">×</button>
   </div>
   <div class="form-grid">
-    <div class="form-row"><label>姓名</label><input id="m-name" placeholder="例：小花" /></div>
+    <div class="form-row"><label>姓名</label><input id="m-name" placeholder="例：小花"/></div>
     <div class="form-row"><label>所屬組別</label>
-      <select id="m-group"><option value="A">A 組</option><option value="B">B 組</option></select></div>
+      <select id="m-group"></select></div>
   </div>
-  <div class="form-row"><label>角色 / 職稱（選填）</label><input id="m-role" placeholder="例：資深繪師" /></div>
+  <div class="form-grid">
+    <div class="form-row"><label>國家</label>
+      <select id="m-country"></select></div>
+    <div class="form-row"><label>角色 / 職稱（選填）</label><input id="m-role" placeholder="例：資深繪師"/></div>
+  </div>
   <div class="form-row"><label>備註（選填）</label><textarea id="m-note" rows="2" placeholder="例：兼職、請假中…"></textarea></div>
   <div class="form-row" style="position:relative">
     <label>標籤（最多5個）</label>
     <div class="tag-input-wrap" id="m-tag-box" onclick="document.getElementById('m-tag-input')&&document.getElementById('m-tag-input').focus()"></div>
     <div id="m-tag-dropdown" class="dropdown-list" style="display:none"></div>
   </div>
-  <input type="hidden" id="m-edit-id" />
+  <input type="hidden" id="m-edit-id"/>
   <div class="form-actions">
     <button class="btn" onclick="closeModal('member')">取消</button>
     <button class="btn btn-primary" onclick="saveMember()">儲存</button>
@@ -310,7 +322,7 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
     <span class="modal-title" id="proj-modal-title">新增專案</span>
     <button class="close-btn" onclick="closeModal('project')">×</button>
   </div>
-  <div class="form-row"><label>專案名稱</label><input id="p-name" placeholder="例：光影與色彩第18期" /></div>
+  <div class="form-row"><label>專案名稱</label><input id="p-name" placeholder="例：光影與色彩第18期"/></div>
   <div class="form-grid">
     <div class="form-row"><label>專案類型</label>
       <select id="p-type" onchange="toggleOtherNote()">
@@ -318,23 +330,23 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
         <option>DLC</option><option>正課</option><option>社群用</option><option>官網用</option><option>其他</option>
       </select>
     </div>
-    <div class="form-row"><label>專案負責人</label><input id="p-owner" placeholder="例：Jenny" /></div>
+    <div class="form-row"><label>專案負責人</label><input id="p-owner" placeholder="例：Jenny"/></div>
   </div>
   <div class="form-row other-note" id="other-note-row">
-    <label>類型備註</label><input id="p-type-note" placeholder="請說明專案類型" />
+    <label>類型備註</label><input id="p-type-note" placeholder="請說明專案類型"/>
   </div>
   <div class="form-grid">
-    <div class="form-row"><label>開始日</label><input type="date" id="p-start" oninput="updateAutoProgress()" /></div>
-    <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" oninput="updateAutoProgress()" /></div>
+    <div class="form-row"><label>開始日</label><input type="date" id="p-start" oninput="updateAutoProgress()"/></div>
+    <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" oninput="updateAutoProgress()"/></div>
   </div>
   <div class="form-row">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
       <label style="margin:0">進度 %</label>
       <label style="font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px;margin:0">
-        <input type="checkbox" id="p-progress-override" onchange="toggleProgressOverride()" style="width:auto;padding:0;border:none;box-shadow:none" /> 手動覆蓋
+        <input type="checkbox" id="p-progress-override" onchange="toggleProgressOverride()" style="width:auto;padding:0;border:none;box-shadow:none"/> 手動覆蓋
       </label>
     </div>
-    <input type="number" id="p-progress" min="0" max="100" value="0" disabled style="background:var(--bg2)" />
+    <input type="number" id="p-progress" min="0" max="100" value="0" disabled style="background:var(--bg2)"/>
     <div class="auto-label" id="auto-progress-label">填入起迄日後自動計算</div>
   </div>
   <div class="form-row"><label>狀態</label>
@@ -353,7 +365,7 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
     <div id="p-tag-dropdown" class="dropdown-list" style="display:none"></div>
   </div>
   <div class="form-row"><label>備註（選填）</label><textarea id="p-note" rows="2" placeholder="補充說明…"></textarea></div>
-  <input type="hidden" id="p-edit-id" />
+  <input type="hidden" id="p-edit-id"/>
   <div class="form-actions">
     <button class="btn" onclick="closeModal('project')">取消</button>
     <button class="btn btn-primary" onclick="saveProject()">儲存</button>
@@ -361,24 +373,48 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
 </div>
 </div>
 
-<!-- Editors modal -->
-<div id="modal-editors" style="display:none" class="overlay">
+<!-- Users modal (super_admin only) -->
+<div id="modal-users" style="display:none" class="overlay">
 <div class="modal">
   <div class="modal-header">
-    <span class="modal-title">管理編輯者</span>
-    <button class="close-btn" onclick="closeModal('editors')">×</button>
+    <span class="modal-title">管理帳號</span>
+    <button class="close-btn" onclick="closeModal('users')">×</button>
   </div>
-  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">每位編輯者有各自的密碼，輸入密碼後可解鎖編輯功能。</div>
-  <div id="editor-list-wrap"><div class="empty">載入中…</div></div>
-  <hr class="divider" />
-  <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增編輯者</div>
+  <div id="user-list-wrap"><div class="empty">載入中…</div></div>
+  <hr class="divider"/>
+  <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增帳號</div>
   <div class="form-grid">
-    <div class="form-row"><label>名稱</label><input id="new-editor-name" placeholder="例：A組組長" /></div>
-    <div class="form-row"><label>密碼</label><input type="password" id="new-editor-secret" placeholder="設定密碼" /></div>
+    <div class="form-row"><label>名稱</label><input id="new-user-name" placeholder="例：Jenny"/></div>
+    <div class="form-row"><label>密碼</label><input type="password" id="new-user-secret" placeholder="設定密碼"/></div>
+  </div>
+  <div class="form-row"><label>權限</label>
+    <select id="new-user-role">
+      <option value="editor">管理者</option>
+      <option value="super_admin">超級管理者</option>
+    </select>
   </div>
   <div class="form-actions">
-    <button class="btn" onclick="closeModal('editors')">關閉</button>
-    <button class="btn btn-primary" onclick="addEditor()">新增</button>
+    <button class="btn" onclick="closeModal('users')">關閉</button>
+    <button class="btn btn-primary" onclick="addUser()">新增</button>
+  </div>
+</div>
+</div>
+
+<!-- My account modal -->
+<div id="modal-myaccount" style="display:none" class="overlay">
+<div class="modal" style="max-width:400px">
+  <div class="modal-header">
+    <span class="modal-title">我的帳號</span>
+    <button class="close-btn" onclick="closeModal('myaccount')">×</button>
+  </div>
+  <div id="myaccount-info" style="margin-bottom:16px;font-size:14px;color:var(--text2)"></div>
+  <hr class="divider"/>
+  <div style="font-size:14px;font-weight:500;margin-bottom:12px">修改密碼</div>
+  <div class="form-row"><label>新密碼</label><input type="password" id="new-secret-input" placeholder="輸入新密碼"/></div>
+  <div class="form-row"><label>確認新密碼</label><input type="password" id="confirm-secret-input" placeholder="再輸入一次"/></div>
+  <div class="form-actions">
+    <button class="btn" onclick="closeModal('myaccount')">取消</button>
+    <button class="btn btn-primary" onclick="changeMySecret()">儲存</button>
   </div>
 </div>
 </div>
@@ -395,8 +431,8 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px" id="theme-presets"></div>
   <div style="font-size:13px;font-weight:500;margin-bottom:10px">自訂主色</div>
   <div style="display:flex;align-items:center;gap:10px">
-    <input type="color" id="custom-color-input" value="#2563eb" style="width:40px;height:40px;border-radius:var(--radius);padding:2px;cursor:pointer" oninput="applyCustomColor(this.value)" />
-    <span style="font-size:13px;color:var(--text2)">選取任意顏色，其他配色自動搭配</span>
+    <input type="color" id="custom-color-input" value="#2563eb" style="width:40px;height:40px;border-radius:var(--radius);padding:2px;cursor:pointer" oninput="applyCustomColor(this.value)"/>
+    <span style="font-size:13px;color:var(--text2)">選取任意顏色，配色自動搭配</span>
   </div>
   <div class="form-actions" style="margin-top:20px">
     <button class="btn" onclick="closeModal('theme')">完成</button>
@@ -407,22 +443,22 @@ input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:po
 <div class="toast" id="toast"></div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuCOmMHzf_zBeF2VRVmRaz0T9eChgbD605JWucl7bkIvr/exec';
+const API_URL='https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuCOmMHzf_zBeF2VRVmRaz0T9eChgbD605JWucl7bkIvr/exec';
 
-let members=[], projects=[], selectedAssignees=[], editorSecret='', isEditor=false;
-let cbCounter=0, showArchived=false, expandedMembers={};
-let mTags=[], pTags=[];
+let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,currentRole='';
+let sysGroups=['A組','B組'],sysCountries=['TW','CN'];
+let cbCounter=0,showArchived=false,expandedMembers={};
+let mTags=[],pTags=[];
 
-// ── 主題系統 ────────────────────────────────────────────────
-const THEMES = [
-  {name:'深空藍',key:'blue',accent:'#2563eb',light:'#EFF6FF',text:'#1d4ed8',btn:'#2563eb',btnText:'#fff'},
-  {name:'森林綠',key:'green',accent:'#16a34a',light:'#F0FDF4',text:'#15803d',btn:'#16a34a',btnText:'#fff'},
-  {name:'暖橘山成',key:'amber',accent:'#d97706',light:'#FFFBEB',text:'#b45309',btn:'#d97706',btnText:'#fff'},
-  {name:'紫色夕陽',key:'purple',accent:'#7c3aed',light:'#F5F3FF',text:'#6d28d9',btn:'#7c3aed',btnText:'#fff'},
-  {name:'玫瑰珊瑚',key:'rose',accent:'#e11d48',light:'#FFF1F2',text:'#be123c',btn:'#e11d48',btnText:'#fff'},
-  {name:'青空藍灰',key:'slate',accent:'#0f172a',light:'#F1F5F9',text:'#334155',btn:'#0f172a',btnText:'#fff'},
+// ── 主題 ──────────────────────────────────────────────────
+const THEMES=[
+  {name:'深空藍',key:'blue',accent:'#2563eb',light:'#EFF6FF',text:'#1d4ed8',btn:'#2563eb'},
+  {name:'森林綠',key:'green',accent:'#16a34a',light:'#F0FDF4',text:'#15803d',btn:'#16a34a'},
+  {name:'暖橘',key:'amber',accent:'#d97706',light:'#FFFBEB',text:'#b45309',btn:'#d97706'},
+  {name:'紫色',key:'purple',accent:'#7c3aed',light:'#F5F3FF',text:'#6d28d9',btn:'#7c3aed'},
+  {name:'玫瑰',key:'rose',accent:'#e11d48',light:'#FFF1F2',text:'#be123c',btn:'#e11d48'},
+  {name:'深灰',key:'slate',accent:'#334155',light:'#F1F5F9',text:'#1e293b',btn:'#334155'},
 ];
-
 function hexToHsl(hex){
   let r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
   const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;
@@ -435,132 +471,193 @@ function hslToHex(h,s,l){
   const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};
   return'#'+f(0)+f(8)+f(4);
 }
-function lightenHex(hex,pct){
-  const[h,s,l]=hexToHsl(hex);return hslToHex(h,Math.max(0,s-10),Math.min(97,l+pct));
-}
-function darkenHex(hex,pct){
-  const[h,s,l]=hexToHsl(hex);return hslToHex(h,s,Math.max(5,l-pct));
-}
-
-function applyTheme(accent,light,textColor,btnBg,btnText){
+function applyTheme(accent,light,textColor,btn){
   const r=document.documentElement;
-  r.style.setProperty('--accent',accent);
-  r.style.setProperty('--accent-light',light);
-  r.style.setProperty('--accent-text',textColor);
-  r.style.setProperty('--accent-btn-bg',btnBg);
-  r.style.setProperty('--accent-btn-text',btnText);
-  try{localStorage.setItem('kk_theme',JSON.stringify({accent,light,textColor,btnBg,btnText}));}catch(e){}
+  r.style.setProperty('--accent',accent);r.style.setProperty('--accent-light',light);
+  r.style.setProperty('--accent-text',textColor);r.style.setProperty('--accent-btn',btn);
+  try{localStorage.setItem('kk_theme',JSON.stringify({accent,light,textColor,btn}));}catch(e){}
 }
-
 function applyCustomColor(hex){
-  const light=lightenHex(hex,48);
-  const textColor=darkenHex(hex,15);
-  applyTheme(hex,light,textColor,hex,'#ffffff');
-  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+  const[h,s,l]=hexToHsl(hex);
+  const light=hslToHex(h,Math.max(0,s-10),Math.min(97,l+45));
+  const textColor=hslToHex(h,s,Math.max(5,l-15));
+  applyTheme(hex,light,textColor,hex);
 }
-
 function loadSavedTheme(){
-  try{
-    const saved=localStorage.getItem('kk_theme');
-    if(saved){const t=JSON.parse(saved);applyTheme(t.accent,t.light,t.textColor,t.btnBg,t.btnText);}
-  }catch(e){}
+  try{const t=JSON.parse(localStorage.getItem('kk_theme'));if(t)applyTheme(t.accent,t.light,t.textColor,t.btn);}catch(e){}
 }
-
 function renderThemePresets(){
   const el=document.getElementById('theme-presets');
-  el.innerHTML=THEMES.map(t=>`
-    <div style="cursor:pointer;border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;transition:all 0.15s" onclick="selectPreset('${t.key}')" id="theme-preset-${t.key}" onmouseover="this.style.borderColor='${t.accent}'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="width:32px;height:32px;border-radius:50%;background:${t.accent};margin:0 auto 6px"></div>
-      <div style="font-size:12px;color:var(--text2)">${t.name}</div>
-    </div>`).join('');
+  el.innerHTML=THEMES.map(t=>`<div style="cursor:pointer;border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center" onclick="applyTheme('${t.accent}','${t.light}','${t.text}','${t.btn}');document.getElementById('custom-color-input').value='${t.accent}'" onmouseover="this.style.borderColor='${t.accent}'" onmouseout="this.style.borderColor='var(--border)'"><div style="width:28px;height:28px;border-radius:50%;background:${t.accent};margin:0 auto 6px"></div><div style="font-size:12px;color:var(--text2)">${t.name}</div></div>`).join('');
 }
 
-function selectPreset(key){
-  const t=THEMES.find(x=>x.key===key);if(!t)return;
-  applyTheme(t.accent,t.light,t.text,t.btn,t.btnText);
-  document.getElementById('custom-color-input').value=t.accent;
-}
-
-// ── 日期格式化 ─────────────────────────────────────────────
-function fmtDate(raw){
-  if(!raw) return '';
-  const s=String(raw);
-  // 處理 ISO 格式 2026-04-14T16:00:00.000Z
-  const d=new Date(s);
-  if(isNaN(d.getTime())) return s;
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,'0');
-  const day=String(d.getDate()).padStart(2,'0');
-  return y+'/'+m+'/'+day;
-}
-
-const TYPE_BADGE={'訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple','DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green','官網用':'badge-gray','其他':'badge-gray'};
-const BAR_COLORS=[{bg:'#DBEAFE',text:'#1e40af'},{bg:'#CCFBF1',text:'#134e4a'},{bg:'#EDE9FE',text:'#4c1d95'},{bg:'#FEF3C7',text:'#78350f'},{bg:'#FFE4E6',text:'#9f1239'},{bg:'#DCFCE7',text:'#14532d'}];
-
-let toastTimer;
-function showToast(msg,isError=false){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast'+(isError?' error':'')+' show';
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),isError?5000:2500);
-}
-
+// ── JSONP ────────────────────────────────────────────────
 function jsonpGet(url){
   return new Promise((resolve,reject)=>{
     const cb='__cb'+cbCounter++;
     window[cb]=(data)=>{delete window[cb];document.getElementById('jsonp-'+cb)?.remove();resolve(data);};
     const s=document.createElement('script');s.id='jsonp-'+cb;
     s.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
-    s.onerror=()=>{delete window[cb];reject(new Error('JSONP 請求失敗'));};
+    s.onerror=()=>{delete window[cb];reject(new Error('JSONP 失敗'));};
     document.head.appendChild(s);
   });
 }
-async function apiPost(payload){
-  const url=API_URL+'?action='+encodeURIComponent(payload.action)+'&type='+encodeURIComponent(payload.type)+'&secret='+encodeURIComponent(editorSecret)+'&payload='+encodeURIComponent(JSON.stringify(payload.payload||{}));
+async function apiCall(action,type,payload){
+  const url=API_URL+'?action='+encodeURIComponent(action)+'&type='+encodeURIComponent(type)+'&secret='+encodeURIComponent(editorSecret)+'&payload='+encodeURIComponent(JSON.stringify(payload||{}));
   const data=await jsonpGet(url);if(data.error) throw new Error(data.error);return data;
 }
+
+// ── 日期格式 ────────────────────────────────────────────
+function fmtDate(raw){
+  if(!raw)return'';const d=new Date(raw);if(isNaN(d.getTime()))return String(raw);
+  return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');
+}
+function fmtDateInput(raw){
+  if(!raw)return'';const d=new Date(raw);if(isNaN(d.getTime()))return String(raw);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
 async function loadData(){
   showToast('載入中…');
   try{
-    const data=await jsonpGet(API_URL);if(data.error) throw new Error(data.error);
-    members=data.members||[];projects=data.projects||[];render();showToast('資料已載入');
+    const data=await jsonpGet(API_URL);if(data.error)throw new Error(data.error);
+    members=data.members||[];projects=data.projects||[];
+    if(data.groups)sysGroups=data.groups;
+    if(data.countries)sysCountries=data.countries;
+    render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
+
 function tryAuth(){
   const val=document.getElementById('secret-input').value.trim();
   if(!val){document.getElementById('auth-status').textContent='請輸入密碼';return;}
-  editorSecret=val;isEditor=true;
-  document.getElementById('auth-bar').style.display='none';
-  document.getElementById('editor-actions').style.display='flex';
-  showToast('已解鎖編輯模式');render();
+  editorSecret=val;
+  // 驗證身份並取得 role（先嘗試列出帳號，若成功即取得 role）
+  apiCall('list','users',{}).then(data=>{
+    isEditor=true;
+    const me=data.users&&data.users[0];
+    currentRole=me?me.role:'editor';
+    document.getElementById('auth-bar').style.display='none';
+    document.getElementById('editor-actions').style.display='flex';
+    document.getElementById('btn-myaccount').textContent='👤 '+( me?me.name:'我的帳號');
+    if(currentRole==='super_admin'){
+      document.getElementById('btn-users').style.display='';
+      document.getElementById('tab-log').style.display='';
+    document.getElementById('tab-settings').style.display='';
+    } else {
+      document.getElementById('tab-log').style.display='';
+    document.getElementById('tab-settings').style.display='';
+    }
+    showToast('已解鎖：'+(currentRole==='super_admin'?'超級管理者':'管理者'));render();
+  }).catch(()=>{
+    document.getElementById('auth-status').textContent='密碼錯誤';
+    editorSecret='';
+  });
 }
 
+// ── 帳號管理 ─────────────────────────────────────────────
+async function loadUsers(){
+  const wrap=document.getElementById('user-list-wrap');wrap.innerHTML='<div class="empty">載入中…</div>';
+  try{
+    const data=await apiCall('list','users',{});
+    if(!data.users||!data.users.length){wrap.innerHTML='<div class="empty">無帳號</div>';return;}
+    wrap.innerHTML=data.users.map(u=>`<div class="user-row">
+      <div class="user-name">${u.name}</div>
+      <span class="role-badge ${u.role==='super_admin'?'role-super':'role-editor'}">${u.role==='super_admin'?'超級管理者':'管理者'}</span>
+      ${currentRole==='super_admin'?`
+        <select onchange="changeUserRole(${u.idx},this.value)" style="width:auto;font-size:12px;padding:3px 6px">
+          <option value="editor" ${u.role==='editor'?'selected':''}>管理者</option>
+          <option value="super_admin" ${u.role==='super_admin'?'selected':''}>超級管理者</option>
+        </select>
+        <button class="btn btn-sm btn-danger" onclick="removeUser(${u.idx})">移除</button>`:''
+      }
+    </div>`).join('');
+  }catch(err){wrap.innerHTML='<div class="empty" style="color:#dc2626">'+err.message+'</div>';}
+}
+async function addUser(){
+  const name=document.getElementById('new-user-name').value.trim();
+  const secret=document.getElementById('new-user-secret').value.trim();
+  const role=document.getElementById('new-user-role').value;
+  if(!name||!secret){showToast('名稱與密碼不能為空',true);return;}
+  try{
+    await apiCall('add','users',{name,secret,role});
+    document.getElementById('new-user-name').value='';document.getElementById('new-user-secret').value='';
+    showToast('已新增：'+name);loadUsers();
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+async function removeUser(idx){
+  if(!confirm('確定移除此帳號？'))return;
+  try{await apiCall('remove','users',{idx});showToast('已移除');loadUsers();}
+  catch(e){showToast('失敗：'+e.message,true);}
+}
+async function changeUserRole(idx,role){
+  try{await apiCall('changeRole','users',{idx,role});showToast('權限已更新');loadUsers();}
+  catch(e){showToast('失敗：'+e.message,true);loadUsers();}
+}
+
+function openMyAccount(){
+  const info=document.getElementById('myaccount-info');
+  info.innerHTML='你目前的角色：<span class="role-badge '+(currentRole==='super_admin'?'role-super':'role-editor')+'">'+(currentRole==='super_admin'?'超級管理者':'管理者')+'</span>';
+  document.getElementById('new-secret-input').value='';
+  document.getElementById('confirm-secret-input').value='';
+}
+async function changeMySecret(){
+  const n=document.getElementById('new-secret-input').value.trim();
+  const c=document.getElementById('confirm-secret-input').value.trim();
+  if(!n){showToast('請輸入新密碼',true);return;}
+  if(n!==c){showToast('兩次密碼不一致',true);return;}
+  try{
+    await apiCall('changeSecret','users',{newSecret:n});
+    editorSecret=n;
+    document.getElementById('new-secret-input').value='';
+    document.getElementById('confirm-secret-input').value='';
+    closeModal('myaccount');showToast('密碼已更新');
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+
+// ── 操作記錄 ────────────────────────────────────────────
+async function loadLog(){
+  const el=document.getElementById('log-list');el.innerHTML='<div class="empty">載入中…</div>';
+  try{
+    const data=await apiCall('list','log',{});
+    if(!data.logs||!data.logs.length){el.innerHTML='<div class="empty">尚無記錄</div>';return;}
+    el.innerHTML=data.logs.map(l=>`<div class="log-row">
+      <div class="log-time">${l.time}</div>
+      <div class="log-op">${l.operator}</div>
+      <div class="log-action">${l.action}</div>
+      <div class="log-target">${l.target}</div>
+    </div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty" style="color:#dc2626">'+e.message+'</div>';}
+}
+
+// ── 進度 ─────────────────────────────────────────────────
 function calcProgress(start,deadline){
-  if(!start||!deadline) return null;
+  if(!start||!deadline)return null;
   const s=new Date(start),e=new Date(deadline),t=new Date();
   s.setHours(0,0,0,0);e.setHours(0,0,0,0);t.setHours(0,0,0,0);
-  if(t<=s) return 0;if(t>=e) return 100;
+  if(t<=s)return 0;if(t>=e)return 100;
   return Math.round((t-s)/(e-s)*100);
 }
 function getProgress(p){
-  if(p.progressOverride) return Number(p.progress)||0;
-  const auto=calcProgress(p.start,p.deadline);
-  return auto!==null?auto:Number(p.progress)||0;
+  if(p.progressOverride)return Number(p.progress)||0;
+  const a=calcProgress(p.start,p.deadline);return a!==null?a:Number(p.progress)||0;
 }
 function updateAutoProgress(){
   const s=document.getElementById('p-start').value,d=document.getElementById('p-deadline').value;
   if(!document.getElementById('p-progress-override').checked){
-    const auto=calcProgress(s,d);
-    document.getElementById('p-progress').value=auto!==null?auto:0;
-    document.getElementById('auto-progress-label').textContent=auto!==null?'依日期自動計算：'+auto+'%':'填入起迄日後自動計算';
+    const a=calcProgress(s,d);
+    document.getElementById('p-progress').value=a!==null?a:0;
+    document.getElementById('auto-progress-label').textContent=a!==null?'依日期自動計算：'+a+'%':'填入起迄日後自動計算';
   }
 }
 function toggleProgressOverride(){
-  const override=document.getElementById('p-progress-override').checked;
+  const o=document.getElementById('p-progress-override').checked;
   const inp=document.getElementById('p-progress');
-  inp.disabled=!override;inp.style.background=override?'var(--bg)':'var(--bg2)';
-  if(!override) updateAutoProgress();
+  inp.disabled=!o;inp.style.background=o?'var(--bg)':'var(--bg2)';
+  if(!o)updateAutoProgress();
 }
 
+// ── 標籤 ─────────────────────────────────────────────────
 function getAllTags(){
   const s=new Set();
   members.forEach(m=>(m.tags||[]).forEach(t=>s.add(t)));
@@ -587,22 +684,34 @@ function renderTagBox(boxId,dropId,tags,addFn,removeFn,inputId){
       dd.querySelectorAll('.dropdown-item').forEach(el=>el.onclick=()=>{addFn(el.dataset.t);inp.value='';dd.style.display='none';});
       dd.style.display='block';
     };
-    inp.onkeydown=(e)=>{if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();addFn(inp.value.trim());inp.value='';document.getElementById(dropId).style.display='none';}};
+    inp.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();addFn(inp.value.trim());inp.value='';document.getElementById(dropId).style.display='none';}};
     box.appendChild(inp);
   }
 }
 function initMTagBox(){renderTagBox('m-tag-box','m-tag-dropdown',mTags,t=>{if(mTags.length<5&&!mTags.includes(t)){mTags.push(t);initMTagBox();}},i=>{mTags.splice(i,1);initMTagBox();},'m-tag-input');}
 function initPTagBox(){renderTagBox('p-tag-box','p-tag-dropdown',pTags,t=>{if(pTags.length<5&&!pTags.includes(t)){pTags.push(t);initPTagBox();}},i=>{pTags.splice(i,1);initPTagBox();},'p-tag-input');}
 
+// ── 工具 ─────────────────────────────────────────────────
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function daysLeft(d){if(!d)return null;const raw=new Date(d);return Math.ceil((raw-new Date())/864e5)}
-function dlClass(d){const n=daysLeft(d);if(n===null)return '';if(n<0)return 'dl-over';if(n<=14)return 'dl-near';return ''}
-function dlLabel(d){if(!d)return '';const n=daysLeft(d);if(n===null)return '';if(n<0)return'逾期'+Math.abs(n)+'天';if(n===0)return'今天截止';return'還有'+n+'天'}
+function daysLeft(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/864e5)}
+function dlClass(d){const n=daysLeft(d);if(n===null)return'';if(n<0)return'dl-over';if(n<=14)return'dl-near';return''}
+function dlLabel(d){if(!d)return'';const n=daysLeft(d);if(n===null)return'';if(n<0)return'逾期'+Math.abs(n)+'天';if(n===0)return'今天截止';return'還有'+n+'天'}
 function avClass(name){const c=['av-0','av-1','av-2','av-3','av-4','av-5'];let h=0;for(let ch of name)h=(h*31+ch.charCodeAt(0))%c.length;return c[Math.abs(h)]}
 function initials(name){return name?name.slice(0,2):'??'}
 function badgeClass(s){const m={'進行中':'badge-blue','審核中':'badge-amber','完成':'badge-teal','暫停':'badge-gray','待開始':'badge-purple'};return m[s]||'badge-gray'}
 function pColor(n){if(n>=80)return'#16a34a';if(n>=40)return'#d97706';return'#9ca3af'}
 function loadCls(n){if(n<=2)return'load-ok';if(n<=4)return'load-warn';return'load-over'}
+
+const TYPE_BADGE={'訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple','DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green','官網用':'badge-gray','其他':'badge-gray'};
+const BAR_COLORS=[{bg:'#DBEAFE',text:'#1e40af'},{bg:'#CCFBF1',text:'#134e4a'},{bg:'#EDE9FE',text:'#4c1d95'},{bg:'#FEF3C7',text:'#78350f'},{bg:'#FFE4E6',text:'#9f1239'},{bg:'#DCFCE7',text:'#14532d'}];
+
+let toastTimer;
+function showToast(msg,isError=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(isError?' error':'')+' show';
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),isError?5000:2500);
+}
+
 function toggleOtherNote(){document.getElementById('other-note-row').classList.toggle('visible',document.getElementById('p-type').value==='其他');}
 function toggleArchived(){
   showArchived=!showArchived;
@@ -613,14 +722,20 @@ function switchTab(id,el){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');el.classList.add('active');
-  if(id==='gantt') renderGantt();
+  if(id==='gantt')renderGantt();
+  if(id==='log')loadLog();
+  if(id==='settings')renderSettingsEditors();
 }
+
 function openModal(type){
-  if(type!=='editors'&&type!=='theme'&&!isEditor){showToast('請先輸入編輯密碼',true);return;}
+  if(!['theme'].includes(type)&&!isEditor){showToast('請先輸入密碼',true);return;}
   if(type==='member'){
     ['m-name','m-role','m-note'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('m-group').value='A';document.getElementById('m-edit-id').value='';
-    document.getElementById('member-modal-title').textContent='新增組員';mTags=[];initMTagBox();
+    document.getElementById('m-edit-id').value='';
+    document.getElementById('member-modal-title').textContent='新增組員';
+    populateSelect('m-group',sysGroups);
+    populateSelect('m-country',sysCountries);
+    mTags=[];initMTagBox();
   }
   if(type==='project'){
     ['p-name','p-owner','p-start','p-deadline','p-note','p-type-note'].forEach(id=>document.getElementById(id).value='');
@@ -633,8 +748,9 @@ function openModal(type){
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
   }
-  if(type==='editors') loadEditors();
-  if(type==='theme') renderThemePresets();
+  if(type==='users'){loadUsers();}
+  if(type==='myaccount'){openMyAccount();}
+  if(type==='theme'){renderThemePresets();}
   document.getElementById('modal-'+type).style.display='flex';
 }
 function closeModal(type){
@@ -646,10 +762,10 @@ async function saveMember(){
   const name=document.getElementById('m-name').value.trim();
   if(!name){showToast('請填寫姓名',true);return;}
   const eid=document.getElementById('m-edit-id').value;
-  const obj={id:eid||uid(),name,group:document.getElementById('m-group').value,role:document.getElementById('m-role').value.trim(),note:document.getElementById('m-note').value.trim(),tags:[...mTags]};
+  const obj={id:eid||uid(),name,group:document.getElementById('m-group').value,country:document.getElementById('m-country').value,role:document.getElementById('m-role').value.trim(),note:document.getElementById('m-note').value.trim(),tags:[...mTags]};
   showToast('儲存中…');
   try{
-    await apiPost({action:'upsert',type:'members',payload:obj});
+    await apiCall('upsert','members',obj);
     if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}else members.push(obj);
     closeModal('member');render();showToast('組員已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
@@ -660,33 +776,36 @@ function editMember(id){
   document.getElementById('m-note').value=m.note||'';document.getElementById('m-group').value=m.group;
   document.getElementById('m-edit-id').value=m.id;
   document.getElementById('member-modal-title').textContent='編輯組員';
+  populateSelect('m-group',sysGroups,m.group);
+  populateSelect('m-country',sysCountries,m.country||'');
   mTags=[...(m.tags||[])];initMTagBox();
   document.getElementById('modal-member').style.display='flex';
 }
 async function deleteMember(id){
   if(!confirm('確定移除？'))return;
   try{
-    await apiPost({action:'delete',type:'members',payload:{id}});
+    await apiCall('delete','members',{id});
     members=members.filter(m=>m.id!==id);
     projects=projects.map(p=>({...p,assignees:(p.assignees||[]).filter(a=>a!==id)}));
     render();showToast('已移除');
   }catch(e){showToast('失敗：'+e.message,true);}
 }
+
 async function saveProject(){
   const name=document.getElementById('p-name').value.trim();
   if(!name){showToast('請填寫專案名稱',true);return;}
   const eid=document.getElementById('p-edit-id').value;
   let type=document.getElementById('p-type').value;
   const tn=document.getElementById('p-type-note').value.trim();
-  if(type==='其他'&&tn) type='其他：'+tn;
+  if(type==='其他'&&tn)type='其他：'+tn;
   const override=document.getElementById('p-progress-override').checked;
   const start=document.getElementById('p-start').value,deadline=document.getElementById('p-deadline').value;
   let progress=parseInt(document.getElementById('p-progress').value)||0;
-  if(!override){const auto=calcProgress(start,deadline);if(auto!==null)progress=auto;}
+  if(!override){const a=calcProgress(start,deadline);if(a!==null)progress=a;}
   const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
   showToast('儲存中…');
   try{
-    await apiPost({action:'upsert',type:'projects',payload:obj});
+    await apiCall('upsert','projects',obj);
     if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}else projects.push(obj);
     closeModal('project');render();showToast('專案已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
@@ -708,46 +827,14 @@ function editProject(id){
   document.getElementById('p-progress').disabled=!override;
   document.getElementById('p-progress').style.background=override?'var(--bg)':'var(--bg2)';
   document.getElementById('p-progress').value=p.progress||0;
-  if(!override) updateAutoProgress();
+  if(!override)updateAutoProgress();
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
   pTags=[...(p.tags||[])];initPTagBox();
   document.getElementById('modal-project').style.display='flex';
 }
-function fmtDateInput(raw){
-  // 把 ISO 轉成 yyyy-mm-dd 供 date input 使用
-  if(!raw) return '';
-  const d=new Date(raw);if(isNaN(d.getTime())) return raw;
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
 async function deleteProject(id){
   if(!confirm('確定刪除？'))return;
-  try{
-    await apiPost({action:'delete',type:'projects',payload:{id}});
-    projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');
-  }catch(e){showToast('失敗：'+e.message,true);}
-}
-
-async function loadEditors(){
-  const wrap=document.getElementById('editor-list-wrap');wrap.innerHTML='<div class="empty">載入中…</div>';
-  try{
-    const data=await apiPost({action:'list',type:'editors',payload:{}});
-    if(!data.editors||!data.editors.length){wrap.innerHTML='<div class="empty">無資料</div>';return;}
-    wrap.innerHTML=data.editors.map(e=>`<div class="editor-row"><div class="editor-name">${e.name}</div>${data.editors.length>1?'<button class="btn btn-sm btn-danger" onclick="removeEditor('+e.idx+')">移除</button>':''}</div>`).join('');
-  }catch(err){wrap.innerHTML='<div class="empty" style="color:#dc2626">載入失敗：'+err.message+'</div>';}
-}
-async function addEditor(){
-  const name=document.getElementById('new-editor-name').value.trim();
-  const secret=document.getElementById('new-editor-secret').value.trim();
-  if(!name||!secret){showToast('名稱與密碼不能為空',true);return;}
-  try{
-    await apiPost({action:'add',type:'editors',payload:{name,secret}});
-    document.getElementById('new-editor-name').value='';document.getElementById('new-editor-secret').value='';
-    showToast('已新增：'+name);loadEditors();
-  }catch(e){showToast('失敗：'+e.message,true);}
-}
-async function removeEditor(idx){
-  if(!confirm('確定移除？'))return;
-  try{await apiPost({action:'remove',type:'editors',payload:{idx}});showToast('已移除');loadEditors();}
+  try{await apiCall('delete','projects',{id});projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');}
   catch(e){showToast('失敗：'+e.message,true);}
 }
 
@@ -776,6 +863,64 @@ function renderAssigneeTags(){
   inp.oninput=()=>filterAssignees(inp.value);box.appendChild(inp);
 }
 
+function populateSelect(id,options,selected){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=options.map(o=>`<option value="${o}" ${o===selected?'selected':''}>${o}</option>`).join('');
+  if(!selected&&options.length)el.value=options[0];
+}
+
+function renderSettingsEditors(){
+  renderOptionEditor('groups-editor','groups',sysGroups);
+  renderOptionEditor('countries-editor','countries',sysCountries);
+}
+
+function renderOptionEditor(containerId,key,options){
+  const el=document.getElementById(containerId);if(!el)return;
+  if(!options.length){el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">尚無選項</div>';return;}
+  el.innerHTML=options.map((o,i)=>`<div class="option-row">
+    <input value="${o}" id="opt-${key}-${i}" style="flex:1;font-size:13px;padding:4px 8px"/>
+    <button class="btn btn-sm btn-outline" onclick="saveOption('${key}',${i})">儲存</button>
+    <button class="btn btn-sm btn-danger" onclick="removeOption('${key}',${i})">刪除</button>
+  </div>`).join('');
+}
+
+async function saveOption(key,idx){
+  const inp=document.getElementById('opt-'+key+'-'+idx);if(!inp)return;
+  const val=inp.value.trim();if(!val){showToast('選項不能為空',true);return;}
+  const arr=key==='groups'?[...sysGroups]:[...sysCountries];
+  arr[idx]=val;
+  await saveSettings(key,arr);
+}
+
+async function removeOption(key,idx){
+  const arr=key==='groups'?[...sysGroups]:[...sysCountries];
+  if(arr.length<=1){showToast('至少需要保留一個選項',true);return;}
+  arr.splice(idx,1);
+  await saveSettings(key,arr);
+}
+
+async function addOption(key){
+  const inputId=key==='groups'?'new-group-input':'new-country-input';
+  const inp=document.getElementById(inputId);if(!inp)return;
+  const val=inp.value.trim();if(!val){showToast('請輸入選項名稱',true);return;}
+  const arr=key==='groups'?[...sysGroups]:[...sysCountries];
+  if(arr.includes(val)){showToast('此選項已存在',true);return;}
+  arr.push(val);
+  await saveSettings(key,arr);
+  inp.value='';
+}
+
+async function saveSettings(key,values){
+  showToast('儲存中…');
+  try{
+    await apiCall('set','settings',{key,values});
+    if(key==='groups')sysGroups=values;
+    else sysCountries=values;
+    renderSettingsEditors();
+    showToast('已更新');
+  }catch(e){showToast('失敗：'+e.message,true);}
+}
+
 function exportCSV(){
   const header=['專案名稱','類型','負責人','開始日','截止日','進度%','狀態','指派繪師','標籤','備註'];
   const rows=projects.map(p=>{
@@ -788,7 +933,7 @@ function exportCSV(){
   a.download='KK儀表板_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
-// ── Render ───────────────────────────────────────────────────
+// ── Render ───────────────────────────────────────────────
 function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
 
 function renderStats(){
@@ -796,8 +941,7 @@ function renderStats(){
   const active=projects.filter(p=>p.status!=='完成').length;
   const done=projects.filter(p=>p.status==='完成').length;
   const over=projects.filter(p=>p.deadline&&daysLeft(p.deadline)<0&&p.status!=='完成').length;
-  const icons=[['👥','總組員數',members.length,'accent','#EFF6FF'],['📋','進行中',active,'','#F0FDF4'],['✅','已完成',done,'ok','#DCFCE7'],['⚠️','逾期',over,over>0?'warn':'','#FEF9C3']];
-  el.innerHTML=icons.map(([icon,label,num,cls,bg])=>`<div class="stat"><div class="stat-icon" style="background:${bg}">${icon}</div><div class="stat-body"><div class="stat-label">${label}</div><div class="stat-num ${cls}">${num}</div></div></div>`).join('');
+  el.innerHTML=[['👥','總組員數',members.length,'accent','#EFF6FF'],['📋','進行中',active,'','#F0FDF4'],['✅','已完成',done,'ok','#DCFCE7'],['⚠️','逾期',over,over>0?'warn':'','#FEF9C3']].map(([icon,label,num,cls,bg])=>`<div class="stat"><div class="stat-icon" style="background:${bg}">${icon}</div><div><div class="stat-label">${label}</div><div class="stat-num ${cls}">${num}</div></div></div>`).join('');
 }
 
 function renderUpcoming(){
@@ -815,7 +959,6 @@ function renderUpcoming(){
     <div style="font-size:11px;color:var(--text2)">${prog}% 完成</div>
   </div>`;}).join('');
 }
-
 function renderAlerts(){
   const el=document.getElementById('alert-list');let html='';
   members.forEach(m=>{
@@ -831,8 +974,8 @@ function projectCard(p){
   const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
   const typeKey=p.type?(p.type.split('：')[0]):'';
   const prog=getProgress(p);
-  const startFmt=fmtDate(p.start),deadlineFmt=fmtDate(p.deadline);
-  const editBtns=isEditor?`<div style="display:flex;gap:6px"><button class="btn btn-sm btn-accent-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+  const sf=fmtDate(p.start),df=fmtDate(p.deadline);
+  const editBtns=isEditor?`<button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button>`:'';
   const tagsHtml=(p.tags||[]).length?`<div class="chip-row" style="margin-top:6px">${(p.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
   return`<div class="project-card">
     <div class="project-card-accent"></div>
@@ -847,14 +990,14 @@ function projectCard(p){
           <span class="badge ${badgeClass(p.status)}">${p.status}</span>
         </div>
       </div>
-      ${startFmt?'<div style="font-size:11px;color:var(--text2)">'+startFmt+(deadlineFmt?' → '+deadlineFmt:'')+'</div>':(deadlineFmt?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+deadlineFmt+' · '+dlLabel(p.deadline)+'</div>':'')}
+      ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':'')}
       <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
       <div style="font-size:12px;color:var(--text2)">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>
       ${names.length?'<div class="chip-row" style="margin-top:8px">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
       ${tagsHtml}
       ${p.note?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">'+p.note+'</div>':''}
     </div>
-    ${editBtns?'<div class="project-card-footer">'+editBtns+'<span></span></div>':''}
+    ${editBtns?'<div class="project-card-footer">'+editBtns+'</div>':''}
   </div>`;
 }
 
@@ -864,12 +1007,12 @@ function renderProjects(){
   const fs=document.getElementById('filter-status').value;
   const sortBy=document.getElementById('sort-by').value;
   function applyFilters(list){
-    if(kw) list=list.filter(p=>p.name.toLowerCase().includes(kw)||(p.tags||[]).some(t=>t.toLowerCase().includes(kw)));
-    if(ft) list=list.filter(p=>p.type&&(p.type===ft||p.type.startsWith(ft)));
-    if(fs) list=list.filter(p=>p.status===fs);
-    if(sortBy==='deadline') list=[...list].sort((a,b)=>new Date(a.deadline||'9999')-new Date(b.deadline||'9999'));
-    if(sortBy==='progress') list=[...list].sort((a,b)=>getProgress(a)-getProgress(b));
-    if(sortBy==='type') list=[...list].sort((a,b)=>(a.type||'').localeCompare(b.type||''));
+    if(kw)list=list.filter(p=>p.name.toLowerCase().includes(kw)||(p.tags||[]).some(t=>t.toLowerCase().includes(kw)));
+    if(ft)list=list.filter(p=>p.type&&(p.type===ft||p.type.startsWith(ft)));
+    if(fs)list=list.filter(p=>p.status===fs);
+    if(sortBy==='deadline')list=[...list].sort((a,b)=>new Date(a.deadline||'9999')-new Date(b.deadline||'9999'));
+    if(sortBy==='progress')list=[...list].sort((a,b)=>getProgress(a)-getProgress(b));
+    if(sortBy==='type')list=[...list].sort((a,b)=>(a.type||'').localeCompare(b.type||''));
     return list;
   }
   let active=applyFilters(projects.filter(p=>p.status!=='完成'));
@@ -885,7 +1028,7 @@ function renderMembers(){
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
   const list=members.filter(m=>m.group===group);
-  const addBtn=isEditor?`<button class="btn btn-sm btn-accent-outline" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
+  const addBtn=isEditor?`<button class="btn btn-sm btn-outline" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
   if(!list.length){el.innerHTML=`<div class="section-title">${label}（0人）${addBtn}</div><div class="empty">還沒有組員</div>`;return;}
   const rows=list.map(m=>{
     const projs=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id));
@@ -895,16 +1038,14 @@ function renderGroup(group,elId,label){
     return`<div class="member-row">
       <div class="avatar ${avClass(m.name)}">${initials(m.name)}</div>
       <div class="member-info">
-        <div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div>
+        <div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''} ${m.country?`<span style="font-size:10px;background:var(--bg2);color:var(--text2);padding:1px 5px;border-radius:3px">${m.country}</span>`:''}</div>
         <div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>
         ${tagsHtml}
         ${m.note?'<div style="font-size:11px;color:var(--text2);margin-top:2px">'+m.note+'</div>':''}
       </div>
-      <div class="load-pill">
-        <div style="text-align:right">
-          <div style="font-size:12px;color:var(--text2)">${projs.length}個</div>
-          <div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div>
-        </div>
+      <div style="text-align:right;margin-right:8px;flex-shrink:0">
+        <div style="font-size:12px;color:var(--text2)">${projs.length}個專案</div>
+        <div class="load-bar" style="margin-top:4px"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div>
       </div>
       ${editBtns}
     </div>`;
@@ -946,13 +1087,10 @@ function renderGantt(){
         return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
       }
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
-      const firstP=mP[0];
-      rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${firstP?makeBar(firstP):'<div class="g-empty">無任務</div>'}</div></div>`;
-      if(isExpanded&&mP.length>1){
-        mP.slice(1).forEach(p=>{
-          rowsHtml+=`<div class="gantt-row sub"><div class="gantt-member"><span style="min-width:22px;display:inline-block"></span><span style="min-width:26px;display:inline-block"></span><span style="font-size:11px;color:var(--text2);padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${makeBar(p)}</div></div>`;
-        });
-      }
+      rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${mP[0]?makeBar(mP[0]):'<div class="g-empty">無任務</div>'}</div></div>`;
+      if(isExpanded&&mP.length>1)mP.slice(1).forEach(p=>{
+        rowsHtml+=`<div class="gantt-row sub"><div class="gantt-member"><span style="min-width:22px;display:inline-block"></span><span style="min-width:26px;display:inline-block"></span><span style="font-size:11px;color:var(--text2);padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${makeBar(p)}</div></div>`;
+      });
     });
   });
   container.innerHTML=`<div class="gantt-head"><div class="gantt-name-col"></div><div class="gantt-tl">${mH}</div></div>${rowsHtml}`;
@@ -960,11 +1098,10 @@ function renderGantt(){
 function toggleGanttMember(id){expandedMembers[id]=!expandedMembers[id];renderGantt();}
 
 document.addEventListener('click',e=>{
-  if(!e.target.closest('.tag-input-wrap')&&!e.target.closest('.dropdown-list')){
+  if(!e.target.closest('.tag-input-wrap')&&!e.target.closest('.dropdown-list'))
     document.querySelectorAll('.dropdown-list').forEach(d=>d.style.display='none');
-  }
   const dd=document.getElementById('assignee-dropdown');
-  if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search') dd.style.display='none';
+  if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search')dd.style.display='none';
 });
 
 loadSavedTheme();
