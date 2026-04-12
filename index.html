@@ -11,6 +11,8 @@
   --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e99;
   --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
   --radius:8px;--radius-lg:12px;
+  --accent:#2563eb;--accent-light:#EFF6FF;--accent-text:#1d4ed8;
+  --accent-btn-bg:#2563eb;--accent-btn-text:#ffffff;
   --blue-bg:#E6F1FB;--blue-text:#0C447C;
   --teal-bg:#E1F5EE;--teal-text:#085041;
   --amber-bg:#FAEEDA;--amber-text:#633806;
@@ -28,21 +30,33 @@
 }}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh}
 .app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+
+/* Top bar */
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
-.top-bar h1{font-size:18px;font-weight:500}
+.top-bar h1{font-size:18px;font-weight:600;color:var(--text)}
 .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Tabs */
 .tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap}
-.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-0.5px}
-.tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.tab{padding:8px 18px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-0.5px;transition:color 0.15s}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .section{display:none}.section.active{display:block}
-.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.5rem}
-.stat{background:var(--bg2);border-radius:var(--radius);padding:12px 16px}
-.stat-label{font-size:12px;color:var(--text2);margin-bottom:4px}
-.stat-num{font-size:22px;font-weight:500}
-.stat-num.warn{color:#BA7517}.stat-num.ok{color:#3B6D11}
+
+/* Stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:flex-start;gap:12px;transition:box-shadow 0.15s}
+.stat-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.stat-body{flex:1;min-width:0}
+.stat-label{font-size:12px;color:var(--text2);margin-bottom:2px}
+.stat-num{font-size:24px;font-weight:600}
+.stat-num.warn{color:#d97706}.stat-num.ok{color:#16a34a}.stat-num.accent{color:var(--accent)}
+
+/* Cards */
 .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px}
 .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
 .card-title{font-size:15px;font-weight:500}
+
+/* Badges */
 .badge{display:inline-block;padding:3px 10px;border-radius:var(--radius);font-size:12px;font-weight:500}
 .badge-blue{background:var(--blue-bg);color:var(--blue-text)}
 .badge-teal{background:var(--teal-bg);color:var(--teal-text)}
@@ -52,47 +66,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-purple{background:var(--purple-bg);color:var(--purple-text)}
 .badge-green{background:var(--green-bg);color:var(--green-text)}
 .badge-coral{background:var(--coral-bg);color:var(--coral-text)}
-.progress-bar{background:var(--bg2);border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
-.progress-fill{height:100%;border-radius:4px;transition:width 0.3s}
-.member-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+
+/* Progress */
+.progress-bar{background:var(--bg2);border-radius:4px;height:7px;overflow:hidden;margin:8px 0 4px}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.4s ease}
+
+/* Project card */
+.project-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:0;margin-bottom:0;overflow:hidden;transition:box-shadow 0.15s}
+.project-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+.project-card-accent{height:3px;background:var(--accent)}
+.project-card-body{padding:1rem 1.125rem 0.875rem}
+.project-card-footer{padding:0.5rem 1.125rem 0.75rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* Member rows */
+.member-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
 .member-row:last-child{border-bottom:none}
-.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
-.av-0{background:#B5D4F4;color:#0C447C}.av-1{background:#9FE1CB;color:#085041}
-.av-2{background:#CECBF6;color:#3C3489}.av-3{background:#F5C4B3;color:#712B13}
-.av-4{background:#FAC775;color:#633806}.av-5{background:#C0DD97;color:#27500A}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.av-0{background:#DBEAFE;color:#1e40af}.av-1{background:#CCFBF1;color:#0f5132}
+.av-2{background:#EDE9FE;color:#4c1d95}.av-3{background:#FFE4E6;color:#9f1239}
+.av-4{background:#FEF3C7;color:#78350f}.av-5{background:#DCFCE7;color:#14532d}
 .member-info{flex:1;min-width:0}
 .member-name{font-size:14px;font-weight:500}
-.member-tasks{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.load-bar{width:60px;height:6px;background:var(--bg2);border-radius:4px;overflow:hidden;flex-shrink:0;margin-top:4px}
-.load-ok{background:#639922}.load-warn{background:#EF9F27}.load-over{background:#E24B4A}
+.member-tasks{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.load-pill{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.load-bar{width:52px;height:5px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.load-ok{background:#22c55e}.load-warn{background:#f59e0b}.load-over{background:#ef4444}
+
+/* Two col */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
-input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit}
-input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px #B5D4F4}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
+/* Forms */
+input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent)}
 label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .form-row{margin-bottom:12px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:500px){.form-grid{grid-template-columns:1fr}}
-.btn{padding:7px 14px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;transition:background 0.15s}
+
+/* Buttons */
+.btn{padding:7px 14px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;transition:all 0.15s;white-space:nowrap}
 .btn:hover{background:var(--bg2)}
-.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}
-.btn-primary:hover{opacity:0.85}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--accent-btn-bg);color:var(--accent-btn-text);border-color:var(--accent-btn-bg);font-weight:500}
+.btn-primary:hover{opacity:0.88}
+.btn-accent-outline{color:var(--accent);border-color:var(--accent)}
+.btn-accent-outline:hover{background:var(--accent-light)}
 .btn-sm{padding:4px 10px;font-size:12px}
-.btn-danger{color:#A32D2D;border-color:transparent}
-.btn-danger:hover{background:var(--red-bg)}
+.btn-danger{color:#dc2626;border-color:transparent}
+.btn-danger:hover{background:#FEF2F2}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.tag-chip{display:inline-flex;align-items:center;gap:3px;background:var(--pink-bg);color:var(--pink-text);border-radius:var(--radius);padding:2px 8px;font-size:11px;font-weight:500}
-.tag-chip .rm{cursor:pointer;font-size:13px;line-height:1;opacity:0.7}
+
+/* Tags */
+.tag-chip{display:inline-flex;align-items:center;gap:3px;background:var(--accent-light);color:var(--accent-text);border-radius:var(--radius);padding:2px 8px;font-size:11px;font-weight:500}
+.tag-chip .rm{cursor:pointer;font-size:13px;line-height:1;opacity:0.6}
 .tag-chip .rm:hover{opacity:1}
-.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg);position:relative}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);min-height:38px;cursor:text;background:var(--bg)}
 .assignee-tag{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:var(--radius);padding:2px 8px;font-size:12px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
+
+/* Misc */
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
-.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
 .chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.dl-near{color:#BA7517}.dl-over{color:#A32D2D}
+.dl-near{color:#d97706}.dl-over{color:#dc2626}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
 .modal{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:1.5rem;width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
@@ -100,8 +139,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1;padding:0}
 .auth-bar{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:var(--radius-lg);font-size:13px;z-index:400;opacity:0;transition:opacity 0.25s;pointer-events:none;max-width:320px}
-.toast.show{opacity:1}.toast.error{background:#A32D2D}
+.toast.show{opacity:1}.toast.error{background:#dc2626}
 .divider{border:none;border-top:0.5px solid var(--border);margin:1rem 0}
+
+/* Gantt */
 .gantt-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .gantt-controls select{width:auto}
 .gantt-wrap{overflow-x:auto;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
@@ -114,22 +155,34 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .gantt-row:last-child{border-bottom:none}
 .gantt-row.sub{background:var(--bg2)}
 .gantt-member{width:140px;flex-shrink:0;padding:0 8px;display:flex;align-items:center;gap:4px;font-size:13px}
-.gantt-expand{cursor:pointer;font-size:11px;font-weight:500;color:var(--blue-text);background:var(--blue-bg);border:none;padding:1px 5px;border-radius:4px;flex-shrink:0}
+.gantt-expand{cursor:pointer;font-size:11px;font-weight:500;color:var(--accent-text);background:var(--accent-light);border:none;padding:1px 5px;border-radius:4px;flex-shrink:0}
 .gantt-bars{flex:1;position:relative;min-height:36px}
 .g-bar{position:absolute;height:20px;top:8px;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
-.g-today{position:absolute;top:0;bottom:0;width:1.5px;background:#E24B4A;z-index:2;pointer-events:none}
+.g-today{position:absolute;top:0;bottom:0;width:1.5px;background:#ef4444;z-index:2;pointer-events:none}
 .g-gridline{position:absolute;top:0;bottom:0;width:0.5px;background:var(--border);pointer-events:none}
 .g-empty{font-size:12px;color:var(--text3);padding:0 8px;font-style:italic}
-.group-sep{display:flex;align-items:center;background:var(--bg2);padding:4px 8px;border-bottom:0.5px solid var(--border)}
+.group-sep{display:flex;align-items:center;background:var(--accent-light);padding:5px 8px;border-bottom:0.5px solid var(--border)}
+
+/* Editor rows */
 .editor-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
 .editor-row:last-child{border-bottom:none}
 .editor-name{flex:1;font-size:14px}
+
+/* Other */
 .other-note{display:none}.other-note.visible{display:block}
-.dropdown-list{position:absolute;left:0;top:100%;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:2px;max-height:150px;overflow-y:auto;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.dropdown-list{position:absolute;left:0;top:100%;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:2px;max-height:150px;overflow-y:auto;min-width:160px;box-shadow:0 4px 16px rgba(0,0,0,0.12)}
 .dropdown-item{padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text)}
-.dropdown-item:hover{background:var(--bg2)}
+.dropdown-item:hover{background:var(--accent-light);color:var(--accent-text)}
 .auto-label{font-size:11px;color:var(--text2);margin-top:4px}
 .archived-toggle{font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:12px;user-select:none}
+.archived-toggle:hover{color:var(--text)}
+
+/* Theme panel */
+.theme-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s;flex-shrink:0}
+.theme-btn.active{border-color:var(--text);transform:scale(1.15)}
+.theme-panel{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.custom-color-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+input[type=color]{width:28px;height:28px;padding:1px;border-radius:50%;cursor:pointer;border:0.5px solid var(--border2)}
 </style>
 </head>
 <body>
@@ -141,13 +194,14 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
     <button class="btn btn-sm" onclick="openModal('editors')" style="color:var(--text2)">管理編輯者</button>
     <button class="btn btn-sm" onclick="exportCSV()" style="color:var(--text2)">匯出 CSV</button>
+    <button class="btn btn-sm" onclick="openModal('theme')" style="color:var(--text2)" title="主題色">🎨</button>
   </div>
 </div>
 <div class="auth-bar" id="auth-bar">
-  <span style="color:var(--text2)">目前為唯讀模式。</span>
+  <span style="color:var(--text2)">唯讀模式。</span>
   <input type="password" id="secret-input" placeholder="輸入編輯密碼" style="width:180px" onkeydown="if(event.key==='Enter')tryAuth()" />
-  <button class="btn btn-sm" onclick="tryAuth()">解鎖編輯</button>
-  <span id="auth-status" style="font-size:12px;color:#A32D2D"></span>
+  <button class="btn btn-sm btn-accent-outline" onclick="tryAuth()">解鎖編輯</button>
+  <span id="auth-status" style="font-size:12px;color:#dc2626"></span>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('overview',this)">總覽</button>
@@ -209,7 +263,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
-      <span style="display:inline-block;width:10px;height:10px;background:#E24B4A;border-radius:2px"></span>今天
+      <span style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px"></span>今天
     </div>
     <button class="btn btn-sm" onclick="loadData()" style="margin-left:auto">重新整理</button>
   </div>
@@ -329,6 +383,27 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
+<!-- Theme modal -->
+<div id="modal-theme" style="display:none" class="overlay">
+<div class="modal" style="max-width:400px">
+  <div class="modal-header">
+    <span class="modal-title">主題色設定</span>
+    <button class="close-btn" onclick="closeModal('theme')">×</button>
+  </div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:14px">選一套預設主題，或自訂主色。</div>
+  <div style="font-size:13px;font-weight:500;margin-bottom:10px">預設主題</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px" id="theme-presets"></div>
+  <div style="font-size:13px;font-weight:500;margin-bottom:10px">自訂主色</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <input type="color" id="custom-color-input" value="#2563eb" style="width:40px;height:40px;border-radius:var(--radius);padding:2px;cursor:pointer" oninput="applyCustomColor(this.value)" />
+    <span style="font-size:13px;color:var(--text2)">選取任意顏色，其他配色自動搭配</span>
+  </div>
+  <div class="form-actions" style="margin-top:20px">
+    <button class="btn" onclick="closeModal('theme')">完成</button>
+  </div>
+</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -338,8 +413,89 @@ let members=[], projects=[], selectedAssignees=[], editorSecret='', isEditor=fal
 let cbCounter=0, showArchived=false, expandedMembers={};
 let mTags=[], pTags=[];
 
+// ── 主題系統 ────────────────────────────────────────────────
+const THEMES = [
+  {name:'深空藍',key:'blue',accent:'#2563eb',light:'#EFF6FF',text:'#1d4ed8',btn:'#2563eb',btnText:'#fff'},
+  {name:'森林綠',key:'green',accent:'#16a34a',light:'#F0FDF4',text:'#15803d',btn:'#16a34a',btnText:'#fff'},
+  {name:'暖橘山成',key:'amber',accent:'#d97706',light:'#FFFBEB',text:'#b45309',btn:'#d97706',btnText:'#fff'},
+  {name:'紫色夕陽',key:'purple',accent:'#7c3aed',light:'#F5F3FF',text:'#6d28d9',btn:'#7c3aed',btnText:'#fff'},
+  {name:'玫瑰珊瑚',key:'rose',accent:'#e11d48',light:'#FFF1F2',text:'#be123c',btn:'#e11d48',btnText:'#fff'},
+  {name:'青空藍灰',key:'slate',accent:'#0f172a',light:'#F1F5F9',text:'#334155',btn:'#0f172a',btnText:'#fff'},
+];
+
+function hexToHsl(hex){
+  let r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6;}}
+  return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+function hslToHex(h,s,l){
+  s/=100;l/=100;const a=s*Math.min(l,1-l);
+  const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};
+  return'#'+f(0)+f(8)+f(4);
+}
+function lightenHex(hex,pct){
+  const[h,s,l]=hexToHsl(hex);return hslToHex(h,Math.max(0,s-10),Math.min(97,l+pct));
+}
+function darkenHex(hex,pct){
+  const[h,s,l]=hexToHsl(hex);return hslToHex(h,s,Math.max(5,l-pct));
+}
+
+function applyTheme(accent,light,textColor,btnBg,btnText){
+  const r=document.documentElement;
+  r.style.setProperty('--accent',accent);
+  r.style.setProperty('--accent-light',light);
+  r.style.setProperty('--accent-text',textColor);
+  r.style.setProperty('--accent-btn-bg',btnBg);
+  r.style.setProperty('--accent-btn-text',btnText);
+  try{localStorage.setItem('kk_theme',JSON.stringify({accent,light,textColor,btnBg,btnText}));}catch(e){}
+}
+
+function applyCustomColor(hex){
+  const light=lightenHex(hex,48);
+  const textColor=darkenHex(hex,15);
+  applyTheme(hex,light,textColor,hex,'#ffffff');
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+}
+
+function loadSavedTheme(){
+  try{
+    const saved=localStorage.getItem('kk_theme');
+    if(saved){const t=JSON.parse(saved);applyTheme(t.accent,t.light,t.textColor,t.btnBg,t.btnText);}
+  }catch(e){}
+}
+
+function renderThemePresets(){
+  const el=document.getElementById('theme-presets');
+  el.innerHTML=THEMES.map(t=>`
+    <div style="cursor:pointer;border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;transition:all 0.15s" onclick="selectPreset('${t.key}')" id="theme-preset-${t.key}" onmouseover="this.style.borderColor='${t.accent}'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="width:32px;height:32px;border-radius:50%;background:${t.accent};margin:0 auto 6px"></div>
+      <div style="font-size:12px;color:var(--text2)">${t.name}</div>
+    </div>`).join('');
+}
+
+function selectPreset(key){
+  const t=THEMES.find(x=>x.key===key);if(!t)return;
+  applyTheme(t.accent,t.light,t.text,t.btn,t.btnText);
+  document.getElementById('custom-color-input').value=t.accent;
+}
+
+// ── 日期格式化 ─────────────────────────────────────────────
+function fmtDate(raw){
+  if(!raw) return '';
+  const s=String(raw);
+  // 處理 ISO 格式 2026-04-14T16:00:00.000Z
+  const d=new Date(s);
+  if(isNaN(d.getTime())) return s;
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return y+'/'+m+'/'+day;
+}
+
 const TYPE_BADGE={'訓練營':'badge-blue','團練':'badge-teal','月月繪':'badge-purple','DLC':'badge-coral','正課':'badge-amber','社群用':'badge-green','官網用':'badge-gray','其他':'badge-gray'};
-const BAR_COLORS=[{bg:'#B5D4F4',text:'#0C447C'},{bg:'#9FE1CB',text:'#085041'},{bg:'#CECBF6',text:'#3C3489'},{bg:'#FAC775',text:'#633806'},{bg:'#F5C4B3',text:'#712B13'},{bg:'#C0DD97',text:'#27500A'}];
+const BAR_COLORS=[{bg:'#DBEAFE',text:'#1e40af'},{bg:'#CCFBF1',text:'#134e4a'},{bg:'#EDE9FE',text:'#4c1d95'},{bg:'#FEF3C7',text:'#78350f'},{bg:'#FFE4E6',text:'#9f1239'},{bg:'#DCFCE7',text:'#14532d'}];
 
 let toastTimer;
 function showToast(msg,isError=false){
@@ -358,24 +514,17 @@ function jsonpGet(url){
     document.head.appendChild(s);
   });
 }
-
 async function apiPost(payload){
   const url=API_URL+'?action='+encodeURIComponent(payload.action)+'&type='+encodeURIComponent(payload.type)+'&secret='+encodeURIComponent(editorSecret)+'&payload='+encodeURIComponent(JSON.stringify(payload.payload||{}));
-  const data=await jsonpGet(url);
-  if(data.error) throw new Error(data.error);
-  return data;
+  const data=await jsonpGet(url);if(data.error) throw new Error(data.error);return data;
 }
-
 async function loadData(){
   showToast('載入中…');
   try{
-    const data=await jsonpGet(API_URL);
-    if(data.error) throw new Error(data.error);
-    members=data.members||[];projects=data.projects||[];
-    render();showToast('資料已載入');
+    const data=await jsonpGet(API_URL);if(data.error) throw new Error(data.error);
+    members=data.members||[];projects=data.projects||[];render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
-
 function tryAuth(){
   const val=document.getElementById('secret-input').value.trim();
   if(!val){document.getElementById('auth-status').textContent='請輸入密碼';return;}
@@ -399,8 +548,7 @@ function getProgress(p){
 }
 function updateAutoProgress(){
   const s=document.getElementById('p-start').value,d=document.getElementById('p-deadline').value;
-  const override=document.getElementById('p-progress-override').checked;
-  if(!override){
+  if(!document.getElementById('p-progress-override').checked){
     const auto=calcProgress(s,d);
     document.getElementById('p-progress').value=auto!==null?auto:0;
     document.getElementById('auto-progress-label').textContent=auto!==null?'依日期自動計算：'+auto+'%':'填入起迄日後自動計算';
@@ -424,8 +572,7 @@ function renderTagBox(boxId,dropId,tags,addFn,removeFn,inputId){
   tags.forEach((t,i)=>{
     const chip=document.createElement('span');chip.className='tag-chip';
     chip.innerHTML=t+'<span class="rm" data-i="'+i+'">×</span>';
-    chip.querySelector('.rm').onclick=()=>{removeFn(i);};
-    box.appendChild(chip);
+    chip.querySelector('.rm').onclick=()=>{removeFn(i);};box.appendChild(chip);
   });
   if(tags.length<5){
     const inp=document.createElement('input');inp.id=inputId;
@@ -448,13 +595,13 @@ function initMTagBox(){renderTagBox('m-tag-box','m-tag-dropdown',mTags,t=>{if(mT
 function initPTagBox(){renderTagBox('p-tag-box','p-tag-dropdown',pTags,t=>{if(pTags.length<5&&!pTags.includes(t)){pTags.push(t);initPTagBox();}},i=>{pTags.splice(i,1);initPTagBox();},'p-tag-input');}
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function daysLeft(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/864e5)}
+function daysLeft(d){if(!d)return null;const raw=new Date(d);return Math.ceil((raw-new Date())/864e5)}
 function dlClass(d){const n=daysLeft(d);if(n===null)return '';if(n<0)return 'dl-over';if(n<=14)return 'dl-near';return ''}
 function dlLabel(d){if(!d)return '';const n=daysLeft(d);if(n===null)return '';if(n<0)return'逾期'+Math.abs(n)+'天';if(n===0)return'今天截止';return'還有'+n+'天'}
 function avClass(name){const c=['av-0','av-1','av-2','av-3','av-4','av-5'];let h=0;for(let ch of name)h=(h*31+ch.charCodeAt(0))%c.length;return c[Math.abs(h)]}
 function initials(name){return name?name.slice(0,2):'??'}
 function badgeClass(s){const m={'進行中':'badge-blue','審核中':'badge-amber','完成':'badge-teal','暫停':'badge-gray','待開始':'badge-purple'};return m[s]||'badge-gray'}
-function pColor(n){if(n>=80)return'#1D9E75';if(n>=40)return'#BA7517';return'#888780'}
+function pColor(n){if(n>=80)return'#16a34a';if(n>=40)return'#d97706';return'#9ca3af'}
 function loadCls(n){if(n<=2)return'load-ok';if(n<=4)return'load-warn';return'load-over'}
 function toggleOtherNote(){document.getElementById('other-note-row').classList.toggle('visible',document.getElementById('p-type').value==='其他');}
 function toggleArchived(){
@@ -468,14 +615,12 @@ function switchTab(id,el){
   document.getElementById('sec-'+id).classList.add('active');el.classList.add('active');
   if(id==='gantt') renderGantt();
 }
-
 function openModal(type){
-  if(type!=='editors'&&!isEditor){showToast('請先輸入編輯密碼',true);return;}
+  if(type!=='editors'&&type!=='theme'&&!isEditor){showToast('請先輸入編輯密碼',true);return;}
   if(type==='member'){
     ['m-name','m-role','m-note'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('m-group').value='A';document.getElementById('m-edit-id').value='';
-    document.getElementById('member-modal-title').textContent='新增組員';
-    mTags=[];initMTagBox();
+    document.getElementById('member-modal-title').textContent='新增組員';mTags=[];initMTagBox();
   }
   if(type==='project'){
     ['p-name','p-owner','p-start','p-deadline','p-note','p-type-note'].forEach(id=>document.getElementById(id).value='');
@@ -489,6 +634,7 @@ function openModal(type){
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
   }
   if(type==='editors') loadEditors();
+  if(type==='theme') renderThemePresets();
   document.getElementById('modal-'+type).style.display='flex';
 }
 function closeModal(type){
@@ -526,7 +672,6 @@ async function deleteMember(id){
     render();showToast('已移除');
   }catch(e){showToast('失敗：'+e.message,true);}
 }
-
 async function saveProject(){
   const name=document.getElementById('p-name').value.trim();
   if(!name){showToast('請填寫專案名稱',true);return;}
@@ -549,7 +694,8 @@ async function saveProject(){
 function editProject(id){
   const p=projects.find(x=>x.id===id);if(!p)return;
   document.getElementById('p-name').value=p.name;document.getElementById('p-owner').value=p.owner||'';
-  document.getElementById('p-start').value=p.start||'';document.getElementById('p-deadline').value=p.deadline||'';
+  document.getElementById('p-start').value=p.start?fmtDateInput(p.start):'';
+  document.getElementById('p-deadline').value=p.deadline?fmtDateInput(p.deadline):'';
   document.getElementById('p-note').value=p.note||'';document.getElementById('p-edit-id').value=p.id;
   document.getElementById('proj-modal-title').textContent='編輯專案';
   const raw=String(p.type||'訓練營'),isOther=raw.startsWith('其他');
@@ -567,6 +713,12 @@ function editProject(id){
   pTags=[...(p.tags||[])];initPTagBox();
   document.getElementById('modal-project').style.display='flex';
 }
+function fmtDateInput(raw){
+  // 把 ISO 轉成 yyyy-mm-dd 供 date input 使用
+  if(!raw) return '';
+  const d=new Date(raw);if(isNaN(d.getTime())) return raw;
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 async function deleteProject(id){
   if(!confirm('確定刪除？'))return;
   try{
@@ -581,7 +733,7 @@ async function loadEditors(){
     const data=await apiPost({action:'list',type:'editors',payload:{}});
     if(!data.editors||!data.editors.length){wrap.innerHTML='<div class="empty">無資料</div>';return;}
     wrap.innerHTML=data.editors.map(e=>`<div class="editor-row"><div class="editor-name">${e.name}</div>${data.editors.length>1?'<button class="btn btn-sm btn-danger" onclick="removeEditor('+e.idx+')">移除</button>':''}</div>`).join('');
-  }catch(err){wrap.innerHTML='<div class="empty" style="color:#A32D2D">載入失敗：'+err.message+'</div>';}
+  }catch(err){wrap.innerHTML='<div class="empty" style="color:#dc2626">載入失敗：'+err.message+'</div>';}
 }
 async function addEditor(){
   const name=document.getElementById('new-editor-name').value.trim();
@@ -617,8 +769,7 @@ function renderAssigneeTags(){
   selectedAssignees.forEach(id=>{
     const m=members.find(x=>x.id===id);if(!m)return;
     const tag=document.createElement('div');tag.className='assignee-tag';
-    tag.innerHTML=m.name+'<span class="rm" onclick="removeAssignee(\''+id+'\')">×</span>';
-    box.appendChild(tag);
+    tag.innerHTML=m.name+'<span class="rm" onclick="removeAssignee(\''+id+'\')">×</span>';box.appendChild(tag);
   });
   const inp=document.createElement('input');inp.id='assignee-search';inp.placeholder='輸入姓名搜尋…';
   inp.style.cssText='border:none;padding:0;min-width:80px;flex:1;background:transparent;box-shadow:none;color:var(--text)';
@@ -629,7 +780,7 @@ function exportCSV(){
   const header=['專案名稱','類型','負責人','開始日','截止日','進度%','狀態','指派繪師','標籤','備註'];
   const rows=projects.map(p=>{
     const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:'';}).filter(Boolean).join('|');
-    return[p.name,p.type||'',p.owner||'',p.start||'',p.deadline||'',getProgress(p),p.status||'',names,(p.tags||[]).join('|'),p.note||''];
+    return[p.name,p.type||'',p.owner||'',fmtDate(p.start),fmtDate(p.deadline),getProgress(p),p.status||'',names,(p.tags||[]).join('|'),p.note||''];
   });
   const csv=[header,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
@@ -637,6 +788,7 @@ function exportCSV(){
   a.download='KK儀表板_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
+// ── Render ───────────────────────────────────────────────────
 function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
 
 function renderStats(){
@@ -644,19 +796,31 @@ function renderStats(){
   const active=projects.filter(p=>p.status!=='完成').length;
   const done=projects.filter(p=>p.status==='完成').length;
   const over=projects.filter(p=>p.deadline&&daysLeft(p.deadline)<0&&p.status!=='完成').length;
-  el.innerHTML=`<div class="stat"><div class="stat-label">總組員數</div><div class="stat-num">${members.length}</div></div><div class="stat"><div class="stat-label">進行中</div><div class="stat-num">${active}</div></div><div class="stat"><div class="stat-label">已完成</div><div class="stat-num ok">${done}</div></div><div class="stat"><div class="stat-label">逾期</div><div class="stat-num ${over>0?'warn':''}">${over}</div></div>`;
+  const icons=[['👥','總組員數',members.length,'accent','#EFF6FF'],['📋','進行中',active,'','#F0FDF4'],['✅','已完成',done,'ok','#DCFCE7'],['⚠️','逾期',over,over>0?'warn':'','#FEF9C3']];
+  el.innerHTML=icons.map(([icon,label,num,cls,bg])=>`<div class="stat"><div class="stat-icon" style="background:${bg}">${icon}</div><div class="stat-body"><div class="stat-label">${label}</div><div class="stat-num ${cls}">${num}</div></div></div>`).join('');
 }
+
 function renderUpcoming(){
   const el=document.getElementById('upcoming-list');
   const list=projects.filter(p=>p.deadline&&daysLeft(p.deadline)>=0&&daysLeft(p.deadline)<=14&&p.status!=='完成').sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
   if(!list.length){el.innerHTML='<div class="empty">近14天沒有即將截止的專案</div>';return;}
-  el.innerHTML=list.map(p=>{const prog=getProgress(p);return`<div class="card" style="padding:10px 1rem"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-size:14px;font-weight:500">${p.name}</span><span class="badge ${badgeClass(p.status)}">${p.status}</span></div>${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：'+p.owner+'</div>':''}<div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${p.deadline} · ${dlLabel(p.deadline)}</div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div><div style="font-size:11px;color:var(--text2)">${prog}% 完成</div></div>`;}).join('');
+  el.innerHTML=list.map(p=>{const prog=getProgress(p);return`<div class="card" style="padding:10px 1rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="font-size:14px;font-weight:500">${p.name}</span>
+      <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+    </div>
+    ${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：'+p.owner+'</div>':''}
+    <div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${fmtDate(p.deadline)} · ${dlLabel(p.deadline)}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
+    <div style="font-size:11px;color:var(--text2)">${prog}% 完成</div>
+  </div>`;}).join('');
 }
+
 function renderAlerts(){
   const el=document.getElementById('alert-list');let html='';
   members.forEach(m=>{
     const count=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id)).length;
-    if(count>=4)html+=`<div class="card" style="padding:10px 1rem;border-left:3px solid #EF9F27;border-radius:0 var(--radius-lg) var(--radius-lg) 0"><div style="font-size:14px">${m.name} <span style="color:#BA7517;font-weight:500">同時跑${count}個專案</span></div></div>`;
+    if(count>=4)html+=`<div class="card" style="padding:10px 1rem;border-left:3px solid #f59e0b;border-radius:0 var(--radius-lg) var(--radius-lg) 0"><div style="font-size:14px">${m.name} <span style="color:#d97706;font-weight:500">同時跑${count}個專案</span></div></div>`;
   });
   const idle=members.filter(m=>projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id)).length===0);
   if(idle.length)html+=`<div class="card" style="padding:10px 1rem"><div style="font-size:13px;color:var(--text2)">目前無任務：${idle.map(m=>m.name).join('、')}</div></div>`;
@@ -667,9 +831,31 @@ function projectCard(p){
   const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
   const typeKey=p.type?(p.type.split('：')[0]):'';
   const prog=getProgress(p);
-  const editBtns=isEditor?`<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end"><button class="btn btn-sm" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+  const startFmt=fmtDate(p.start),deadlineFmt=fmtDate(p.deadline);
+  const editBtns=isEditor?`<div style="display:flex;gap:6px"><button class="btn btn-sm btn-accent-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
   const tagsHtml=(p.tags||[]).length?`<div class="chip-row" style="margin-top:6px">${(p.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
-  return`<div class="card"><div class="card-header"><div style="flex:1;min-width:0"><div class="card-title">${p.name}</div>${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:2px">負責人：'+p.owner+'</div>':''}${p.start?'<div style="font-size:11px;color:var(--text2)">'+p.start+(p.deadline?' → '+p.deadline:'')+'</div>':(p.deadline?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+p.deadline+' · '+dlLabel(p.deadline)+'</div>':'')}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}<span class="badge ${badgeClass(p.status)}">${p.status}</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:8px">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>${names.length?'<div class="chip-row">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}${tagsHtml}${p.note?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">'+p.note+'</div>':''}${editBtns}</div>`;
+  return`<div class="project-card">
+    <div class="project-card-accent"></div>
+    <div class="project-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <div style="flex:1;min-width:0">
+          <div class="card-title">${p.name}</div>
+          ${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:2px">負責人：'+p.owner+'</div>':''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
+          ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
+          <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+        </div>
+      </div>
+      ${startFmt?'<div style="font-size:11px;color:var(--text2)">'+startFmt+(deadlineFmt?' → '+deadlineFmt:'')+'</div>':(deadlineFmt?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+deadlineFmt+' · '+dlLabel(p.deadline)+'</div>':'')}
+      <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
+      <div style="font-size:12px;color:var(--text2)">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>
+      ${names.length?'<div class="chip-row" style="margin-top:8px">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
+      ${tagsHtml}
+      ${p.note?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">'+p.note+'</div>':''}
+    </div>
+    ${editBtns?'<div class="project-card-footer">'+editBtns+'<span></span></div>':''}
+  </div>`;
 }
 
 function renderProjects(){
@@ -699,14 +885,29 @@ function renderMembers(){
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
   const list=members.filter(m=>m.group===group);
-  const addBtn=isEditor?`<button class="btn btn-sm" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
+  const addBtn=isEditor?`<button class="btn btn-sm btn-accent-outline" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
   if(!list.length){el.innerHTML=`<div class="section-title">${label}（0人）${addBtn}</div><div class="empty">還沒有組員</div>`;return;}
   const rows=list.map(m=>{
     const projs=projects.filter(p=>p.status!=='完成'&&(p.assignees||[]).includes(m.id));
     const pct=Math.min(100,projs.length*20);
     const editBtns=isEditor?`<div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="editMember('${m.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteMember('${m.id}')">移除</button></div>`:'';
     const tagsHtml=(m.tags||[]).length?`<div class="chip-row" style="margin-top:4px">${(m.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
-    return`<div class="member-row"><div class="avatar ${avClass(m.name)}">${initials(m.name)}</div><div class="member-info"><div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div><div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>${tagsHtml}${m.note?'<div style="font-size:11px;color:var(--text2);margin-top:2px">'+m.note+'</div>':''}</div><div style="text-align:right;margin-right:8px;flex-shrink:0"><div style="font-size:12px;color:var(--text2)">${projs.length}個專案</div><div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div></div>${editBtns}</div>`;
+    return`<div class="member-row">
+      <div class="avatar ${avClass(m.name)}">${initials(m.name)}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}${m.role?` <span style="font-size:11px;color:var(--text2);font-weight:400">${m.role}</span>`:''}</div>
+        <div class="member-tasks">${projs.length?projs.map(p=>p.name).join('、'):'目前無任務'}</div>
+        ${tagsHtml}
+        ${m.note?'<div style="font-size:11px;color:var(--text2);margin-top:2px">'+m.note+'</div>':''}
+      </div>
+      <div class="load-pill">
+        <div style="text-align:right">
+          <div style="font-size:12px;color:var(--text2)">${projs.length}個</div>
+          <div class="load-bar"><div class="${loadCls(projs.length)}" style="height:100%;border-radius:4px;width:${pct}%"></div></div>
+        </div>
+      </div>
+      ${editBtns}
+    </div>`;
   }).join('');
   el.innerHTML=`<div class="section-title">${label}（${list.length}人）${addBtn}</div><div class="card">${rows}</div>`;
 }
@@ -731,11 +932,10 @@ function renderGantt(){
   let rowsHtml='';
   ['A','B'].forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:500;color:var(--text2)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
-      const isExpanded=!!expandedMembers[m.id];
-      const hasMulti=mP.length>1;
+      const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
       function makeBar(p){
         const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
         const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
@@ -743,14 +943,14 @@ function renderGantt(){
         if(e<rangeStart||s>rangeEnd)return'';
         const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
         const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
-        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #E24B4A':''}" title="${p.name}${p.deadline?' 截止：'+p.deadline:''}">${p.name}</div>`;
+        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
       }
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
       const firstP=mP[0];
-      rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:24px;height:24px;font-size:10px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${firstP?makeBar(firstP):'<div class="g-empty">無任務</div>'}</div></div>`;
+      rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${firstP?makeBar(firstP):'<div class="g-empty">無任務</div>'}</div></div>`;
       if(isExpanded&&mP.length>1){
         mP.slice(1).forEach(p=>{
-          rowsHtml+=`<div class="gantt-row sub"><div class="gantt-member"><span style="min-width:22px;display:inline-block"></span><span style="min-width:24px;display:inline-block"></span><span style="font-size:11px;color:var(--text2);padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${makeBar(p)}</div></div>`;
+          rowsHtml+=`<div class="gantt-row sub"><div class="gantt-member"><span style="min-width:22px;display:inline-block"></span><span style="min-width:26px;display:inline-block"></span><span style="font-size:11px;color:var(--text2);padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${makeBar(p)}</div></div>`;
         });
       }
     });
@@ -767,6 +967,7 @@ document.addEventListener('click',e=>{
   if(dd&&!dd.contains(e.target)&&e.target.id!=='assignee-search') dd.style.display='none';
 });
 
+loadSavedTheme();
 loadData();
 </script>
 </body>
