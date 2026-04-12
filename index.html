@@ -152,6 +152,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .option-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)}
 .option-row:last-child{border-bottom:none}
 .option-row input{flex:1;font-size:13px;padding:4px 8px}
+.color-ball{width:26px;height:26px;border-radius:50%;background:conic-gradient(#ef4444,#f97316,#eab308,#22c55e,#3b82f6,#8b5cf6,#ef4444);cursor:pointer;border:2px solid transparent;transition:transform 0.2s,box-shadow 0.2s;flex-shrink:0}
+.color-ball:hover{transform:scale(1.15);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.admin-tab{padding:7px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;transition:color 0.15s}
+.admin-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .theme-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s}
 .theme-btn.active{border-color:var(--text);transform:scale(1.15)}
 </style>
@@ -163,10 +167,9 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <div class="actions" id="editor-actions" style="display:none">
     <button class="btn btn-sm" onclick="openModal('member')">+ 新增組員</button>
     <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
-    <button class="btn btn-sm" id="btn-users" onclick="openModal('users')" style="display:none">管理帳號</button>
     <button class="btn btn-sm" onclick="openModal('myaccount')" style="color:var(--text2)" id="btn-myaccount"></button>
     <button class="btn btn-sm" onclick="exportCSV()" style="color:var(--text2)">匯出 CSV</button>
-    <button class="btn btn-sm" onclick="openModal('theme')" style="color:var(--text2)" title="主題色">🎨</button>
+    <div class="color-ball" id="btn-admin" onclick="openModal('admin')" style="display:none" title="設定"></div>
   </div>
 </div>
 <div class="auth-bar" id="auth-bar">
@@ -180,8 +183,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
   <button class="tab" onclick="switchTab('members',this)">人力配置</button>
-  <button class="tab" id="tab-log" onclick="switchTab('log',this)" style="display:none">操作記錄</button>
-  <button class="tab" id="tab-settings" onclick="switchTab('settings',this)" style="display:none">系統設定</button>
+
 </div>
 
 <div id="sec-overview" class="section active">
@@ -249,39 +251,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
 
-<div id="sec-log" class="section">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div class="section-title" style="margin:0">操作記錄</div>
-    <button class="btn btn-sm" onclick="loadLog()">重新整理</button>
-  </div>
-  <div class="card" id="log-list"><div class="empty">載入中…</div></div>
-</div>
-
-<div id="sec-settings" class="section">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-    <div style="font-size:16px;font-weight:500">系統設定</div>
-  </div>
-  <div class="two-col">
-    <div class="card">
-      <div style="font-size:15px;font-weight:500;margin-bottom:4px">組別選項</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的組別下拉選單</div>
-      <div id="groups-editor"></div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="new-group-input" placeholder="輸入新組別名稱" style="flex:1"/>
-        <button class="btn btn-sm btn-primary" onclick="addOption('groups')">新增</button>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:15px;font-weight:500;margin-bottom:4px">國家選項</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的國家下拉選單</div>
-      <div id="countries-editor"></div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="new-country-input" placeholder="輸入新國家/地區" style="flex:1"/>
-        <button class="btn btn-sm btn-primary" onclick="addOption('countries')">新增</button>
-      </div>
-    </div>
-  </div>
-</div>
 </div>
 
 <!-- Member modal -->
@@ -373,30 +342,83 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 </div>
 
-<!-- Users modal (super_admin only) -->
-<div id="modal-users" style="display:none" class="overlay">
-<div class="modal">
+<!-- Admin modal -->
+<div id="modal-admin" style="display:none" class="overlay">
+<div class="modal" style="max-width:600px">
   <div class="modal-header">
-    <span class="modal-title">管理帳號</span>
-    <button class="close-btn" onclick="closeModal('users')">×</button>
+    <span class="modal-title">設定</span>
+    <button class="close-btn" onclick="closeModal('admin')">×</button>
   </div>
-  <div id="user-list-wrap"><div class="empty">載入中…</div></div>
-  <hr class="divider"/>
-  <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增帳號</div>
-  <div class="form-grid">
-    <div class="form-row"><label>名稱</label><input id="new-user-name" placeholder="例：Jenny"/></div>
-    <div class="form-row"><label>密碼</label><input type="password" id="new-user-secret" placeholder="設定密碼"/></div>
+  <div style="display:flex;gap:0;border-bottom:0.5px solid var(--border);margin-bottom:1.25rem;flex-wrap:wrap">
+    <button class="admin-tab active" onclick="switchAdminTab('users',this)">帳號管理</button>
+    <button class="admin-tab" onclick="switchAdminTab('sys',this)">系統設定</button>
+    <button class="admin-tab" onclick="switchAdminTab('theme',this)">主題色</button>
+    <button class="admin-tab" onclick="switchAdminTab('log',this)">操作記錄</button>
   </div>
-  <div class="form-row"><label>權限</label>
-    <select id="new-user-role">
-      <option value="editor">管理者</option>
-      <option value="super_admin">超級管理者</option>
-    </select>
+
+  <!-- 帳號管理 -->
+  <div id="admin-sec-users">
+    <div id="user-list-wrap"><div class="empty">載入中…</div></div>
+    <hr class="divider"/>
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">新增帳號</div>
+    <div class="form-grid">
+      <div class="form-row"><label>名稱</label><input id="new-user-name" placeholder="例：Jenny"/></div>
+      <div class="form-row"><label>密碼</label><input type="password" id="new-user-secret" placeholder="設定密碼"/></div>
+    </div>
+    <div class="form-row"><label>權限</label>
+      <select id="new-user-role">
+        <option value="editor">管理者</option>
+        <option value="super_admin">超級管理者</option>
+      </select>
+    </div>
+    <div class="form-actions"><button class="btn btn-primary" onclick="addUser()">新增</button></div>
   </div>
-  <div class="form-actions">
-    <button class="btn" onclick="closeModal('users')">關閉</button>
-    <button class="btn btn-primary" onclick="addUser()">新增</button>
+
+  <!-- 系統設定 -->
+  <div id="admin-sec-sys" style="display:none">
+    <div class="two-col">
+      <div class="card">
+        <div style="font-size:15px;font-weight:500;margin-bottom:4px">組別選項</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的組別下拉選單</div>
+        <div id="groups-editor"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <input id="new-group-input" placeholder="輸入新組別名稱" style="flex:1"/>
+          <button class="btn btn-sm btn-primary" onclick="addOption('groups')">新增</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:500;margin-bottom:4px">國家選項</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px">新增人員時的國家下拉選單</div>
+        <div id="countries-editor"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <input id="new-country-input" placeholder="輸入新國家/地區" style="flex:1"/>
+          <button class="btn btn-sm btn-primary" onclick="addOption('countries')">新增</button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- 主題色 -->
+  <div id="admin-sec-theme" style="display:none">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">選一套預設主題，或自訂主色。</div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:10px">預設主題</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px" id="theme-presets"></div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:10px">自訂主色</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="color" id="custom-color-input" value="#2563eb" style="width:40px;height:40px;border-radius:var(--radius);padding:2px;cursor:pointer" oninput="applyCustomColor(this.value)"/>
+      <span style="font-size:13px;color:var(--text2)">選取任意顏色，配色自動搭配</span>
+    </div>
+  </div>
+
+  <!-- 操作記錄 -->
+  <div id="admin-sec-log" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-size:13px;color:var(--text2)">最近200筆</span>
+      <button class="btn btn-sm" onclick="loadLog()">重新整理</button>
+    </div>
+    <div id="log-list" style="max-height:400px;overflow-y:auto"><div class="empty">載入中…</div></div>
+  </div>
+
 </div>
 </div>
 
@@ -415,27 +437,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <div class="form-actions">
     <button class="btn" onclick="closeModal('myaccount')">取消</button>
     <button class="btn btn-primary" onclick="changeMySecret()">儲存</button>
-  </div>
-</div>
-</div>
-
-<!-- Theme modal -->
-<div id="modal-theme" style="display:none" class="overlay">
-<div class="modal" style="max-width:400px">
-  <div class="modal-header">
-    <span class="modal-title">主題色設定</span>
-    <button class="close-btn" onclick="closeModal('theme')">×</button>
-  </div>
-  <div style="font-size:13px;color:var(--text2);margin-bottom:14px">選一套預設主題，或自訂主色。</div>
-  <div style="font-size:13px;font-weight:500;margin-bottom:10px">預設主題</div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px" id="theme-presets"></div>
-  <div style="font-size:13px;font-weight:500;margin-bottom:10px">自訂主色</div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <input type="color" id="custom-color-input" value="#2563eb" style="width:40px;height:40px;border-radius:var(--radius);padding:2px;cursor:pointer" oninput="applyCustomColor(this.value)"/>
-    <span style="font-size:13px;color:var(--text2)">選取任意顏色，配色自動搭配</span>
-  </div>
-  <div class="form-actions" style="margin-top:20px">
-    <button class="btn" onclick="closeModal('theme')">完成</button>
   </div>
 </div>
 </div>
@@ -723,8 +724,17 @@ function switchTab(id,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');el.classList.add('active');
   if(id==='gantt')renderGantt();
+}
+function switchAdminTab(id,el){
+  ['users','sys','theme','log'].forEach(s=>{
+    const sec=document.getElementById('admin-sec-'+s);
+    if(sec)sec.style.display=s===id?'block':'none';
+  });
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(id==='theme')renderThemePresets();
   if(id==='log')loadLog();
-  if(id==='settings')renderSettingsEditors();
+  if(id==='sys')renderSettingsEditors();
 }
 
 function openModal(type){
@@ -748,9 +758,8 @@ function openModal(type){
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
   }
-  if(type==='users'){loadUsers();}
   if(type==='myaccount'){openMyAccount();}
-  if(type==='theme'){renderThemePresets();}
+  if(type==='admin'){switchAdminTab('users',document.querySelector('.admin-tab'));loadUsers();}
   document.getElementById('modal-'+type).style.display='flex';
 }
 function closeModal(type){
