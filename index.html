@@ -169,7 +169,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <button class="btn btn-sm btn-primary" onclick="openModal('project')">+ 新增專案</button>
     <button class="btn btn-sm" onclick="openModal('myaccount')" style="color:var(--text2)" id="btn-myaccount"></button>
     <button class="btn btn-sm" onclick="exportCSV()" style="color:var(--text2)">匯出 CSV</button>
-    <div class="color-ball" id="btn-admin" onclick="openModal('admin')" style="display:none" title="設定"></div>
+    <button class="btn btn-sm" id="btn-admin" onclick="openModal('admin')" style="display:none">⚙️ 設定</button>
   </div>
 </div>
 <div class="auth-bar" id="auth-bar">
@@ -540,15 +540,8 @@ function tryAuth(){
     currentRole=me?me.role:'editor';
     document.getElementById('auth-bar').style.display='none';
     document.getElementById('editor-actions').style.display='flex';
-    document.getElementById('btn-myaccount').textContent='👤 '+( me?me.name:'我的帳號');
-    if(currentRole==='super_admin'){
-      document.getElementById('btn-users').style.display='';
-      document.getElementById('tab-log').style.display='';
-    document.getElementById('tab-settings').style.display='';
-    } else {
-      document.getElementById('tab-log').style.display='';
-    document.getElementById('tab-settings').style.display='';
-    }
+    document.getElementById('btn-myaccount').textContent='👤 '+(me?me.name:'我的帳號');
+    document.getElementById('btn-admin').style.display='';
     showToast('已解鎖：'+(currentRole==='super_admin'?'超級管理者':'管理者'));render();
   }).catch(()=>{
     document.getElementById('auth-status').textContent='密碼錯誤';
