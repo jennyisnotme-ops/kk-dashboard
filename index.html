@@ -255,8 +255,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
-      <select id="gantt-group" onchange="renderGantt()" style="width:100px">
-        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
+      <select id="gantt-group" onchange="renderGantt()" style="width:120px">
+        <option value="all">全部</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -268,8 +268,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 
 <div id="sec-members" class="section">
-  <div id="group-a-wrap"></div>
-  <div id="group-b-wrap" style="margin-top:1.5rem"></div>
+  <div id="groups-wrap"></div>
 </div>
 
 </div>
@@ -971,7 +970,16 @@ function exportCSV(){
 }
 
 // ── Render ───────────────────────────────────────────────
-function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
+function render(){
+  // 動態更新甘特圖組別篩選
+  const ganttGroup=document.getElementById('gantt-group');
+  if(ganttGroup){
+    const cur=ganttGroup.value;
+    ganttGroup.innerHTML='<option value="all">全部</option>'+sysGroups.map(g=>`<option value="${g}">${g}</option>`).join('');
+    if(sysGroups.includes(cur))ganttGroup.value=cur;
+  }
+  renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();
+}
 
 function renderStats(){
   const el=document.getElementById('stat-row');
@@ -1100,10 +1108,13 @@ function renderProjects(){
 }
 
 function renderMembers(){
-  renderGroup('A','group-a-wrap','A 組');renderGroup('B','group-b-wrap','B 組');
+  const wrap=document.getElementById('groups-wrap');
+  wrap.innerHTML=sysGroups.map((g,i)=>`<div id="group-wrap-${i}" ${i>0?'style="margin-top:1.5rem"':''}></div>`).join('');
+  sysGroups.forEach((g,i)=>renderGroup(g,'group-wrap-'+i,g));
 }
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
+  if(!el)return;
   const list=members.filter(m=>m.group===group);
   const addBtn=isEditor?`<button class="btn btn-sm btn-outline" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
   if(!list.length){el.innerHTML=`<div class="section-title">${label}（0人）${addBtn}</div><div class="empty">還沒有組員</div>`;return;}
@@ -1148,9 +1159,9 @@ function renderGantt(){
   const tp=pct(today);
   const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
   let rowsHtml='';
-  ['A','B'].forEach(g=>{
+  sysGroups.forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
