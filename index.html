@@ -101,6 +101,23 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.project-list{display:flex;flex-direction:column;gap:6px}
+.project-list-row{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;gap:12px;padding:10px 14px;transition:box-shadow 0.15s}
+.project-list-row:hover{box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+.project-list-accent{width:3px;height:36px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.project-list-name{flex:1;min-width:0}
+.project-list-name .title{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-list-name .sub{font-size:11px;color:var(--text2);margin-top:1px}
+.project-list-dates{font-size:11px;color:var(--text2);white-space:nowrap;min-width:130px;text-align:right}
+.project-list-prog{min-width:80px}
+.project-list-prog .bar{background:var(--bg2);border-radius:3px;height:5px;overflow:hidden;margin-top:3px}
+.project-list-prog .fill{height:100%;border-radius:3px}
+.project-list-prog .label{font-size:11px;color:var(--text2);text-align:right}
+.project-list-badges{display:flex;gap:4px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end;min-width:100px}
+.project-list-actions{display:flex;gap:4px;flex-shrink:0}
+.view-toggle{display:flex;gap:2px;background:var(--bg2);border-radius:var(--radius);padding:2px}
+.view-toggle-btn{padding:4px 8px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.15s;line-height:1}
+.view-toggle-btn.active{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
 .chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
@@ -212,6 +229,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
       <option value="progress">進度↑</option>
       <option value="type">類型</option>
     </select>
+    <div class="view-toggle" style="margin-left:auto">
+      <button class="view-toggle-btn active" id="view-btn-card" onclick="setViewMode('card')" title="卡片檢視">⊞</button>
+      <button class="view-toggle-btn" id="view-btn-list" onclick="setViewMode('list')" title="條列檢視">☰</button>
+    </div>
   </div>
   <label class="archived-toggle" onclick="toggleArchived()">
     <span id="archived-icon">▶</span>
@@ -986,6 +1007,40 @@ function renderAlerts(){
   el.innerHTML=html||'<div class="empty">人力分配正常</div>';
 }
 
+let projectViewMode='card';
+function setViewMode(mode){
+  projectViewMode=mode;
+  document.getElementById('view-btn-card').classList.toggle('active',mode==='card');
+  document.getElementById('view-btn-list').classList.toggle('active',mode==='list');
+  renderProjects();
+}
+
+function projectListRow(p){
+  const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
+  const typeKey=p.type?(p.type.split('：')[0]):'';
+  const prog=getProgress(p);
+  const sf=fmtDate(p.start),df=fmtDate(p.deadline);
+  const editBtns=isEditor?`<div class="project-list-actions"><button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+  const dateStr=sf&&df?sf+' → '+df:df?`<span class="${dlClass(p.deadline)}">${df} · ${dlLabel(p.deadline)}</span>`:'—';
+  return`<div class="project-list-row">
+    <div class="project-list-accent"></div>
+    <div class="project-list-name">
+      <div class="title">${p.name}</div>
+      <div class="sub">${p.owner?'負責人：'+p.owner+(names.length?' · ':''):''}${names.join('、')}</div>
+    </div>
+    <div class="project-list-badges">
+      ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
+      <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+    </div>
+    <div class="project-list-dates">${dateStr}</div>
+    <div class="project-list-prog">
+      <div class="label">${prog}%</div>
+      <div class="bar"><div class="fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
+    </div>
+    ${editBtns}
+  </div>`;
+}
+
 function projectCard(p){
   const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
   const typeKey=p.type?(p.type.split('：')[0]):'';
@@ -1031,11 +1086,17 @@ function renderProjects(){
     if(sortBy==='type')list=[...list].sort((a,b)=>(a.type||'').localeCompare(b.type||''));
     return list;
   }
+  const isList=projectViewMode==='list';
+  const renderFn=isList?projectListRow:projectCard;
+  const wrapClass=isList?'project-list':'project-grid';
+  const emptyCol=isList?'':'grid-column:1/-1;';
   let active=applyFilters(projects.filter(p=>p.status!=='完成'));
   let archived=applyFilters(projects.filter(p=>p.status==='完成'));
   document.getElementById('archived-count').textContent=archived.length;
-  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
-  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
+  document.getElementById('project-grid').className=wrapClass;
+  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>renderFn(p)).join(''):`<div class="empty" style="${emptyCol}">沒有符合條件的專案</div>`;
+  document.getElementById('archived-project-grid').className=wrapClass;
+  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>renderFn(p)).join(''):`<div class="empty" style="${emptyCol}">沒有已完成的專案</div>`;
 }
 
 function renderMembers(){
