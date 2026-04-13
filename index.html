@@ -524,14 +524,14 @@ function fmtDateInput(raw){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-async function loadData(){
-  showToast('載入中…');
+async function loadData(silent=false){
+  if(!silent)showToast('載入中…');
   try{
     const data=await jsonpGet(API_URL);if(data.error)throw new Error(data.error);
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
-    render();showToast('資料已載入');
+    render();if(!silent)showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
 
@@ -786,8 +786,7 @@ async function saveMember(){
   showToast('儲存中…');
   try{
     await apiCall('upsert','members',obj);
-    if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}else members.push(obj);
-    closeModal('member');render();showToast('組員已儲存');
+    closeModal('member');showToast('組員已儲存');await loadData(true);
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editMember(id){
@@ -805,9 +804,7 @@ async function deleteMember(id){
   if(!confirm('確定移除？'))return;
   try{
     await apiCall('delete','members',{id});
-    members=members.filter(m=>m.id!==id);
-    projects=projects.map(p=>({...p,assignees:(p.assignees||[]).filter(a=>a!==id)}));
-    render();showToast('已移除');
+    showToast('已移除');await loadData(true);
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 
@@ -826,8 +823,7 @@ async function saveProject(){
   showToast('儲存中…');
   try{
     await apiCall('upsert','projects',obj);
-    if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}else projects.push(obj);
-    closeModal('project');render();showToast('專案已儲存');
+    closeModal('project');showToast('專案已儲存');await loadData(true);
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editProject(id){
@@ -854,7 +850,7 @@ function editProject(id){
 }
 async function deleteProject(id){
   if(!confirm('確定刪除？'))return;
-  try{await apiCall('delete','projects',{id});projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');}
+  try{await apiCall('delete','projects',{id});showToast('已刪除');await loadData(true);}
   catch(e){showToast('失敗：'+e.message,true);}
 }
 
