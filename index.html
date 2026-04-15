@@ -537,6 +537,9 @@ async function loadData(){
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
+    console.log('=== loadData ===');
+    console.log('members:', JSON.stringify(members.map(m=>({name:m.name,group:m.group}))));
+    console.log('projects count:', projects.length);
     render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
