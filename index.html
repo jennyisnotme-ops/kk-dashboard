@@ -101,23 +101,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.project-list{display:flex;flex-direction:column;gap:6px}
-.project-list-row{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;gap:12px;padding:10px 14px;transition:box-shadow 0.15s}
-.project-list-row:hover{box-shadow:0 2px 8px rgba(0,0,0,0.07)}
-.project-list-accent{width:3px;height:36px;border-radius:2px;background:var(--accent);flex-shrink:0}
-.project-list-name{flex:1;min-width:0}
-.project-list-name .title{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.project-list-name .sub{font-size:11px;color:var(--text2);margin-top:1px}
-.project-list-dates{font-size:11px;color:var(--text2);white-space:nowrap;min-width:130px;text-align:right}
-.project-list-prog{min-width:80px}
-.project-list-prog .bar{background:var(--bg2);border-radius:3px;height:5px;overflow:hidden;margin-top:3px}
-.project-list-prog .fill{height:100%;border-radius:3px}
-.project-list-prog .label{font-size:11px;color:var(--text2);text-align:right}
-.project-list-badges{display:flex;gap:4px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end;min-width:100px}
-.project-list-actions{display:flex;gap:4px;flex-shrink:0}
-.view-toggle{display:flex;gap:2px;background:var(--bg2);border-radius:var(--radius);padding:2px}
-.view-toggle-btn{padding:4px 8px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.15s;line-height:1}
-.view-toggle-btn.active{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
 .chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
@@ -199,7 +182,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <button class="tab active" onclick="switchTab('overview',this)">總覽</button>
   <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
-  <button class="tab" onclick="switchTab('members',this)">人力配置</button>
+  <button class="tab" onclick="switchTab('members',this)">成員一覽</button>
 
 </div>
 
@@ -229,10 +212,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
       <option value="progress">進度↑</option>
       <option value="type">類型</option>
     </select>
-    <div class="view-toggle" style="margin-left:auto">
-      <button class="view-toggle-btn active" id="view-btn-card" onclick="setViewMode('card')" title="卡片檢視">⊞</button>
-      <button class="view-toggle-btn" id="view-btn-list" onclick="setViewMode('list')" title="條列檢視">☰</button>
-    </div>
   </div>
   <label class="archived-toggle" onclick="toggleArchived()">
     <span id="archived-icon">▶</span>
@@ -255,8 +234,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
-      <select id="gantt-group" onchange="renderGantt()" style="width:120px">
-        <option value="all">全部</option>
+      <select id="gantt-group" onchange="renderGantt()" style="width:100px">
+        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -268,7 +247,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 
 <div id="sec-members" class="section">
-  <div id="groups-wrap"></div>
+  <div id="group-a-wrap"></div>
+  <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
 
 </div>
@@ -327,6 +307,12 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <div class="form-grid">
     <div class="form-row"><label>開始日</label><input type="date" id="p-start" oninput="updateAutoProgress()"/></div>
     <div class="form-row"><label>截止日</label><input type="date" id="p-deadline" oninput="updateAutoProgress()"/></div>
+  </div>
+  <div class="form-row">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:0">
+      <input type="checkbox" id="p-longterm" style="width:auto;padding:0;border:none;box-shadow:none;cursor:pointer" onchange="toggleLongterm()"/>
+      <span>長期專案（無固定截止日，甘特圖顯示為持續條）</span>
+    </label>
   </div>
   <div class="form-row">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
@@ -544,14 +530,14 @@ function fmtDateInput(raw){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-async function loadData(silent=false){
-  if(!silent)showToast('載入中…');
+async function loadData(){
+  showToast('載入中…');
   try{
     const data=await jsonpGet(API_URL);if(data.error)throw new Error(data.error);
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
-    render();if(!silent)showToast('資料已載入');
+    render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
 
@@ -745,6 +731,17 @@ function showToast(msg,isError=false){
 }
 
 function toggleOtherNote(){document.getElementById('other-note-row').classList.toggle('visible',document.getElementById('p-type').value==='其他');}
+function toggleLongterm(){
+  const lt=document.getElementById('p-longterm').checked;
+  const startEl=document.getElementById('p-start');
+  const deadlineEl=document.getElementById('p-deadline');
+  startEl.disabled=lt;deadlineEl.disabled=lt;
+  startEl.style.opacity=lt?'0.4':'1';deadlineEl.style.opacity=lt?'0.4':'1';
+  if(lt){deadlineEl.value='';startEl.value='';
+    document.getElementById('p-progress').value='0';
+    document.getElementById('auto-progress-label').textContent='長期專案不計算進度';}
+  else{startEl.disabled=false;deadlineEl.disabled=false;startEl.style.opacity='1';deadlineEl.style.opacity='1';updateAutoProgress();}
+}
 function toggleArchived(){
   showArchived=!showArchived;
   document.getElementById('archived-section').style.display=showArchived?'block':'none';
@@ -785,6 +782,9 @@ function openModal(type){
     document.getElementById('proj-modal-title').textContent='新增專案';
     document.getElementById('other-note-row').classList.remove('visible');
     document.getElementById('p-progress-override').checked=false;
+    document.getElementById('p-longterm').checked=false;
+    document.getElementById('p-start').disabled=false;document.getElementById('p-start').style.opacity='1';
+    document.getElementById('p-deadline').disabled=false;document.getElementById('p-deadline').style.opacity='1';
     document.getElementById('p-progress').disabled=true;document.getElementById('p-progress').style.background='var(--bg2)';
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
@@ -806,7 +806,8 @@ async function saveMember(){
   showToast('儲存中…');
   try{
     await apiCall('upsert','members',obj);
-    closeModal('member');showToast('組員已儲存');await loadData(true);
+    if(eid){const i=members.findIndex(m=>m.id===eid);if(i>-1)members[i]=obj;else members.push(obj);}else members.push(obj);
+    closeModal('member');render();showToast('組員已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editMember(id){
@@ -824,7 +825,9 @@ async function deleteMember(id){
   if(!confirm('確定移除？'))return;
   try{
     await apiCall('delete','members',{id});
-    showToast('已移除');await loadData(true);
+    members=members.filter(m=>m.id!==id);
+    projects=projects.map(p=>({...p,assignees:(p.assignees||[]).filter(a=>a!==id)}));
+    render();showToast('已移除');
   }catch(e){showToast('失敗：'+e.message,true);}
 }
 
@@ -836,14 +839,16 @@ async function saveProject(){
   const tn=document.getElementById('p-type-note').value.trim();
   if(type==='其他'&&tn)type='其他：'+tn;
   const override=document.getElementById('p-progress-override').checked;
+  const longterm=document.getElementById('p-longterm').checked;
   const start=document.getElementById('p-start').value,deadline=document.getElementById('p-deadline').value;
   let progress=parseInt(document.getElementById('p-progress').value)||0;
   if(!override){const a=calcProgress(start,deadline);if(a!==null)progress=a;}
-  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
+  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,longterm,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
   showToast('儲存中…');
   try{
     await apiCall('upsert','projects',obj);
-    closeModal('project');showToast('專案已儲存');await loadData(true);
+    if(eid){const i=projects.findIndex(p=>p.id===eid);if(i>-1)projects[i]=obj;else projects.push(obj);}else projects.push(obj);
+    closeModal('project');render();showToast('專案已儲存');
   }catch(e){showToast('儲存失敗：'+e.message,true);}
 }
 function editProject(id){
@@ -859,6 +864,10 @@ function editProject(id){
   document.getElementById('other-note-row').classList.toggle('visible',isOther);
   document.getElementById('p-status').value=p.status||'進行中';
   const override=!!p.progressOverride;
+  const longterm=!!p.longterm;
+  document.getElementById('p-longterm').checked=longterm;
+  document.getElementById('p-start').disabled=longterm;document.getElementById('p-start').style.opacity=longterm?'0.4':'1';
+  document.getElementById('p-deadline').disabled=longterm;document.getElementById('p-deadline').style.opacity=longterm?'0.4':'1';
   document.getElementById('p-progress-override').checked=override;
   document.getElementById('p-progress').disabled=!override;
   document.getElementById('p-progress').style.background=override?'var(--bg)':'var(--bg2)';
@@ -870,7 +879,7 @@ function editProject(id){
 }
 async function deleteProject(id){
   if(!confirm('確定刪除？'))return;
-  try{await apiCall('delete','projects',{id});showToast('已刪除');await loadData(true);}
+  try{await apiCall('delete','projects',{id});projects=projects.filter(p=>p.id!==id);render();showToast('已刪除');}
   catch(e){showToast('失敗：'+e.message,true);}
 }
 
@@ -970,16 +979,7 @@ function exportCSV(){
 }
 
 // ── Render ───────────────────────────────────────────────
-function render(){
-  // 動態更新甘特圖組別篩選
-  const ganttGroup=document.getElementById('gantt-group');
-  if(ganttGroup){
-    const cur=ganttGroup.value;
-    ganttGroup.innerHTML='<option value="all">全部</option>'+sysGroups.map(g=>`<option value="${g}">${g}</option>`).join('');
-    if(sysGroups.includes(cur))ganttGroup.value=cur;
-  }
-  renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();
-}
+function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
 
 function renderStats(){
   const el=document.getElementById('stat-row');
@@ -1015,40 +1015,6 @@ function renderAlerts(){
   el.innerHTML=html||'<div class="empty">人力分配正常</div>';
 }
 
-let projectViewMode='card';
-function setViewMode(mode){
-  projectViewMode=mode;
-  document.getElementById('view-btn-card').classList.toggle('active',mode==='card');
-  document.getElementById('view-btn-list').classList.toggle('active',mode==='list');
-  renderProjects();
-}
-
-function projectListRow(p){
-  const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
-  const typeKey=p.type?(p.type.split('：')[0]):'';
-  const prog=getProgress(p);
-  const sf=fmtDate(p.start),df=fmtDate(p.deadline);
-  const editBtns=isEditor?`<div class="project-list-actions"><button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
-  const dateStr=sf&&df?sf+' → '+df:df?`<span class="${dlClass(p.deadline)}">${df} · ${dlLabel(p.deadline)}</span>`:'—';
-  return`<div class="project-list-row">
-    <div class="project-list-accent"></div>
-    <div class="project-list-name">
-      <div class="title">${p.name}</div>
-      <div class="sub">${p.owner?'負責人：'+p.owner+(names.length?' · ':''):''}${names.join('、')}</div>
-    </div>
-    <div class="project-list-badges">
-      ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
-      <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-    </div>
-    <div class="project-list-dates">${dateStr}</div>
-    <div class="project-list-prog">
-      <div class="label">${prog}%</div>
-      <div class="bar"><div class="fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
-    </div>
-    ${editBtns}
-  </div>`;
-}
-
 function projectCard(p){
   const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
   const typeKey=p.type?(p.type.split('：')[0]):'';
@@ -1069,7 +1035,7 @@ function projectCard(p){
           <span class="badge ${badgeClass(p.status)}">${p.status}</span>
         </div>
       </div>
-      ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':'')}
+      ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':(p.longterm?'<div style="font-size:11px;color:#6b7280;font-style:italic">∞ 長期持續中</div>':''))}
       <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
       <div style="font-size:12px;color:var(--text2)">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>
       ${names.length?'<div class="chip-row" style="margin-top:8px">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
@@ -1094,27 +1060,18 @@ function renderProjects(){
     if(sortBy==='type')list=[...list].sort((a,b)=>(a.type||'').localeCompare(b.type||''));
     return list;
   }
-  const isList=projectViewMode==='list';
-  const renderFn=isList?projectListRow:projectCard;
-  const wrapClass=isList?'project-list':'project-grid';
-  const emptyCol=isList?'':'grid-column:1/-1;';
   let active=applyFilters(projects.filter(p=>p.status!=='完成'));
   let archived=applyFilters(projects.filter(p=>p.status==='完成'));
   document.getElementById('archived-count').textContent=archived.length;
-  document.getElementById('project-grid').className=wrapClass;
-  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>renderFn(p)).join(''):`<div class="empty" style="${emptyCol}">沒有符合條件的專案</div>`;
-  document.getElementById('archived-project-grid').className=wrapClass;
-  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>renderFn(p)).join(''):`<div class="empty" style="${emptyCol}">沒有已完成的專案</div>`;
+  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
+  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
 }
 
 function renderMembers(){
-  const wrap=document.getElementById('groups-wrap');
-  wrap.innerHTML=sysGroups.map((g,i)=>`<div id="group-wrap-${i}" ${i>0?'style="margin-top:1.5rem"':''}></div>`).join('');
-  sysGroups.forEach((g,i)=>renderGroup(g,'group-wrap-'+i,g));
+  renderGroup('A','group-a-wrap','A 組');renderGroup('B','group-b-wrap','B 組');
 }
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
-  if(!el)return;
   const list=members.filter(m=>m.group===group);
   const addBtn=isEditor?`<button class="btn btn-sm btn-outline" onclick="openModal('member')" style="margin-left:8px">+ 新增</button>`:'';
   if(!list.length){el.innerHTML=`<div class="section-title">${label}（0人）${addBtn}</div><div class="empty">還沒有組員</div>`;return;}
@@ -1159,20 +1116,28 @@ function renderGantt(){
   const tp=pct(today);
   const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
   let rowsHtml='';
-  sysGroups.forEach(g=>{
+  ['A','B'].forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
       function makeBar(p){
+        const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
+        // Long-term project: full-width gray bar
+        if(p.longterm){
+          return`<div class="g-bar" style="left:0%;width:100%;background:rgba(156,163,175,0.25);color:#6b7280;border:1px dashed rgba(156,163,175,0.6);font-style:italic" title="${p.name}（長期持續）">∞ ${p.name}</div>`;
+        }
         const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
         const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
         s.setHours(0,0,0,0);e.setHours(0,0,0,0);
         if(e<rangeStart||s>rangeEnd)return'';
         const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
-        const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
-        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
+        const startStr=p.start?fmtDate(p.start):'';
+        const endStr=p.deadline?fmtDate(p.deadline):'';
+        const dateRange=startStr&&endStr?startStr+' → '+endStr:startStr||endStr||'';
+        const tooltipText=p.name+(dateRange?' ／ '+dateRange:'');
+        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${tooltipText}">${p.name}</div>`;
       }
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
       rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${mP[0]?makeBar(mP[0]):'<div class="g-empty">無任務</div>'}</div></div>`;
