@@ -234,8 +234,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
-      <select id="gantt-group" onchange="renderGantt()" style="width:100px">
-        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
+      <select id="gantt-group" onchange="renderGantt()" style="width:130px">
+        <option value="all">全部</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -537,9 +537,6 @@ async function loadData(){
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
-    console.log('=== loadData ===');
-    console.log('members:', JSON.stringify(members.map(m=>({name:m.name,group:m.group}))));
-    console.log('projects count:', projects.length);
     render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
@@ -982,7 +979,16 @@ function exportCSV(){
 }
 
 // ── Render ───────────────────────────────────────────────
-function render(){renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();}
+function render(){
+  // 動態更新甘特圖組別選單
+  const ganttGroup=document.getElementById('gantt-group');
+  if(ganttGroup){
+    const cur=ganttGroup.value;
+    const groups=[...new Set(members.map(m=>m.group).filter(Boolean))];
+    ganttGroup.innerHTML='<option value="all">全部</option>'+groups.map(g=>`<option value="${g}" ${g===cur?'selected':''}>${g}</option>`).join('');
+  }
+  renderStats();renderUpcoming();renderAlerts();renderProjects();renderMembers();
+}
 
 function renderStats(){
   const el=document.getElementById('stat-row');
@@ -1071,7 +1077,20 @@ function renderProjects(){
 }
 
 function renderMembers(){
-  renderGroup('A','group-a-wrap','A 組');renderGroup('B','group-b-wrap','B 組');
+  const groups=[...new Set(members.map(m=>m.group).filter(Boolean))];
+  if(!groups.length){
+    document.getElementById('group-a-wrap').innerHTML='';
+    document.getElementById('group-b-wrap').innerHTML='<div class="empty">尚無組員資料</div>';
+    return;
+  }
+  groups.forEach((g,i)=>{
+    const elId=i===0?'group-a-wrap':'group-b-wrap';
+    let el=document.getElementById(elId);
+    if(!el){el=document.createElement('div');el.id=elId;el.style.marginTop=i>0?'1.5rem':'';document.getElementById('sec-members').appendChild(el);}
+    renderGroup(g,elId,g);
+  });
+  // 清空多餘的 wrap
+  if(groups.length<2)document.getElementById('group-b-wrap').innerHTML='';
 }
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
@@ -1119,7 +1138,8 @@ function renderGantt(){
   const tp=pct(today);
   const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
   let rowsHtml='';
-  ['A','B'].forEach(g=>{
+  const allGroups=[...new Set(members.map(m=>m.group).filter(Boolean))];
+  allGroups.forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
     if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
