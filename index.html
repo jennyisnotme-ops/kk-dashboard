@@ -182,7 +182,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
   <button class="tab active" onclick="switchTab('overview',this)">總覽</button>
   <button class="tab" onclick="switchTab('projects',this)">專案列表</button>
   <button class="tab" onclick="switchTab('gantt',this)">甘特圖</button>
-  <button class="tab" onclick="switchTab('members',this)">人力配置</button>
+  <button class="tab" onclick="switchTab('members',this)">成員一覽</button>
 
 </div>
 
@@ -1120,9 +1120,9 @@ function renderGantt(){
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
     if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
-      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
+      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline||p.longterm));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
-      function makeBar(p){
+      const makeBar=p=>{
         const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
         // Long-term project: full-width gray bar
         if(p.longterm){
@@ -1138,7 +1138,7 @@ function renderGantt(){
         const dateRange=startStr&&endStr?startStr+' → '+endStr:startStr||endStr||'';
         const tooltipText=p.name+(dateRange?' ／ '+dateRange:'');
         return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${tooltipText}">${p.name}</div>`;
-      }
+      };
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
       rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${mP[0]?makeBar(mP[0]):'<div class="g-empty">無任務</div>'}</div></div>`;
       if(isExpanded&&mP.length>1)mP.slice(1).forEach(p=>{
