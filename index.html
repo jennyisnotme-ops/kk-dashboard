@@ -101,6 +101,17 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.project-list{display:flex;flex-direction:column;gap:6px}
+.project-list .project-card{display:flex;flex-direction:row;align-items:center}
+.project-list .project-card-accent{width:3px;height:auto;min-height:100%;flex-shrink:0;align-self:stretch}
+.project-list .project-card-body{flex:1;display:flex;align-items:center;gap:12px;padding:10px 14px;flex-wrap:wrap}
+.project-list .project-card-footer{border-top:none;border-left:0.5px solid var(--border);padding:0 12px;display:flex;gap:6px;align-items:center;flex-shrink:0}
+.project-list .card-title{font-size:14px}
+.project-list .progress-bar{width:80px;margin:0}
+.project-list-name{min-width:160px;flex:1}
+.project-list-dates{font-size:11px;color:var(--text2);white-space:nowrap}
+.project-list-prog{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.project-list-badges{display:flex;gap:4px;flex-shrink:0}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
 .chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
@@ -212,14 +223,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
       <option value="progress">進度↑</option>
       <option value="type">類型</option>
     </select>
+    <div style="margin-left:auto;display:flex;gap:4px">
+      <button id="view-grid-btn" class="btn btn-sm btn-primary" onclick="setViewMode('grid')" title="卡片檢視">⊞</button>
+      <button id="view-list-btn" class="btn btn-sm" onclick="setViewMode('list')" title="列表檢視">☰</button>
+    </div>
   </div>
   <label class="archived-toggle" onclick="toggleArchived()">
     <span id="archived-icon">▶</span>
     顯示已完成專案（<span id="archived-count">0</span>）
   </label>
-  <div class="project-grid" id="project-grid"></div>
+  <div id="project-grid"></div>
   <div id="archived-section" style="display:none;margin-top:1rem">
-    <div class="project-grid" id="archived-project-grid"></div>
+    <div id="archived-project-grid"></div>
   </div>
 </div>
 
@@ -461,7 +476,18 @@ const API_URL='https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuC
 let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,currentRole='',currentUserName='';
 let sysGroups=['A組','B組'],sysCountries=['TW','CN'];
 let cbCounter=0,showArchived=false,expandedMembers={};
-let mTags=[],pTags=[];
+let mTags=[],pTags=[],viewMode='grid';
+
+function setViewMode(mode){
+  viewMode=mode;
+  const gb=document.getElementById('view-grid-btn');
+  const lb=document.getElementById('view-list-btn');
+  if(gb&&lb){
+    gb.className='btn btn-sm'+(mode==='grid'?' btn-primary':'');
+    lb.className='btn btn-sm'+(mode==='list'?' btn-primary':'');
+  }
+  renderProjects();
+}
 
 // ── 主題 ──────────────────────────────────────────────────
 const THEMES=[
@@ -1024,6 +1050,35 @@ function renderAlerts(){
   el.innerHTML=html||'<div class="empty">人力分配正常</div>';
 }
 
+function projectListRow(p){
+  const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
+  const typeKey=p.type?(p.type.split('：')[0]):'';
+  const prog=getProgress(p);
+  const sf=fmtDate(p.start),df=fmtDate(p.deadline);
+  const editBtns=isEditor?`<div class="project-card-footer"><button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button></div>`:'';
+  const dateStr=sf&&df?sf+' → '+df:sf||df||(p.longterm?'∞ 長期':'');
+  return`<div class="project-card">
+    <div class="project-card-accent"></div>
+    <div class="project-card-body">
+      <div class="project-list-name">
+        <div class="card-title">${p.name}</div>
+        ${p.owner?'<div style="font-size:11px;color:var(--text2)">'+p.owner+'</div>':''}
+      </div>
+      <div class="project-list-badges">
+        ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
+        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+      </div>
+      <div class="project-list-dates">${dateStr}</div>
+      <div class="project-list-prog">
+        <div class="progress-bar" style="width:80px;margin:0"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
+        <span style="font-size:12px;color:var(--text2)">${prog}%</span>
+      </div>
+      ${names.length?'<div style="display:flex;flex-wrap:wrap;gap:4px">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
+    </div>
+    ${editBtns}
+  </div>`;
+}
+
 function projectCard(p){
   const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
   const typeKey=p.type?(p.type.split('：')[0]):'';
@@ -1072,8 +1127,12 @@ function renderProjects(){
   let active=applyFilters(projects.filter(p=>p.status!=='完成'));
   let archived=applyFilters(projects.filter(p=>p.status==='完成'));
   document.getElementById('archived-count').textContent=archived.length;
-  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
-  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
+  const cls=viewMode==='list'?'project-list':'project-grid';
+  const renderer=viewMode==='list'?projectListRow:projectCard;
+  document.getElementById('project-grid').className=cls;
+  document.getElementById('archived-project-grid').className=cls;
+  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>renderer(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
+  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>renderer(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
 }
 
 function renderMembers(){
@@ -1141,7 +1200,7 @@ function renderGantt(){
   const allGroups=[...new Set(members.map(m=>m.group).filter(Boolean))];
   allGroups.forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline||p.longterm));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
