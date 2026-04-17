@@ -250,8 +250,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
-      <select id="gantt-group" onchange="renderGantt()" style="width:100px">
-        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
+      <select id="gantt-group" onchange="renderGantt()" style="width:120px">
+        <option value="all">全部</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -570,6 +570,13 @@ async function loadData(){
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
+    // 動態更新甘特圖組別篩選
+    const ganttSel=document.getElementById('gantt-group');
+    if(ganttSel){
+      const cur=ganttSel.value;
+      ganttSel.innerHTML='<option value="all">全部</option>'+sysGroups.map(g=>`<option value="${g}">${g}</option>`).join('');
+      if(cur&&cur!=='all')ganttSel.value=cur;
+    }
     render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
