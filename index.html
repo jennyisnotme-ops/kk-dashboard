@@ -158,6 +158,22 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .admin-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .theme-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s}
 .theme-btn.active{border-color:var(--text);transform:scale(1.15)}
+/* ── 里程碑 ── */
+.milestone-list{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+.milestone-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 0;border-bottom:0.5px solid var(--border)}
+.milestone-item:last-child{border-bottom:none}
+.milestone-item input[type=checkbox]{width:auto;padding:0;border:none;box-shadow:none;cursor:pointer;flex-shrink:0}
+.milestone-name{flex:1;color:var(--text)}
+.milestone-name.done{text-decoration:line-through;color:var(--text3)}
+.milestone-dl{color:var(--text2);white-space:nowrap}
+.milestone-dl.near{color:#d97706}.milestone-dl.over{color:#dc2626}
+/* modal 里程碑編輯 */
+.ms-edit-row{display:grid;grid-template-columns:1fr 130px auto;gap:6px;align-items:center;margin-bottom:6px}
+.ms-edit-row input{font-size:13px;padding:5px 8px}
+.g-milestone{position:absolute;top:50%;transform:translateY(-50%) translateX(-50%);width:10px;height:10px;background:var(--accent);border:2px solid #fff;border-radius:2px;rotate:45deg;z-index:3;cursor:default}
+.g-milestone.done{background:#9ca3af}
+/* 暫停段說明 */
+.pause-legend{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
 </style>
 </head>
 <body>
@@ -240,6 +256,9 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
       <span style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px"></span>今天
+    </div>
+    <div class="pause-legend">
+      <span style="display:inline-block;width:22px;height:10px;background:repeating-linear-gradient(90deg,#d1d5db 0,#d1d5db 4px,transparent 4px,transparent 8px);border-radius:2px"></span>暫停期間
     </div>
     <button class="btn btn-sm" onclick="loadData()" style="margin-left:auto">重新整理</button>
   </div>
@@ -333,6 +352,13 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <div id="p-tag-dropdown" class="dropdown-list" style="display:none"></div>
   </div>
   <div class="form-row"><label>備註（選填）</label><textarea id="p-note" rows="2" placeholder="補充說明…"></textarea></div>
+  <!-- 里程碑 -->
+  <hr class="divider" style="margin:8px 0"/>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <label style="margin:0;font-size:13px;font-weight:500;color:var(--text)">交件里程碑</label>
+    <button class="btn btn-sm btn-outline" type="button" onclick="addMilestoneRow()">+ 新增</button>
+  </div>
+  <div id="ms-editor"></div>
   <input type="hidden" id="p-edit-id"/>
   <div class="form-actions">
     <button class="btn" onclick="closeModal('project')">取消</button>
@@ -454,7 +480,21 @@ const API_URL='https://script.google.com/macros/s/AKfycbyW0S1ODLXtB1gsM2AD9aSvuC
 let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,currentRole='',currentUserName='';
 let sysGroups=['A組','B組'],sysCountries=['TW','CN'];
 let cbCounter=0,showArchived=false,expandedMembers={};
-let mTags=[],pTags=[];
+let mTags=[],pTags=[],editMilestones=[];
+
+// ── 里程碑編輯 ────────────────────────────────────────────
+function renderMsEditor(){
+  const el=document.getElementById('ms-editor');if(!el)return;
+  if(!editMilestones.length){el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:4px 0 8px">尚無里程碑，點右上角新增</div>';return;}
+  el.innerHTML=editMilestones.map((ms,i)=>`<div class="ms-edit-row">
+    <input value="${ms.name||''}" placeholder="里程碑名稱" oninput="editMilestones[${i}].name=this.value"/>
+    <input type="date" value="${ms.deadline?fmtDateInput(ms.deadline):''}" oninput="editMilestones[${i}].deadline=this.value"/>
+    <button class="btn btn-sm btn-danger" onclick="editMilestones.splice(${i},1);renderMsEditor()">✕</button>
+  </div>`).join('');
+}
+function addMilestoneRow(){
+  editMilestones.push({id:uid(),name:'',deadline:'',done:false});renderMsEditor();
+}
 
 // ── 主題 ──────────────────────────────────────────────────
 const THEMES=[
@@ -767,6 +807,7 @@ function openModal(type){
     document.getElementById('p-progress').disabled=true;document.getElementById('p-progress').style.background='var(--bg2)';
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
+    editMilestones=[];renderMsEditor();
   }
   if(type==='myaccount'){openMyAccount();}
   if(type==='admin'){switchAdminTab('users',document.querySelector('.admin-tab'));loadUsers();}
@@ -821,7 +862,30 @@ async function saveProject(){
   const start=document.getElementById('p-start').value,deadline=document.getElementById('p-deadline').value;
   let progress=parseInt(document.getElementById('p-progress').value)||0;
   if(!override){const a=calcProgress(start,deadline);if(a!==null)progress=a;}
-  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
+  const newStatus=document.getElementById('p-status').value;
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=today.toISOString().slice(0,10);
+
+  // ── 暫停歷史處理 ──
+  const existing=eid?projects.find(p=>p.id===eid):null;
+  let pauseHistory=[...((existing&&existing.pauseHistory)||[])];
+  if(existing){
+    const oldStatus=existing.status||'進行中';
+    if(oldStatus!=='暫停'&&newStatus==='暫停'){
+      // 剛切成暫停 → 新增一筆，resumedAt 為 null
+      pauseHistory.push({pausedAt:todayStr,resumedAt:null});
+    } else if(oldStatus==='暫停'&&newStatus!=='暫停'){
+      // 從暫停恢復 → 填入最後一筆的 resumedAt
+      const last=pauseHistory[pauseHistory.length-1];
+      if(last&&!last.resumedAt)last.resumedAt=todayStr;
+    }
+  }
+
+  const milestones=editMilestones.filter(ms=>ms.name.trim()).map(ms=>({
+    id:ms.id||uid(),name:ms.name.trim(),deadline:ms.deadline||'',done:!!ms.done
+  }));
+
+  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:newStatus,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags],pauseHistory,milestones};
   showToast('儲存中…');
   try{
     await apiCall('upsert','projects',obj);
@@ -849,7 +913,20 @@ function editProject(id){
   if(!override)updateAutoProgress();
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
   pTags=[...(p.tags||[])];initPTagBox();
+  editMilestones=(p.milestones||[]).map(ms=>({...ms}));renderMsEditor();
   document.getElementById('modal-project').style.display='flex';
+}
+async function toggleMilestone(projId,msId,done){
+  const p=projects.find(x=>x.id===projId);if(!p)return;
+  const ms=(p.milestones||[]).find(m=>m.id===msId);if(!ms)return;
+  ms.done=done;
+  // 若有里程碑進度模式，可在此重算 progress
+  const obj={...p,milestones:[...(p.milestones||[])]};
+  try{
+    await apiCall('upsert','projects',obj);
+    const i=projects.findIndex(x=>x.id===projId);if(i>-1)projects[i]=obj;
+    render();
+  }catch(e){showToast('儲存失敗：'+e.message,true);ms.done=!done;render();}
 }
 async function deleteProject(id){
   if(!confirm('確定刪除？'))return;
@@ -965,17 +1042,27 @@ function renderStats(){
 
 function renderUpcoming(){
   const el=document.getElementById('upcoming-list');
-  const list=projects.filter(p=>p.deadline&&daysLeft(p.deadline)>=0&&daysLeft(p.deadline)<=14&&p.status!=='完成').sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
-  if(!list.length){el.innerHTML='<div class="empty">近14天沒有即將截止的專案</div>';return;}
-  el.innerHTML=list.map(p=>{const prog=getProgress(p);return`<div class="card" style="padding:10px 1rem">
+  // 收集：專案本身截止 + 各里程碑截止
+  const items=[];
+  projects.filter(p=>p.status!=='完成').forEach(p=>{
+    if(p.deadline){const n=daysLeft(p.deadline);if(n>=0&&n<=14)items.push({type:'project',p,name:p.name,deadline:p.deadline,status:p.status,owner:p.owner});}
+    (p.milestones||[]).filter(ms=>!ms.done&&ms.deadline).forEach(ms=>{
+      const n=daysLeft(ms.deadline);if(n>=0&&n<=14)items.push({type:'milestone',p,name:ms.name,deadline:ms.deadline,status:p.status,owner:p.owner,projName:p.name});
+    });
+  });
+  items.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+  if(!items.length){el.innerHTML='<div class="empty">近14天沒有即將截止的項目</div>';return;}
+  el.innerHTML=items.map(it=>{
+    const prog=getProgress(it.p);
+    const isMilestone=it.type==='milestone';
+    return`<div class="card" style="padding:10px 1rem${isMilestone?';border-left:2px solid var(--accent)':''}">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <span style="font-size:14px;font-weight:500">${p.name}</span>
-      <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+      <span style="font-size:14px;font-weight:500">${it.name}${isMilestone?'<span style="font-size:11px;color:var(--text2);font-weight:400;margin-left:6px">↳ '+it.projName+'</span>':''}</span>
+      <span class="badge ${badgeClass(it.status)}">${it.status}</span>
     </div>
-    ${p.owner?'<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：'+p.owner+'</div>':''}
-    <div style="font-size:11px;margin-top:4px" class="${dlClass(p.deadline)}">${fmtDate(p.deadline)} · ${dlLabel(p.deadline)}</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
-    <div style="font-size:11px;color:var(--text2)">${prog}% 完成</div>
+    ${it.owner?'<div style="font-size:11px;color:var(--text2);margin-top:3px">負責人：'+it.owner+'</div>':''}
+    <div style="font-size:11px;margin-top:4px" class="${dlClass(it.deadline)}">${fmtDate(it.deadline)} · ${dlLabel(it.deadline)}</div>
+    ${!isMilestone?`<div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div><div style="font-size:11px;color:var(--text2)">${prog}% 完成</div>`:''}
   </div>`;}).join('');
 }
 function renderAlerts(){
@@ -996,8 +1083,17 @@ function projectCard(p){
   const sf=fmtDate(p.start),df=fmtDate(p.deadline);
   const editBtns=isEditor?`<button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button>`:'';
   const tagsHtml=(p.tags||[]).length?`<div class="chip-row" style="margin-top:6px">${(p.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>`:'';
+  // 里程碑
+  const msList=p.milestones||[];
+  const msHtml=msList.length?`<div class="milestone-list">${msList.map(ms=>{
+    const dl=ms.deadline?daysLeft(ms.deadline):null;
+    const dlCls=ms.done?'':dl!==null?(dl<0?'over':dl<=7?'near':''):'';
+    const dlTxt=ms.deadline?(ms.done?fmtDate(ms.deadline):(dl<0?'逾期'+Math.abs(dl)+'天':dl===0?'今天':'還有'+dl+'天 · '+fmtDate(ms.deadline))):'';
+    const cb=isEditor?`<input type="checkbox" ${ms.done?'checked':''} onchange="toggleMilestone('${p.id}','${ms.id}',this.checked)"/>`:`<input type="checkbox" ${ms.done?'checked':''} disabled/>`;
+    return`<div class="milestone-item">${cb}<span class="milestone-name${ms.done?' done':''}">${ms.name}</span><span class="milestone-dl ${dlCls}">${dlTxt}</span></div>`;
+  }).join('')}</div>`:'';
   return`<div class="project-card">
-    <div class="project-card-accent"></div>
+    <div class="project-card-accent" style="background:${p.status==='暫停'?'#9ca3af':'var(--accent)'}"></div>
     <div class="project-card-body">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
         <div style="flex:1;min-width:0">
@@ -1012,6 +1108,7 @@ function projectCard(p){
       ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':'')}
       <div class="progress-bar"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
       <div style="font-size:12px;color:var(--text2)">${prog}%${p.progressOverride?' (手動)':' (自動)'} 完成</div>
+      ${msHtml}
       ${names.length?'<div class="chip-row" style="margin-top:8px">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
       ${tagsHtml}
       ${p.note?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">'+p.note+'</div>':''}
@@ -1093,22 +1190,73 @@ function renderGantt(){
   const mH=months.map(m=>{const s=new Date(m.getFullYear(),m.getMonth(),1),e=new Date(m.getFullYear(),m.getMonth()+1,0);return`<div class="gantt-month-label" style="width:${pct(e)-pct(s)}%;min-width:0">${m.getMonth()+1}月</div>`;}).join('');
   const tp=pct(today);
   const gl=months.map(mo=>`<div class="g-gridline" style="left:${pct(new Date(mo.getFullYear(),mo.getMonth(),1))}%"></div>`).join('');
+
+  // ── 核心：帶暫停歷史的 bar 產生器 ──
+  function makeBar(p){
+    const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
+    const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
+    s.setHours(0,0,0,0);e.setHours(0,0,0,0);
+    if(e<rangeStart||s>rangeEnd)return'';
+    const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
+    const overdue=p.deadline&&daysLeft(p.deadline)<0;
+    const borderStyle=overdue?'border:1.5px solid #ef4444':'';
+    const title=`${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}`;
+
+    // 把暫停歷史切成「活躍段」和「暫停段」
+    // 每個 segment: {from, to, paused}
+    const history=p.pauseHistory||[];
+    const segments=[];
+    let cursor=new Date(s);
+
+    if(!history.length){
+      // 無暫停歷史，整條都是活躍色
+      segments.push({from:new Date(s),to:new Date(e),paused:false});
+    } else {
+      for(const h of history){
+        const pStart=new Date(h.pausedAt);pStart.setHours(0,0,0,0);
+        const pEnd=h.resumedAt?new Date(h.resumedAt):new Date(e);pEnd.setHours(0,0,0,0);
+        if(cursor<pStart){segments.push({from:new Date(cursor),to:new Date(pStart),paused:false});}
+        const segEnd=pEnd>e?new Date(e):new Date(pEnd);
+        if(pStart<segEnd)segments.push({from:new Date(pStart),to:segEnd,paused:true});
+        cursor=new Date(pEnd>e?e:pEnd);
+      }
+      if(cursor<e){segments.push({from:new Date(cursor),to:new Date(e),paused:false});}
+    }
+
+    // 渲染各段
+    let html='';
+    let firstActive=true;
+    segments.forEach((seg,si)=>{
+      const left=pct(seg.from),right=pct(seg.to),width=Math.max(right-left,0.3);
+      if(seg.paused){
+        html+=`<div class="g-bar" style="left:${left}%;width:${width}%;background:repeating-linear-gradient(90deg,#d1d5db 0,#d1d5db 4px,transparent 4px,transparent 8px);border-radius:${si===0?'4px 0 0 4px':si===segments.length-1?'0 4px 4px 0':'0'};opacity:0.7" title="${title} (暫停中)"></div>`;
+      } else {
+        const rStyle=`left:${left}%;width:${width}%;background:${col.bg};color:${col.text};border-radius:${si===0?'4px 0 0 4px':si===segments.length-1?'0 4px 4px 0':'0'};${borderStyle}`;
+        html+=`<div class="g-bar" style="${rStyle}" title="${title}">${firstActive?p.name:''}</div>`;
+        firstActive=false;
+      }
+    });
+
+    // 里程碑菱形
+    (p.milestones||[]).filter(ms=>ms.deadline).forEach(ms=>{
+      const md=new Date(ms.deadline);md.setHours(0,0,0,0);
+      if(md>=rangeStart&&md<=rangeEnd){
+        const lp=pct(md);
+        html+=`<div class="g-milestone${ms.done?' done':''}" style="left:${lp}%" title="◆ ${ms.name}${ms.deadline?' · '+fmtDate(ms.deadline):''}${ms.done?' ✓':''}"></div>`;
+      }
+    });
+
+    return html;
+  }
+
   let rowsHtml='';
-  ['A','B'].forEach(g=>{
+  const allGroups=[...new Set(fm.map(m=>m.group).filter(Boolean))];
+  allGroups.forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
-      function makeBar(p){
-        const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
-        const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
-        s.setHours(0,0,0,0);e.setHours(0,0,0,0);
-        if(e<rangeStart||s>rangeEnd)return'';
-        const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
-        const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
-        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
-      }
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
       rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${mP[0]?makeBar(mP[0]):'<div class="g-empty">無任務</div>'}</div></div>`;
       if(isExpanded&&mP.length>1)mP.slice(1).forEach(p=>{
