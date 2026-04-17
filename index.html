@@ -336,10 +336,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <input type="number" id="p-progress" min="0" max="100" value="0" disabled style="background:var(--bg2)"/>
     <div class="auto-label" id="auto-progress-label">填入起迄日後自動計算</div>
   </div>
-  <div class="form-row"><label>狀態</label>
-    <select id="p-status">
-      <option>進行中</option><option>待開始</option><option>審核中</option><option>完成</option><option>暫停</option>
-    </select>
+  <div class="form-grid">
+    <div class="form-row"><label>狀態</label>
+      <select id="p-status">
+        <option>進行中</option><option>待開始</option><option>審核中</option><option>完成</option><option>暫停</option>
+      </select>
+    </div>
+    <div class="form-row" style="display:flex;align-items:flex-end;padding-bottom:2px">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;color:var(--text)">
+        <input type="checkbox" id="p-is-longterm" style="width:auto;padding:0;border:none;box-shadow:none"/>
+        長期專案（無截止日）
+      </label>
+    </div>
   </div>
   <div class="form-row">
     <label>指派繪師（可多選）</label>
@@ -815,6 +823,7 @@ function openModal(type){
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
     editMilestones=[];renderMsEditor();
+    document.getElementById('p-is-longterm').checked=false;
   }
   if(type==='myaccount'){openMyAccount();}
   if(type==='admin'){switchAdminTab('users',document.querySelector('.admin-tab'));loadUsers();}
@@ -892,7 +901,8 @@ async function saveProject(){
     id:ms.id||uid(),name:ms.name.trim(),deadline:ms.deadline||'',done:!!ms.done
   }));
 
-  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:newStatus,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags],pauseHistory,milestones};
+  const isLongTerm=document.getElementById('p-is-longterm').checked;
+  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:newStatus,isLongTerm,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags],pauseHistory,milestones};
   showToast('儲存中…');
   try{
     await apiCall('upsert','projects',obj);
@@ -912,6 +922,7 @@ function editProject(id){
   document.getElementById('p-type-note').value=isOther?raw.replace(/^其他[：:]\s*/,''):'';
   document.getElementById('other-note-row').classList.toggle('visible',isOther);
   document.getElementById('p-status').value=p.status||'進行中';
+  document.getElementById('p-is-longterm').checked=!!p.isLongTerm;
   const override=!!p.progressOverride;
   document.getElementById('p-progress-override').checked=override;
   document.getElementById('p-progress').disabled=!override;
@@ -1109,6 +1120,7 @@ function projectCard(p){
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
           ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
+          ${p.isLongTerm?'<span class="badge badge-gray" style="font-size:11px;padding:2px 7px">長期</span>':''}
           <span class="badge ${badgeClass(p.status)}">${p.status}</span>
         </div>
       </div>
@@ -1200,6 +1212,15 @@ function renderGantt(){
 
   // ── 核心：帶暫停歷史的 bar 產生器 ──
   function makeBar(p){
+    // 長期專案：從開始日延伸到畫面右邊界，整條灰色
+    if(p.isLongTerm){
+      const s=p.start?new Date(p.start):new Date(today);
+      s.setHours(0,0,0,0);
+      if(s>rangeEnd)return'';
+      const left=pct(s);
+      const width=Math.max(100-left,0.5);
+      return`<div class="g-bar" style="left:${left}%;width:${width}%;background:#e5e7eb;color:#6b7280;border-radius:4px" title="${p.name}（長期專案）">${p.name}</div>`;
+    }
     const s=p.start?new Date(p.start):new Date(today.getFullYear(),today.getMonth()-1,1);
     const e=p.deadline?new Date(p.deadline):new Date(today.getFullYear(),today.getMonth()+rangeMonths,0);
     s.setHours(0,0,0,0);e.setHours(0,0,0,0);
@@ -1214,8 +1235,10 @@ function renderGantt(){
     const history=p.pauseHistory||[];
     const segments=[];
     let cursor=new Date(s);
-
-    if(!history.length){
+    // 如果目前是暫停狀態但沒有歷史紀錄，視為從開始日就暫停
+    if(!history.length&&p.status==='暫停'){
+      segments.push({from:new Date(s),to:new Date(e),paused:true});
+    } else if(!history.length){
       // 無暫停歷史，整條都是活躍色
       segments.push({from:new Date(s),to:new Date(e),paused:false});
     } else {
@@ -1262,7 +1285,7 @@ function renderGantt(){
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
     if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
     gm.forEach(m=>{
-      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
+      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline||p.isLongTerm));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
       rowsHtml+=`<div class="gantt-row"><div class="gantt-member">${expandBtn}<div class="avatar ${avClass(m.name)}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${initials(m.name)}</div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</span></div><div class="gantt-bars">${gl}<div class="g-today" style="left:${tp}%"></div>${mP[0]?makeBar(mP[0]):'<div class="g-empty">無任務</div>'}</div></div>`;
