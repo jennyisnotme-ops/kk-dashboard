@@ -896,7 +896,7 @@ function editProject(id){
   if(!override)updateAutoProgress();
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
   pTags=[...(p.tags||[])];initPTagBox();
-  document.getElementById('p-longterm').checked=!!p.isLongTerm;
+  document.getElementById('p-longterm').checked=p.isLongTerm===true||p.isLongTerm==='true'||p.isLongTerm===1;
   document.getElementById('modal-project').style.display='flex';
 }
 async function deleteProject(id){
@@ -1054,7 +1054,7 @@ function projectCard(p){
         <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
           ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
           <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-          ${p.isLongTerm?'<span class="badge badge-gray" style="font-size:11px;padding:2px 7px">長期專案</span>':''}
+          ${(p.isLongTerm===true||p.isLongTerm==='true'||p.isLongTerm===1)?'<span class="badge badge-gray" style="font-size:11px;padding:2px 7px">長期專案</span>':''}
         </div>
       </div>
       ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':'')}
@@ -1216,12 +1216,12 @@ function renderGantt(){
     if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
 
     gm.forEach(m=>{
-      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
+      const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.isLongTerm||p.start||p.deadline));
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
 
       function makeBar(p){
         // 長期專案：灰色滿版長條（從 rangeStart 到 rangeEnd）
-        if(p.isLongTerm){
+        if(p.isLongTerm===true||p.isLongTerm==='true'||p.isLongTerm===1){
           return`<div class="g-bar" style="left:0%;width:100%;background:#e5e5e5;color:#6b6b67;opacity:0.85;" title="${p.name}（長期專案）">${p.name}</div>`;
         }
         // 暫停：淡灰色長條
