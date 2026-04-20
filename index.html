@@ -329,6 +329,12 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     </select>
   </div>
   <div class="form-row">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+      <input type="checkbox" id="p-longterm" style="width:auto;padding:0;border:none;box-shadow:none"/>
+      <span>長期專案 <span style="font-size:11px;color:var(--text2)">（甘特圖顯示為灰色滿版長條）</span></span>
+    </label>
+  </div>
+  <div class="form-row">
     <label>指派繪師（可多選）</label>
     <div class="tag-input-wrap" id="assignee-box" onclick="document.getElementById('assignee-search')&&document.getElementById('assignee-search').focus()"></div>
     <div id="assignee-dropdown" style="display:none;position:relative;z-index:10;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);margin-top:4px;max-height:160px;overflow-y:auto"></div>
@@ -807,6 +813,7 @@ function openModal(type){
     document.getElementById('p-progress').disabled=true;document.getElementById('p-progress').style.background='var(--bg2)';
     document.getElementById('auto-progress-label').textContent='填入起迄日後自動計算';
     selectedAssignees=[];renderAssigneeTags();pTags=[];initPTagBox();
+    document.getElementById('p-longterm').checked=false;
   }
   if(type==='myaccount'){openMyAccount();}
   if(type==='admin'){switchAdminTab('users',document.querySelector('.admin-tab'));loadUsers();}
@@ -861,7 +868,7 @@ async function saveProject(){
   const start=document.getElementById('p-start').value,deadline=document.getElementById('p-deadline').value;
   let progress=parseInt(document.getElementById('p-progress').value)||0;
   if(!override){const a=calcProgress(start,deadline);if(a!==null)progress=a;}
-  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
+  const obj={id:eid||uid(),name,type,owner:document.getElementById('p-owner').value.trim(),start,deadline,progress,progressOverride:override,status:document.getElementById('p-status').value,isLongTerm:document.getElementById('p-longterm').checked,assignees:[...selectedAssignees],note:document.getElementById('p-note').value.trim(),tags:[...pTags]};
   showToast('儲存中…');
   try{
     await apiCall('upsert','projects',obj);
@@ -889,6 +896,7 @@ function editProject(id){
   if(!override)updateAutoProgress();
   selectedAssignees=[...(p.assignees||[])];renderAssigneeTags();
   pTags=[...(p.tags||[])];initPTagBox();
+  document.getElementById('p-longterm').checked=!!p.isLongTerm;
   document.getElementById('modal-project').style.display='flex';
 }
 async function deleteProject(id){
@@ -1046,6 +1054,7 @@ function projectCard(p){
         <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
           ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
           <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+          ${p.isLongTerm?'<span class="badge badge-gray" style="font-size:11px;padding:2px 7px">長期專案</span>':''}
         </div>
       </div>
       ${sf?'<div style="font-size:11px;color:var(--text2)">'+sf+(df?' → '+df:'')+'</div>':(df?'<div style="font-size:11px" class="'+dlClass(p.deadline)+'">'+df+' · '+dlLabel(p.deadline)+'</div>':'')}
@@ -1211,15 +1220,22 @@ function renderGantt(){
       const isExpanded=!!expandedMembers[m.id];const hasMulti=mP.length>1;
 
       function makeBar(p){
-        // ▼▼▼ 關鍵修復：統一用 parseLocalDate，避免 UTC 偏移讓日期跑到前一天 ▼▼▼
+        // 長期專案：灰色滿版長條（從 rangeStart 到 rangeEnd）
+        if(p.isLongTerm){
+          return`<div class="g-bar" style="left:0%;width:100%;background:#e5e5e5;color:#6b6b67;opacity:0.85;" title="${p.name}（長期專案）">${p.name}</div>`;
+        }
+        // 暫停：淡灰色長條
+        const isPaused=p.status==='暫停';
         const s = parseLocalDate(p.start) || new Date(today.getFullYear(), today.getMonth()-1, 1);
         const e = parseLocalDate(p.deadline) || new Date(today.getFullYear(), today.getMonth()+rangeMonths, 0);
-        // ▲▲▲ 修復結束 ▲▲▲
-
         if(e<rangeStart||s>rangeEnd)return'';
         const left=pct(s),right=pct(e),width=Math.max(right-left,0.5);
-        const col=BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
-        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${p.deadline&&daysLeft(p.deadline)<0?'border:1.5px solid #ef4444':''}" title="${p.name}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
+        const col=isPaused
+          ?{bg:'#f0f0ee',text:'#9e9e99'}
+          :BAR_COLORS[projects.indexOf(p)%BAR_COLORS.length];
+        const borderStyle=(!isPaused&&p.deadline&&daysLeft(p.deadline)<0)?'border:1.5px solid #ef4444':'';
+        const pausedStyle=isPaused?'opacity:0.7;background-image:repeating-linear-gradient(45deg,rgba(0,0,0,0.04) 0px,rgba(0,0,0,0.04) 2px,transparent 2px,transparent 6px)':'';
+        return`<div class="g-bar" style="left:${left}%;width:${width}%;background:${col.bg};color:${col.text};${borderStyle};${pausedStyle}" title="${p.name}${isPaused?'（暫停）':''}${p.deadline?' 截止：'+fmtDate(p.deadline):''}">${p.name}</div>`;
       }
 
       const expandBtn=hasMulti?`<button class="gantt-expand" onclick="toggleGanttMember('${m.id}')">${isExpanded?'−':'+'}${mP.length}</button>`:'<span style="min-width:22px;display:inline-block"></span>';
