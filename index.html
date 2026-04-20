@@ -101,6 +101,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 .assignee-tag .rm{cursor:pointer;color:var(--text2);font-size:14px;line-height:1}
 .section-title{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.project-list-view{display:flex;flex-direction:column;gap:6px}
+.project-list-row{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:10px 1rem;display:flex;align-items:center;gap:12px;transition:box-shadow 0.15s}
+.project-list-row:hover{box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+.view-btn-active{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
 .empty{color:var(--text2);font-size:14px;padding:2rem;text-align:center}
 .chip{font-size:11px;padding:2px 8px;border-radius:var(--radius);background:var(--bg2);color:var(--text2)}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
@@ -211,6 +215,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
       <option value="progress">進度↑</option>
       <option value="type">類型</option>
     </select>
+    <div style="display:flex;gap:2px;margin-left:auto;flex-shrink:0">
+      <button id="view-card-btn" class="btn btn-sm" onclick="setViewMode('card')" title="卡片檢視" style="padding:4px 8px;font-size:15px">⊞</button>
+      <button id="view-list-btn" class="btn btn-sm" onclick="setViewMode('list')" title="列表檢視" style="padding:4px 8px;font-size:15px">☰</button>
+    </div>
   </div>
   <label class="archived-toggle" onclick="toggleArchived()">
     <span id="archived-icon">▶</span>
@@ -234,7 +242,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
     <div style="display:flex;align-items:center;gap:6px">
       <label style="margin:0;white-space:nowrap;font-size:13px;color:var(--text2)">篩選組別</label>
       <select id="gantt-group" onchange="renderGantt()" style="width:100px">
-        <option value="all">全部</option><option value="A">A 組</option><option value="B">B 組</option>
+        <option value="all">全部</option>
       </select>
     </div>
     <div style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px">
@@ -246,8 +254,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
 </div>
 
 <div id="sec-members" class="section">
-  <div id="group-a-wrap"></div>
-  <div id="group-b-wrap" style="margin-top:1.5rem"></div>
 </div>
 
 </div>
@@ -455,6 +461,7 @@ let members=[],projects=[],selectedAssignees=[],editorSecret='',isEditor=false,c
 let sysGroups=['A組','B組'],sysCountries=['TW','CN'];
 let cbCounter=0,showArchived=false,expandedMembers={};
 let mTags=[],pTags=[];
+let projViewMode='card'; // 'card' | 'list'
 
 // ── 日期解析（修復時區偏移導致長條消失的核心函式）────────────────
 /**
@@ -552,6 +559,9 @@ async function loadData(){
     members=data.members||[];projects=data.projects||[];
     if(data.groups)sysGroups=data.groups;
     if(data.countries)sysCountries=data.countries;
+    // 動態填充甘特圖組別篩選選單
+    const gg=document.getElementById('gantt-group');
+    if(gg){gg.innerHTML='<option value="all">全部</option>'+sysGroups.map(g=>`<option value="${g}">${g}</option>`).join('');}
     render();showToast('資料已載入');
   }catch(e){showToast('載入失敗：'+e.message,true);}
 }
@@ -1049,6 +1059,37 @@ function projectCard(p){
   </div>`;
 }
 
+function setViewMode(mode){
+  projViewMode=mode;
+  document.getElementById('view-card-btn').className='btn btn-sm'+(mode==='card'?' view-btn-active':'');
+  document.getElementById('view-list-btn').className='btn btn-sm'+(mode==='list'?' view-btn-active':'');
+  renderProjects();
+}
+
+function projectListRow(p){
+  const names=(p.assignees||[]).map(id=>{const m=members.find(x=>x.id===id);return m?m.name:null}).filter(Boolean);
+  const typeKey=p.type?(p.type.split('：')[0]):'';
+  const prog=getProgress(p);
+  const df=fmtDate(p.deadline);
+  const editBtns=isEditor?`<button class="btn btn-sm btn-outline" onclick="editProject('${p.id}')">編輯</button><button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">刪除</button>`:'';
+  return`<div class="project-list-row">
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14px;font-weight:500">${p.name}</span>
+        ${p.type?'<span class="badge '+(TYPE_BADGE[typeKey]||'badge-gray')+'" style="font-size:11px;padding:2px 7px">'+p.type+'</span>':''}
+        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+      </div>
+      ${p.owner||df?`<div style="font-size:11px;color:var(--text2);margin-top:2px">${p.owner?'負責人：'+p.owner:''}${p.owner&&df?' · ':''}${df?'<span class="'+dlClass(p.deadline)+'">'+df+' '+dlLabel(p.deadline)+'</span>':''}</div>`:''}
+    </div>
+    <div style="width:120px;flex-shrink:0">
+      <div class="progress-bar" style="margin:0 0 3px"><div class="progress-fill" style="width:${prog}%;background:${pColor(prog)}"></div></div>
+      <div style="font-size:11px;color:var(--text2);text-align:right">${prog}%</div>
+    </div>
+    ${names.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0">'+names.map(n=>'<span class="chip">'+n+'</span>').join('')+'</div>':''}
+    ${editBtns?'<div style="display:flex;gap:4px;flex-shrink:0">'+editBtns+'</div>':''}
+  </div>`;
+}
+
 function renderProjects(){
   const kw=(document.getElementById('search-kw').value||'').trim().toLowerCase();
   const ft=document.getElementById('filter-type').value;
@@ -1070,12 +1111,37 @@ function renderProjects(){
   let active=applyFilters(projects.filter(p=>p.status!=='完成'));
   let archived=applyFilters(projects.filter(p=>p.status==='完成'));
   document.getElementById('archived-count').textContent=archived.length;
-  document.getElementById('project-grid').innerHTML=active.length?active.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有符合條件的專案</div>';
-  document.getElementById('archived-project-grid').innerHTML=archived.length?archived.map(p=>projectCard(p)).join(''):'<div class="empty" style="grid-column:1/-1">沒有已完成的專案</div>';
+  const isCard=projViewMode==='card';
+  function setGrid(el,list,emptyMsg){
+    el.className=isCard?'project-grid':'project-list-view';
+    el.innerHTML=list.length
+      ?(isCard?list.map(p=>projectCard(p)):list.map(p=>projectListRow(p))).join('')
+      :'<div class="empty"'+(isCard?' style="grid-column:1/-1"':'')+'>'+emptyMsg+'</div>';
+  }
+  setGrid(document.getElementById('project-grid'),active,'沒有符合條件的專案');
+  setGrid(document.getElementById('archived-project-grid'),archived,'沒有已完成的專案');
 }
 
 function renderMembers(){
-  renderGroup('A','group-a-wrap','A 組');renderGroup('B','group-b-wrap','B 組');
+  const wrap=document.getElementById('sec-members');
+  // 動態產生每個組別的容器（支援任意 sysGroups）
+  const existingIds=new Set([...wrap.querySelectorAll('[id^="dyn-group-"]')].map(el=>el.id));
+  sysGroups.forEach((g,i)=>{
+    const elId='dyn-group-'+g.replace(/\s/g,'_');
+    if(!document.getElementById(elId)){
+      const div=document.createElement('div');
+      div.id=elId;if(i>0)div.style.marginTop='1.5rem';
+      wrap.appendChild(div);
+    }
+    existingIds.delete(elId);
+  });
+  // 移除已不存在的組別容器
+  existingIds.forEach(id=>document.getElementById(id)?.remove());
+  // 渲染各組
+  sysGroups.forEach(g=>{
+    const elId='dyn-group-'+g.replace(/\s/g,'_');
+    renderGroup(g,elId,g);
+  });
 }
 function renderGroup(group,elId,label){
   const el=document.getElementById(elId);
@@ -1136,9 +1202,9 @@ function renderGantt(){
 
   let rowsHtml='';
 
-  ['A','B'].forEach(g=>{
+  sysGroups.forEach(g=>{
     const gm=fm.filter(m=>m.group===g);if(!gm.length)return;
-    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g} 組</span><div style="flex:1"></div></div>`;
+    if(filterGroup==='all')rowsHtml+=`<div class="group-sep"><span style="width:140px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--accent-text)">${g}</span><div style="flex:1"></div></div>`;
 
     gm.forEach(m=>{
       const mP=projects.filter(p=>(p.assignees||[]).includes(m.id)&&p.status!=='完成'&&(p.start||p.deadline));
@@ -1178,6 +1244,7 @@ document.addEventListener('click',e=>{
 });
 
 loadSavedTheme();
+setViewMode('card');
 loadData();
 </script>
 </body>
